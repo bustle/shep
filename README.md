@@ -14,6 +14,7 @@ generate <api_name>  Generate a new API endpoint, Lambda function, and test
 test [api_name]      Run tests. Optionally name a specific test to run
 deploy [env]         Deploy all new/updated functions/APIs. Optionally specify environment
 server               Start a local development server for APIs
+configure            Configure global AWS credentials for the project
 ```
 
 ### Project Structure
@@ -49,3 +50,7 @@ Configuration for deployment to AWS
 #### `/tests`
 
 Where integration tests live
+
+#### `/config.json`
+
+Location of global AWS configuration. Can be overwritten by API and function specific configs. 
