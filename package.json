@@ -1,0 +1,18 @@
+{
+  "name": "shepherd",
+  "version": "0.0.1",
+  "description": "An opinionted framework for building APIs with AWS API Gateway and Lambda",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Steve Faulkner <steve@bustle.com>",
+  "license": "ISC",
+  "preferGlobal": true,
+  "bin": {
+    "shepherd": "index.js"
+  },
+  "dependencies": {
+    "commander": "^2.8.1"
+  }
+}
