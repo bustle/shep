@@ -10,9 +10,14 @@
   "license": "ISC",
   "preferGlobal": true,
   "bin": {
-    "shepherd": "index.js"
+    "shepherd": "lib/shepherd.js"
   },
   "dependencies": {
-    "commander": "^2.8.1"
+    "aws-sdk": "^2.1.49",
+    "aws4": "^1.0.4",
+    "chalk": "^1.1.1",
+    "commander": "^2.8.1",
+    "remove": "^0.1.5",
+    "request": "^2.61.0"
   }
 }
