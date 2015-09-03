@@ -2,9 +2,11 @@
 
 A framework for building APIs using AWS API Gateway and Lambda
 
+*Warning: Still in development. Not ready for production use*
+
 ## Installation
 
-`npm install -g shepherd-cli`
+Not on NPM...yet
 
 ### Commands
 
@@ -53,4 +55,4 @@ Where integration tests live
 
 #### `/config.json`
 
-Location of global AWS configuration. Can be overwritten by API and function specific configs. 
+Location of global AWS configuration. Can be overwritten by API and function specific configs.
