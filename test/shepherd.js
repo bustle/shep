@@ -11,35 +11,35 @@ describe('shepherd new', function() {
 
   after(function(done) {
     remove('./test-project', done);
-  })
+  });
 
   it('should create the project folder', function (done) {
     fs.stat('./test-project', function(err, stat){
-      if (err) { done(err) }
-      if (stat.isDirectory()){ done() }
-    })
-  })
+      if (err) { done(err); }
+      if (stat.isDirectory()){ done(); }
+    });
+  });
 
   it('should create the functions folder', function (done) {
     fs.stat('./test-project/functions', function(err, stat){
-      if (err) { done(err) }
-      if (stat.isDirectory()){ done() }
-    })
-  })
+      if (err) { done(err); }
+      if (stat.isDirectory()){ done(); }
+    });
+  });
 
   it('should create the apis folder', function (done) {
     fs.stat('./test-project/apis', function(err, stat){
-      if (err) { done(err) }
-      if (stat.isDirectory()){ done() }
-    })
-  })
+      if (err) { done(err); }
+      if (stat.isDirectory()){ done(); }
+    });
+  });
 
   it('should create the shepherd-config file', function (done) {
     fs.stat('./test-project/shepherd-config.js', function(err, stat){
-      if (err) { done(err) }
-      if (stat.isFile()){ done() }
-    })
-  })
+      if (err) { done(err); }
+      if (stat.isFile()){ done(); }
+    });
+  });
 });
 
 
