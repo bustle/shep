@@ -1,0 +1,11 @@
+language: node_js
+node_js:
+  - "0.12"
+install:
+  - npm install -g mocha
+  - npm install -g jshint
+  - npm install
+
+script:
+  - jshint --exclude ./node_modules .
+  - mocha
