@@ -33,7 +33,7 @@ describe('shepherd generate', function() {
         if (err) { done(err); }
         if (stat.isDirectory()){ done(); }
       });
-    })
+    });
   });
 
   describe('function <name>', function(){
