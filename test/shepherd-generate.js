@@ -27,6 +27,13 @@ describe('shepherd generate', function() {
         if (stat.isDirectory()){ done(); }
       });
     });
+
+    it('should create the models folder', function (done) {
+      fs.stat('./apis/test-api/models', function(err, stat){
+        if (err) { done(err); }
+        if (stat.isDirectory()){ done(); }
+      });
+    })
   });
 
   describe('function <name>', function(){
