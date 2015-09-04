@@ -34,6 +34,13 @@ describe('shepherd generate', function() {
         if (stat.isDirectory()){ done(); }
       });
     });
+
+    it('should create the config.js file', function (done) {
+      fs.stat('./apis/test-api/config.js', function(err, stat){
+        if (err) { done(err); }
+        if (stat.isFile()){ done(); }
+      });
+    });
   });
 
   describe('function <name>', function(){
