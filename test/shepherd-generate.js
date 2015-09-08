@@ -1,4 +1,3 @@
-var assert = require("assert");
 var remove = require('remove');
 var exec = require('child_process').exec;
 var fs = require('fs');
