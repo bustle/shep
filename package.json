@@ -20,5 +20,8 @@
     "lodash": "^3.10.1",
     "remove": "^0.1.5",
     "request": "^2.61.0"
+  },
+  "devDependencies": {
+    "chai": "^3.2.0"
   }
 }
