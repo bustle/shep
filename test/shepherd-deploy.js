@@ -1,6 +1,5 @@
 var remove = require('remove');
 var exec = require('child_process').exec;
-var fs = require('fs');
 var expect = require('chai').expect;
 
 describe('shepherd deploy', function() {
