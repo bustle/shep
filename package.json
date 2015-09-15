@@ -15,6 +15,7 @@
   "dependencies": {
     "aws-sdk": "^2.1.49",
     "aws4": "^1.0.4",
+    "bluebird": "^2.10.0",
     "chalk": "^1.1.1",
     "glob": "^5.0.14",
     "lodash": "^3.10.1",
