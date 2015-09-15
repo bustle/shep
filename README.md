@@ -1,5 +1,7 @@
 ## Shepherd
 
+[![Build Status](https://travis-ci.org/bustlelabs/shepherd.svg?branch=master)](https://travis-ci.org/bustlelabs/shepherd)
+
 A framework for building APIs using AWS API Gateway and Lambda
 
 *Warning: Still in development. Not ready for production use*
