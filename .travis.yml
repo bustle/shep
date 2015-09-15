@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-  - "0.12"
+  - "node"
 install:
   - npm install -g mocha
   - npm install -g jshint
