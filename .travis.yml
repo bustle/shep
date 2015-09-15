@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-  - "node"
+  - "iojs"
 install:
   - npm install -g mocha
   - npm install -g jshint
