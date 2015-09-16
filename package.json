@@ -8,9 +8,9 @@
   },
   "author": "Steve Faulkner <steve@bustle.com>",
   "license": "ISC",
-  "repository" : {
-    "type" : "git",
-    "url" : "https://github.com/bustlelabs/shepherd"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bustlelabs/shepherd"
   },
   "preferGlobal": true,
   "bin": {
@@ -23,6 +23,8 @@
     "chalk": "^1.1.1",
     "glob": "^5.0.14",
     "lodash": "^3.10.1",
+    "minimist": "^1.2.0",
+    "prompt": "^0.2.14",
     "remove": "^0.1.5",
     "request": "^2.61.0"
   },
