@@ -1,9 +1,11 @@
 var remove = require('remove');
 var exec = require('child_process').exec;
 var fs = require('fs');
+var os = require('os');
 
 describe('shepherd new', function() {
   before(function(done) {
+    process.chdir(os.tmpdir());
     exec('shepherd new test-project', done);
   });
 

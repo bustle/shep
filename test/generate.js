@@ -2,9 +2,11 @@ var remove = require('remove');
 var exec = require('child_process').exec;
 var fs = require('fs');
 var expect = require('chai').expect;
+var os = require('os');
 
 describe('shepherd generate', function() {
   before(function(done) {
+    process.chdir(os.tmpdir());
     exec('shepherd new test-project', function(){
       process.chdir('./test-project');
       done();
