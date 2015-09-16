@@ -13,12 +13,15 @@ Not on NPM...yet
 ### Commands
 
 ```
-new <folder_name>    Generate a new project folder
-generate <resource_name>  Generate a new resource endpoint, Lambda function, and test
-test [resource_name]      Run tests. Optionally name a specific test to run
-deploy [env]         Deploy all new/updated functions/resources. Optionally specify environment
-server               Start a local development server for api
-configure            Configure global AWS credentials for the project
+new <folder_name> : Generate a new project folder
+```
+
+```
+generate <resource|function|model|stage> : Generate a new resource, function, model, or stage
+```
+
+```
+deploy : Deploy all new/updated functions/resources. Optionally specify environment
 ```
 
 ### Project Structure
@@ -27,13 +30,13 @@ configure            Configure global AWS credentials for the project
 
 Where resources live
 
-##### `/resources/<resource_name>/models`
+##### `/models`
 
 Where models live. Models are specified using JSON schema
 
-##### `/resources/<resource_name>/config.json`
+##### `/stages`
 
-Configuration for deployment to AWS
+Where stages live.
 
 #### `/functions`
 
@@ -51,10 +54,6 @@ Required if your function depends on third party modules
 
 Configuration for deployment to AWS
 
-#### `/tests`
+##### `/config.js`
 
-Where integration tests live
-
-#### `/config.json`
-
-Location of global AWS configuration. Can be overwritten by resource and function specific configs.
+Configuration for deployment to AWS
