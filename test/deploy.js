@@ -16,11 +16,11 @@
 //   it('should write the AWS id to the config file', function (done) {
 //   });
 //
-//   it('should write the default resource', function (done) {
-//   });
-//
-//   it('should write the default models', function (done) {
-//   });
+//   // it('should write the default resource', function (done) {
+//   // });
+//   //
+//   // it('should write the default models', function (done) {
+//   // });
 //
 //
 // });
