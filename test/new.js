@@ -2,6 +2,8 @@ var remove = require('remove');
 var exec = require('child_process').exec;
 var fs = require('fs');
 var os = require('os');
+var expect = require('chai').expect;
+var path = require('path');
 
 describe('shepherd new', function() {
   before(function(done) {
@@ -51,7 +53,18 @@ describe('shepherd new', function() {
   it('should create the config file', function (done) {
     fs.stat('./test-project/config.js', function(err, stat){
       if (err) { done(err); }
-      if (stat.isFile()){ done(); }
+      expect(stat.isFile()).to.eq(true);
+      var config = require(path.resolve('./test-project/config'));
+      expect(config.name).to.eq('test-project');
+      done();
+    });
+  });
+
+  it('should create the environment file', function (done) {
+    fs.stat('./test-project/environment.js', function(err, stat){
+      if (err) { done(err); }
+      expect(stat.isFile()).to.eq(true);
+      done();
     });
   });
 });

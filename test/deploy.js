@@ -2,7 +2,9 @@
 //   before(function(done) {
 //     exec('shepherd new test-project', function(){
 //       process.chdir('./test-project');
-//       exec('shepherd deploy', done)
+//       exec('shepherd configure', function(){
+//
+//       })
 //     });
 //   });
 //
