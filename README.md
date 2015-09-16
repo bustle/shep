@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/bustlelabs/shepherd.svg?branch=master)](https://travis-ci.org/bustlelabs/shepherd)
 
-A framework for building APIs using AWS API Gateway and Lambda
+A framework for building resources using AWS resource Gateway and Lambda
 
 *Warning: Still in development. Not ready for production use*
 
@@ -14,24 +14,24 @@ Not on NPM...yet
 
 ```
 new <folder_name>    Generate a new project folder
-generate <api_name>  Generate a new API endpoint, Lambda function, and test
-test [api_name]      Run tests. Optionally name a specific test to run
-deploy [env]         Deploy all new/updated functions/APIs. Optionally specify environment
-server               Start a local development server for APIs
+generate <resource_name>  Generate a new resource endpoint, Lambda function, and test
+test [resource_name]      Run tests. Optionally name a specific test to run
+deploy [env]         Deploy all new/updated functions/resources. Optionally specify environment
+server               Start a local development server for api
 configure            Configure global AWS credentials for the project
 ```
 
 ### Project Structure
 
-#### `/apis`
+#### `/resources`
 
-Where apis live
+Where resources live
 
-##### `/apis/<api_name>/models`
+##### `/resources/<resource_name>/models`
 
 Where models live. Models are specified using JSON schema
 
-##### `/apis/<api_name>/config.json`
+##### `/resources/<resource_name>/config.json`
 
 Configuration for deployment to AWS
 
@@ -57,4 +57,4 @@ Where integration tests live
 
 #### `/config.json`
 
-Location of global AWS configuration. Can be overwritten by API and function specific configs.
+Location of global AWS configuration. Can be overwritten by resource and function specific configs.
