@@ -18,12 +18,12 @@ describe('shepherd configure', function() {
     remove('./test-project', done);
   });
 
-  it('should write the AWS id to the config file', function (done) {
+  it('should write to the environment file', function (done) {
     exec('shepherd configure --key key --secret secret --region east', function(){
-      var config = require(path.resolve('./environment'));
-      expect(config.key).to.eq('key');
-      expect(config.secret).to.eq('secret');
-      expect(config.region).to.eq('east');
+      var env = require(path.resolve('./environment'));
+      expect(env.key).to.eq('key');
+      expect(env.secret).to.eq('secret');
+      expect(env.region).to.eq('east');
       done();
     });
   });
