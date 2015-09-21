@@ -1,31 +1,38 @@
-var expect = require('chai').expect;
-var path = require('path');
-var exec = require('child_process').exec;
-var os = require('os');
-var remove = require('remove');
+var chai = require('chai');
+var mockery = require('mockery');
+var sinon = require('sinon');
+var P = require('bluebird');
+var sinonChai = require('sinon-chai');
+var expect = chai.expect;
+chai.use(sinonChai);
 
 describe('shepherd configure', function() {
-  before(function(done) {
-    process.chdir(os.tmpdir());
-    exec('shepherd new test-project', function(){
-      process.chdir('./test-project');
-      done();
+  var create;
+
+  before(function() {
+    mockery.enable({
+      warnOnReplace: false,
+      warnOnUnregistered: false,
+      useCleanCache: true
     });
+
+    create = {
+      file: sinon.stub().returns(P.resolve()),
+      dir: sinon.stub().returns(P.resolve())
+    };
+
+    mockery.registerMock('./create', create);
+
+    var configure = require('../lib/configure');
+    return configure({key: 'test', secret: 'secret', region: 'east'});
   });
 
-  after(function(done) {
-    process.chdir('../');
-    remove('./test-project', done);
+  after(function() {
+    mockery.disable();
   });
 
-  it('should write to the environment file', function (done) {
-    exec('shepherd configure --key key --secret secret --region east', function(){
-      var env = require(path.resolve('./environment'));
-      expect(env.key).to.eq('key');
-      expect(env.secret).to.eq('secret');
-      expect(env.region).to.eq('east');
-      done();
-    });
+  it('should write to the environment file', function () {
+    expect(create.file).to.have.been.calledWithMatch(/environment.js/, sinon.match.object);
   });
 
 });

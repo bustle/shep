@@ -1,80 +1,69 @@
-var remove = require('remove');
-var exec = require('child_process').exec;
-var fs = require('fs');
-var expect = require('chai').expect;
-var os = require('os');
+var chai = require('chai');
+var mockery = require('mockery');
+var sinon = require('sinon');
+var P = require('bluebird');
+var sinonChai = require('sinon-chai');
+var expect = chai.expect;
+chai.use(sinonChai);
 
 describe('shepherd generate', function() {
-  before(function(done) {
-    process.chdir(os.tmpdir());
-    exec('shepherd new test-project', function(){
-      process.chdir('./test-project');
-      done();
-    });
-  });
+  describe('resource <name>', function() {
+    var create;
 
-  after(function(done) {
-    process.chdir('../');
-    remove('./test-project', done);
-  });
-
-  describe('*', function(){
-    before(function(done){
-      process.chdir('./resources');
-      done();
-    });
-
-    after(function(done) {
-      process.chdir('../');
-      done();
-    });
-
-    it('should error from not being run in project root', function (done) {
-      exec('shepherd generate', function(err, stdout){
-        expect(err.code).to.eq(1);
-        expect(stdout).to.match(/project root/);
-        done();
+    before(function() {
+      mockery.enable({
+       warnOnReplace: false,
+       warnOnUnregistered: false,
+       useCleanCache: true
       });
-    });
-  });
 
-  describe('resource <name>', function(){
-    before(function(done){
-      exec('shepherd generate resource test-resource', done);
+      create = {
+       file: sinon.stub().returns(P.resolve()),
+       dir: sinon.stub().returns(P.resolve())
+      };
+
+      mockery.registerMock('./create', create);
+
+      var generateResource = require('../lib/generate/resource');
+      return generateResource('test-resource');
     });
 
-    it('should create the named folder', function (done) {
-      fs.stat('./resources/test-resource', function(err, stat){
-        if (err) { done(err); }
-        if (stat.isDirectory()){ done(); }
-      });
+    it('should create the named folder', function () {
+      expect(create.dir).to.have.been.calledWithMatch(/test-resource/);
     });
   });
 
   describe('function <name>', function(){
-    before(function(done){
-      exec('shepherd generate function test-func', done);
+    var create;
+
+    before(function() {
+      mockery.enable({
+       warnOnReplace: false,
+       warnOnUnregistered: false,
+       useCleanCache: true
+      });
+
+      create = {
+       file: sinon.stub().returns(P.resolve()),
+       dir: sinon.stub().returns(P.resolve())
+      };
+
+      mockery.registerMock('./create', create);
+
+      var generateFunction = require('../lib/generate/function');
+      return generateFunction('test-func');
     });
 
-    it('should create the named folder', function (done) {
-      fs.stat('./functions/test-func', function(err, stat){
-        if (err) { done(err); }
-        if (stat.isDirectory()){ done(); }
-      });
+    it('should create the named folder', function () {
+      expect(create.dir).to.have.been.calledWithMatch(/test-func/);
     });
 
-    it('should create index.js', function (done) {
-      fs.stat('./functions/test-func/package.json', function(err, stat){
-        if (err) { done(err); }
-        if (stat.isFile()){ done(); }
-      });
+    it('should create index.js', function () {
+      expect(create.file).to.have.been.calledWithMatch(/test-func\/index.js/);
     });
 
-    it('should create package.json', function (done) {
-      fs.stat('./functions/test-func/index.js', function(err, stat){
-        if (err) { done(err); }
-        if (stat.isFile()){ done(); }
-      });
+    it('should create package.json', function () {
+      expect(create.file).to.have.been.calledWithMatch(/test-func\/package.json/);
     });
   });
 });
