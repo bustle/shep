@@ -22,7 +22,7 @@ describe('shepherd generate', function() {
        dir: sinon.stub().returns(P.resolve())
       };
 
-      mockery.registerMock('./create', create);
+      mockery.registerMock('../create', create);
 
       var generateResource = require('../lib/generate/resource');
       return generateResource('test-resource');
@@ -48,7 +48,7 @@ describe('shepherd generate', function() {
        dir: sinon.stub().returns(P.resolve())
       };
 
-      mockery.registerMock('./create', create);
+      mockery.registerMock('../create', create);
 
       var generateFunction = require('../lib/generate/function');
       return generateFunction('test-func');
