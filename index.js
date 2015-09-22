@@ -5,19 +5,18 @@ module.exports = function(args){
   const firstArg = args._[0];
   if (firstArg === 'new'){
     const folderName = args._[1];
-    shepherd.new(folderName);
+    return shepherd.new(folderName);
   } else {
     checkCwd();
     switch(firstArg){
       case 'generate':
-        shepherd.generate(args);
-        break;
+        return shepherd.generate(args);
       case 'deploy':
-        shepherd.deploy(args);
-        break;
+        return shepherd.deploy(args);
       case 'configure':
-        shepherd.configure(args);
-        break;
+        return shepherd.configure(args);
+      case 'pull':
+        return shepherd.pull(args);
       case 'help':
         console.log('Some day this will print out help. Today is not that day.');
         break;

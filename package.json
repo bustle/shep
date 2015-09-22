@@ -17,16 +17,11 @@
     "shepherd": "cli.js"
   },
   "dependencies": {
-    "aws-sdk": "^2.1.49",
     "aws4": "^1.0.4",
     "bluebird": "^2.10.0",
     "chalk": "^1.1.1",
-    "glob": "^5.0.14",
     "lodash": "^3.10.1",
-    "minimist": "^1.2.0",
-    "prompt": "^0.2.14",
-    "remove": "^0.1.5",
-    "request": "^2.61.0"
+    "minimist": "^1.2.0"
   },
   "devDependencies": {
     "chai": "^3.2.0",

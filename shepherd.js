@@ -1,16 +1,22 @@
 const shepherd = {};
+const jsonFile = require('./lib/json-file');
 
 shepherd.new = function(folderName){
-  require('./lib/new-project')(folderName);
+  return require('./lib/new-project')(folderName);
 };
 shepherd.configure = function(args){
-  require('./lib/configure')(args);
+  return require('./lib/configure')(args);
 };
 shepherd.deploy = function(args){
-  require('./lib/deploy')(args);
+  return require('./lib/deploy')(args);
 };
 shepherd.generate = function(args){
-  require('./lib/generate')(args);
+  return require('./lib/generate')(args);
+};
+shepherd.pull = function(){
+  return jsonFile.read('config.json').then(function(config){
+    return require('./lib/pull')(config.id);
+  });
 };
 
 module.exports = shepherd;
