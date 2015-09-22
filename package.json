@@ -1,5 +1,5 @@
 {
-  "name": "shepherd",
+  "name": "shepherd-cli",
   "version": "0.0.1",
   "description": "An opinionted framework for building APIs with AWS API Gateway and Lambda",
   "main": "index.js",
