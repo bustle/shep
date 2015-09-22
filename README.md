@@ -8,7 +8,7 @@ A framework for building resources using AWS resource Gateway and Lambda
 
 ## Installation
 
-Not on NPM...yet
+`npm install -g shepherd-cli`
 
 ## Quick start
 
