@@ -8,8 +8,8 @@ var sinonChai = require('sinon-chai');
 var expect = chai.expect;
 chai.use(sinonChai);
 
-describe('shepherd generate', function() {
-  var func;
+describe('shepherd', function() {
+  var help;
 
   before(function() {
     mockery.enable({
@@ -18,9 +18,9 @@ describe('shepherd generate', function() {
      useCleanCache: true
     });
 
-    func = sinon.stub().returns(P.resolve());
+    help = sinon.stub().returns(P.resolve());
 
-    mockery.registerMock('./function', func);
+    mockery.registerMock('./help', help);
   });
 
   after(function() {
@@ -28,9 +28,9 @@ describe('shepherd generate', function() {
   });
 
   it('should load and call the sub command', function () {
-    var args = { _: ['generate','function'] };
-    return require('../lib/generate')(args).then(function(){
-      expect(func).to.have.been.called;
+    var args = { _: ['help'] };
+    return require('../lib/index')(args).then(function(){
+      expect(help).to.have.been.called;
     });
   });
 

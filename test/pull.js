@@ -17,20 +17,21 @@ describe('shepherd pull', function() {
     });
 
     restapis = {
-      resources:  sinon.stub().returns(P.resolve({id: 'resource'})),
-      models:  sinon.stub().returns(P.resolve([{name: 'model1'},{name: 'model2'}]))
+      resources:  sinon.stub().returns(P.resolve([{id: 'resource', path: '/'}])),
+      models:  sinon.stub().returns(P.resolve([{name: 'model'}]))
     };
 
     jsonFile = {
       write: sinon.stub().returns(P.resolve())
     };
 
-
-    mockery.registerMock('./api-gateway/restapis', restapis);
-    mockery.registerMock('./json-file', jsonFile);
+    mockery.registerMock('../api-gateway/restapis', restapis);
+    mockery.registerMock('../util/json-file', jsonFile);
 
     var pull = require('../lib/pull');
-    return pull('testID');
+    var args = { _: ['pull'] };
+    var config = { id: 'testID' };
+    return pull(args, config);
   });
 
   after(function() {
@@ -46,13 +47,12 @@ describe('shepherd pull', function() {
   });
 
 
-  it('should write the resource', function () {
+  it('should write the root resource', function () {
     expect(jsonFile.write).to.have.been.calledWithMatch(/root.json/);
   });
 
   it('should write the models', function () {
-    expect(jsonFile.write).to.have.been.calledWithMatch(/model1/);
-    expect(jsonFile.write).to.have.been.calledWithMatch(/model2/);
+    expect(jsonFile.write).to.have.been.calledWithMatch(/model/);
   });
 
 });

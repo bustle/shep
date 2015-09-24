@@ -7,7 +7,7 @@ var expect = chai.expect;
 chai.use(sinonChai);
 
 describe('shepherd configure', function() {
-  var jsonFile;
+  var jsonFile, credentials;
 
   before(function() {
     mockery.enable({
@@ -23,7 +23,8 @@ describe('shepherd configure', function() {
     mockery.registerMock('./json-file', jsonFile);
 
     var configure = require('../lib/configure');
-    return configure({key: 'test', secret: 'secret', region: 'east'});
+    credentials = {accessKeyId: 'key', secretAccessKey: 'secret', region: 'region'}
+    return configure(credentials);
   });
 
   after(function() {
@@ -31,7 +32,7 @@ describe('shepherd configure', function() {
   });
 
   it('should write to the environment file', function () {
-    expect(jsonFile.write).to.have.been.calledWithMatch(/environment.js/, sinon.match.object);
+    expect(jsonFile.write).to.have.been.calledWithMatch(/environment.json/, credentials);
   });
 
 });

@@ -24,11 +24,12 @@ describe('shepherd new', function() {
 
    exec = sinon.stub().returns(P.resolve());
 
-   mockery.registerMock('./create', create);
-   mockery.registerMock('./util/exec', exec);
+   mockery.registerMock('../util/create', create);
+   mockery.registerMock('../util/exec', exec);
 
-   var newProject = require('../lib/new-project');
-   return newProject('testDir');
+   var args = { _: ['new', 'testDir'] };
+   var newProject = require('../lib/new');
+   return newProject(args);
  });
 
  after(function(){

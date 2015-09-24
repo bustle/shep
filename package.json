@@ -2,9 +2,11 @@
   "name": "shepherd-cli",
   "version": "0.0.1",
   "description": "A framework for building APIs with AWS API Gateway and Lambda",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha",
+    "coverage": "istanbul cover _mocha -- -R spec",
+    "lint": "jshint --exclude ./node_modules ."
   },
   "author": "Steve Faulkner <steve@bustle.com>",
   "license": "ISC",
@@ -14,7 +16,7 @@
   },
   "preferGlobal": true,
   "bin": {
-    "shepherd": "cli.js"
+    "shepherd": "lib/cli.js"
   },
   "dependencies": {
     "aws4": "^1.0.4",
