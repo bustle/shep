@@ -23,7 +23,7 @@ describe('shepherd configure', function() {
     mockery.registerMock('./json-file', jsonFile);
 
     var configure = require('../lib/configure');
-    credentials = {accessKeyId: 'key', secretAccessKey: 'secret', region: 'region'}
+    credentials = {accessKeyId: 'key', secretAccessKey: 'secret', region: 'region'};
     return configure(credentials);
   });
 
