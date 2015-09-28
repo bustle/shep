@@ -20,7 +20,7 @@ describe('shepherd configure', function() {
       write: sinon.stub().returns(P.resolve())
     };
 
-    mockery.registerMock('./json-file', jsonFile);
+    mockery.registerMock('../util/json-file', jsonFile);
 
     var configure = require('../lib/configure');
     credentials = {accessKeyId: 'key', secretAccessKey: 'secret', region: 'region'};

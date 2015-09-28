@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "chai": "^3.2.0",
-    "mockery": "^1.4.0",
+    "mockery": "bustlelabs/mockery",
     "sinon": "^1.16.1",
     "sinon-chai": "^2.8.0"
   }

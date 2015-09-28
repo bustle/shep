@@ -15,8 +15,8 @@ A framework for building resources using AWS resource Gateway and Lambda
 ```
 shepherd new my-cool-api
 cd my-cool-api
-shepherd configure --key <AWS_KEY> --secret <AWS_SECRET> --region <AWS_REGION>
-shepherd deploy
+shepherd configure --accessKeyId key --secretAccessKey secret region us-east-1
+shepherd generate resource /posts/{id}
 ```
 
 ### Commands
