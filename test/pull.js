@@ -27,6 +27,7 @@ describe('shepherd pull', function() {
 
     mockery.registerMock('../api-gateway/restapis', restapis);
     mockery.registerMock('../util/json-file', jsonFile);
+    mockery.registerMock('../../util/json-file', jsonFile);
 
     var pull = require('../lib/pull');
     var args = { _: ['pull'] };

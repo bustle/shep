@@ -4,7 +4,7 @@
   "description": "A framework for building APIs with AWS API Gateway and Lambda",
   "main": "lib/index.js",
   "scripts": {
-    "test": "mocha",
+    "test": "mocha $(find test -name '*.js')",
     "coverage": "istanbul cover _mocha -- -R spec",
     "lint": "jshint --exclude ./node_modules ."
   },

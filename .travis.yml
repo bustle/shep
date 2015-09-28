@@ -5,8 +5,7 @@ install:
   - npm install -g mocha
   - npm install -g jshint
   - npm install
-  - npm link
 
 script:
-  - jshint --exclude ./node_modules .
-  - mocha
+  - npm run lint
+  - npm run test
