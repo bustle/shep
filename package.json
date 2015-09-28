@@ -19,11 +19,13 @@
     "shepherd": "lib/cli.js"
   },
   "dependencies": {
+    "archiver": "^0.15.1",
     "aws4": "^1.0.4",
     "bluebird": "^2.10.0",
     "chalk": "^1.1.1",
     "lodash": "^3.10.1",
-    "minimist": "^1.2.0"
+    "minimist": "^1.2.0",
+    "stream-to-buffer": "^0.1.0"
   },
   "devDependencies": {
     "chai": "^3.2.0",

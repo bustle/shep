@@ -43,5 +43,9 @@ describe('shepherd generate', function() {
     it('should create a .gitignore file', function () {
       expect(create.file).to.have.been.calledWithMatch(/functions\/test-func\/.gitignore/);
     });
+
+    it('should create a awsConfig.json file', function () {
+      expect(create.file).to.have.been.calledWithMatch(/functions\/test-func\/awsConfig.json/);
+    });
   });
 });
