@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "archiver": "^0.15.1",
+    "aws-sdk": "^2.2.4",
     "aws4": "^1.0.4",
     "bluebird": "^2.10.0",
     "chalk": "^1.1.1",
