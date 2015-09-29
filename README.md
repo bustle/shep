@@ -13,56 +13,35 @@ A framework for building resources using AWS resource Gateway and Lambda
 ## Quick start
 
 ```
-shepherd new my-cool-api
-cd my-cool-api
+shepherd new "Blog API"
+cd blog-api
 shepherd configure --accessKeyId key --secretAccessKey secret region us-east-1
+shepherd push
 shepherd generate resource /posts/{id}
 ```
 
 ### Commands
 
 ```
-new <folder_name> : Generate a new project folder
+new <api_name> : Generate a new project folder. Will convert name to kebab case for folder name.
 ```
 
 ```
-generate <resource|function|model|stage> : Generate a new resource, function, model, or stage
+generate <resource|function|model|stage> : Generate a new resource, function, model, or stage. Still a WIP
 ```
 
 ```
-deploy : Deploy all new/updated functions/resources. Optionally specify environment
+push : Pushes API changes up to AWS. Does execute a deployment them yet.
 ```
 
-### Project Structure
+```
+configure --accessKeyId key --secretAccessKey secret region us-east-1
+```
 
-#### `/resources`
+```
+pull : Pulls down models and resources from AWS
+```
 
-Where resources live
-
-##### `/models`
-
-Where models live. Models are specified using JSON schema
-
-##### `/stages`
-
-Where stages live.
-
-#### `/functions`
-
-Where AWS lambda functions live
-
-##### `/functions/<function_name>/index.json`
-
-Code to be run on Lambda
-
-##### `/functions/<function_name>/package.json`
-
-Required if your function depends on third party modules
-
-##### `/functions/<function_name>/config.json`
-
-Configuration for deployment to AWS
-
-##### `/config.js`
-
-Configuration for deployment to AWS
+```
+deploy functions : Deploys all functions to AWS Lambda
+```
