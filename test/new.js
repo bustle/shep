@@ -27,7 +27,7 @@ describe('shepherd new', function() {
    mockery.registerMock('../util/create', create);
    mockery.registerMock('../util/exec', exec);
 
-   var args = { _: ['new', 'testDir'] };
+   var args = { _: ['new', 'Test API'] };
    var newProject = require('../lib/new');
    return newProject(args);
  });
@@ -37,7 +37,7 @@ describe('shepherd new', function() {
  });
 
   it('should create the project folder', function () {
-    expect(create.dir).to.have.been.calledWithMatch(/testDir/);
+    expect(create.dir).to.have.been.calledWithMatch(/test-api/);
   });
 
   it('should create the resources folder', function () {
