@@ -67,6 +67,9 @@ describe('shepherd new', function() {
   it('should create the environment file', function () {
     expect(create.file).to.have.been.calledWithMatch(/.gitignore/);
   });
+  it('should create the README', function () {
+    expect(create.file).to.have.been.calledWithMatch(/README/);
+  });
 
   it('should create the initial git commit', function () {
     expect(exec).to.have.been.calledWithMatch(/git commit/);
