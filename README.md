@@ -4,7 +4,7 @@
 
 A framework for building resources using AWS resource Gateway and Lambda
 
-*Warning: Still in development. Not ready for production use*
+**Warning: Still in development. Not ready for production use**
 
 ## Installation
 
