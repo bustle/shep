@@ -1,10 +1,8 @@
-'use strict';
-
 var fs = require('fs');
 var log = require('./log');
 var path = require('path');
 
-module.exports = function () {
+module.exports = function(){
   try {
     fs.statSync(path.resolve(process.cwd() + '/config.json'));
   } catch (e) {
