@@ -77,7 +77,7 @@ export default function (){
   function createFiles(params){
     return Promise.all([
       fs.writeJSONAsync(params.folder + '/api.json', { name: params.name, region: params.region, id: params.id, functionNamespace: params.namespace, accountId: params.accountId }),
-      fs.writeJSONAsync(params.folder + '/package.json', { name: params.name }),
+      fs.writeJSONAsync(params.folder + '/package.json', { name: params.name, devDependencies: { 'babel-preset-es2015': "^6.3.13" }, babel: { "presets": ["es2015"] } }),
       fs.writeFileAsync(params.folder + '/env.js.example', "module.exports = { beta: { env: 'beta', secret: 'beta-key' }, production: { env: 'production', secret: 'prod-key'} }"),
       fs.writeFileAsync(params.folder + '/.gitignore', 'node_modules/*\nenv.js'),
       fs.writeFileAsync(params.folder + '/README.md', `#${params.name}`),
