@@ -3,18 +3,30 @@ import glob from '../util/glob'
 import upload from './upload'
 import path from 'path'
 import AWS from 'aws-sdk'
+import prompt from '../util/prompt'
 
-export default function(api, [envName, ], flags){
-
-  // hack. use propmt
-  if (!envName){ throw 'Specify an environment'}
+export default function(api){
 
   const funcs = glob.sync('functions/*/')
-  const envConfig = require(path.join(process.cwd(),'env.js'))[envName]
+  const env = require(path.join(process.cwd(),'env.js'))
   const apiGateway = new AWS.APIGateway()
   const lambda = new AWS.Lambda()
 
-  return Promise.resolve(funcs)
+  let envConfig, envName
+
+  return prompt([
+    {
+      name: 'envName',
+      type: 'list',
+      choices: Object.keys(env),
+      message: 'Which environment?'
+    }
+  ])
+  .then((params) => {
+    envConfig = env[params.envName]
+    envName = params.envName
+  })
+  .return(funcs)
   .tap(()=> { console.log("Packaging functions...") })
   .map((dir) => upload(dir, api.functionNamespace, envConfig) )
   .map(publish)
@@ -22,11 +34,8 @@ export default function(api, [envName, ], flags){
   .map(setPermissions)
   .tap(()=> { console.log("All functions deployed") })
   .then(()=>{
-    console.log(flags)
-    if (flags.api !== false) {
-      return createDeployment({restApiId: api.id, stageName: envName, variables: {functionAlias: envName}})
-      .tap(() => { console.log("API Gateway deployed") })
-    }
+    return createDeployment({restApiId: api.id, stageName: envName, variables: {functionAlias: envName}})
+    .tap(() => { console.log("Deployed complete!") })
   })
 
   function setAlias(func){

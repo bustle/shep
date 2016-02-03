@@ -66,7 +66,6 @@ export default function(funcDir, namespace, envConfig){
   }
 
   function upload(){
-
     return Promise.join(
       fs.readFileAsync(zippedFunc),
       get(),
@@ -86,7 +85,7 @@ export default function(funcDir, namespace, envConfig){
       params.FunctionName = remoteFuncName
       params.Runtime = 'nodejs'
 
-      return lambda.createFunc(params)
+      return lambda.createFunc(params).tap(()=> console.log(`Created ${remoteFuncName} on AWS`))
     }
 
     function get(){

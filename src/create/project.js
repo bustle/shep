@@ -3,6 +3,7 @@ import prompt from '../util/prompt'
 import _ from 'lodash'
 import fs from 'fs-extra-promise'
 import AWS from 'aws-sdk'
+import exec from '../util/exec'
 
 export default function (){
 
@@ -36,6 +37,11 @@ export default function (){
   .then(createApi)
   .then(createDirectories)
   .then(createFiles)
+  .then(execPull)
+
+  function execPull(params){
+    return exec('shepherd pull', { cwd: params.folder })
+  }
 
   function createApi(params){
     AWS.config.update({region: params.region })

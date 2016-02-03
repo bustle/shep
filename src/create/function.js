@@ -44,7 +44,7 @@ import env from './env'
 
 export function handler({ headers, pathParameters, queryParameters, body }, context) {
   // Replace below with your own code!
-  context.succeed({ headers, pathParameters, queryParameters, body })
+  context.succeed({ headers, pathParameters, queryParameters, body, env })
 }`
     return fs.writeFileAsync(`functions/${params.name}/index.js`, content)
   }
