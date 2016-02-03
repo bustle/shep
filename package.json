@@ -20,7 +20,6 @@
     "shepherd": "lib/cli.js"
   },
   "dependencies": {
-    "archiver": "^0.15.1",
     "aws-sdk": "southpolesteve/aws-sdk-js#patch-1",
     "bluebird": "^2.10.0",
     "chalk": "^1.1.1",
