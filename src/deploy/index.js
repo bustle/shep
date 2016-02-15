@@ -49,7 +49,7 @@ export default function({ namespace, env, envName }, config){
         FunctionName: functionName,
         Principal: 'apigateway.amazonaws.com',
         StatementId: 'api-gateway-access',
-        SourceArn: `arn:aws:execute-api:${config.region}:${accountId}:${config.apiId}/*`
+        SourceArn: `arn:aws:execute-api:${config.region}:${accountId}:${config.apiId}/*/*/*`
       }
 
       return addPermission(attrs)
