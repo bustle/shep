@@ -6,7 +6,8 @@
   "scripts": {
     "compile": "./node_modules/.bin/babel -d lib/ src/",
     "test": "./node_modules/mocha/bin/mocha --compilers js:babel-core/register",
-    "lint": "jshint --exclude ./node_modules ."
+    "lint": "jshint --exclude ./node_modules .",
+    "prepublish": "npm run compile"
   },
   "author": "Steve Faulkner <steve@bustle.com>",
   "license": "ISC",
