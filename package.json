@@ -22,6 +22,7 @@
   "dependencies": {
     "aws-sdk": "southpolesteve/aws-sdk-js#patch-1",
     "babel-core": "^6.4.5",
+    "babel-register": "^6.5.2",
     "bluebird": "^2.10.0",
     "fs-extra": "^0.26.4",
     "fs-extra-promise": "^0.3.1",
