@@ -73,7 +73,7 @@ export function putMethodResponse(params){
         resolve(res)
       }
     })
-  }))
+  })
 }
 
 export function putIntegration(params){
