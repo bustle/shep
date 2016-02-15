@@ -98,3 +98,16 @@ export function publishVersion(params){
     })
   })
 }
+
+
+export function addPermission(params){
+  return (new Promise((resolve, reject) => {
+    lambda.addPermission(params, (err, res)=>{
+      if (err) {
+        reject(err)
+      } else {
+        resolve(res)
+      }
+    })
+  }))
+}

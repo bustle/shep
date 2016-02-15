@@ -13,17 +13,17 @@ A framework for building resources using AWS resource Gateway and Lambda
 ## Quick start
 
 ```
-shepherd create project
+shepherd new
 ... follow prompts ...
 cd <projet-folder>
 git init
 cp env.js.example env.js
 npm install
-shepherd create function
+shepherd create-function
 ... follow prompts ...
-shepherd create resource
+shepherd create-resource
 ... follow prompts ...
-shepherd create method
+shepherd create-method
 ... follow prompts ...
 shepherd deploy
 ... follow prompts ...

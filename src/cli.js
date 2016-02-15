@@ -1,12 +1,15 @@
 #! /usr/bin/env node
-
 import meow from 'meow'
-import shepherd from './index'
+import pkgConf from 'pkg-conf'
+import AWS from 'aws-sdk'
+import fs from 'fs-extra-promise'
+
 const cli = meow(
 `
     Usage
-      $ shepherd create project
-      $ shepherd create function
+      $ shepherd new
+      $ shepherd new --no-api
+      $ shepherd create-function
       $ shepherd deploy
 
     Options
@@ -14,8 +17,21 @@ const cli = meow(
 `
 )
 
-// const checkCwd = require('./util/check-cwd');
-//
-// if (args._[0] !== 'new' && args._[0] !== 'help' ) { checkCwd(); }
+let config
+try {
+  config = pkgConf.sync('shepherd')
+  AWS.config.update({region: config.region })
+} catch (e){
+  config = {}
+}
 
-shepherd(cli)
+try {
+  config.resources = fs.readJSONSync('api.json')
+} catch (e){
+}
+
+run(cli)
+
+function run({ input, flags }){
+  require(`./${input.join('/')}/prompt`).default(flags, config)
+}
