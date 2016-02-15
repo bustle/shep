@@ -1,7 +1,10 @@
-import genericTemplate from '../templates/api-gateway'
+import genericTemplate from './templates/mapping'
 import { putIntegration, putIntegrationResponse, putMethod, putMethodResponse } from '../util/api-gateway'
+import { assign } from 'lodash'
 
 export default function(opts, config){
+
+  const remoteFuncName = config.functionNamespace ? `${config.functionNamespace}-${opts.funcName}` : opts.funcName
 
   const baseParams = {
     restApiId: config.apiId,
@@ -10,42 +13,33 @@ export default function(opts, config){
   }
 
   return putMethod(assign({ authorizationType: 'None'}, baseParams))
-  .then((params) => {
+  .then(() => {
     const attrs = {
-      restApiId: config.apiId,
-      resourceId: params.resourceId,
-      httpMethod: params.httpMethod,
       type: 'AWS',
       integrationHttpMethod: 'POST',
-      uri: `arn:aws:apigateway:${config.region}:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:${config.accountId}:function:${config.functionNamespace + opts.funcName}:\${stageVariables.functionAlias}/invocations`,
+      uri: `arn:aws:apigateway:${config.region}:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:${config.accountId}:function:${remoteFuncName}:\${stageVariables.functionAlias}/invocations`,
       requestTemplates: {}
     }
 
-    attrs.requestTemplates[params.contentType] = genericTemplate
+    attrs.requestTemplates[opts.contentType] = genericTemplate
 
-    return putIntegration(attrs)
+    return putIntegration(assign(attrs, baseParams))
   })
-  .then((params) => {
+  .then(() => {
     const attrs = {
-      restApiId: api.id,
-      resourceId: params.resourceId,
-      httpMethod: params.httpMethod,
-      statusCode: params.statusCode,
+      statusCode: opts.statusCode,
       responseTemplates: {}
     }
 
-    attrs.responseTemplates[params.contentType] = null
+    attrs.responseTemplates[opts.contentType] = null
 
-    return putIntegrationResponse(attrs)
+    return putIntegrationResponse(assign(attrs, baseParams))
   })
-  .then((params) => {
+  .then(() => {
     const attrs = {
-      restApiId: api.id,
-      resourceId: params.resourceId,
-      httpMethod: params.httpMethod,
-      statusCode: params.statusCode
+      statusCode: opts.statusCode
     }
 
-    return putMethodResponse(attrs)
+    return putMethodResponse(assign(attrs, baseParams))
   })
 }

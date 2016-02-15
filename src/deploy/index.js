@@ -5,10 +5,6 @@ import { getAlias, createAlias, updateAlias, addPermission, publishVersion } fro
 import { createDeployment } from '../util/api-gateway'
 
 export default function({ namespace, env, envName }, config){
-
-  // THIS IS NOT YET WORKING
-  const apiId = 1
-
   const funcs = glob.sync('functions/*').map((path) => path.split('/').pop())
 
   Promise.resolve(funcs)
@@ -53,7 +49,7 @@ export default function({ namespace, env, envName }, config){
         FunctionName: functionName,
         Principal: 'apigateway.amazonaws.com',
         StatementId: 'api-gateway-access',
-        SourceArn: `arn:aws:execute-api:${config.region}:${accountId}:${apiId}/*`
+        SourceArn: `arn:aws:execute-api:${config.region}:${accountId}:${config.apiId}/*`
       }
 
       return addPermission(attrs)
@@ -63,7 +59,7 @@ export default function({ namespace, env, envName }, config){
 
   function createApiDeployment(){
     if (config.api !== false){
-      return createDeployment({restApiId: apiId, stageName: envName, variables: {functionAlias: envName}})
+      return createDeployment({restApiId: config.apiId, stageName: envName, variables: {functionAlias: envName}})
     }
   }
 }

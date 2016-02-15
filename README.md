@@ -19,6 +19,7 @@ cd <projet-folder>
 git init
 cp env.js.example env.js
 npm install
+shepherd pull
 shepherd create-function
 ... follow prompts ...
 shepherd create-resource
