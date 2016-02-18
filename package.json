@@ -9,6 +9,18 @@
     "lint": "jshint --exclude ./node_modules .",
     "prepublish": "npm run compile"
   },
+  "keywords": [
+    "serverless",
+    "serverless framework",
+    "api gateway",
+    "lambda",
+    "aws",
+    "aws lambda",
+    "amazon",
+    "amazon web services",
+    "shepherd",
+    "lambda framework"
+  ],
   "author": "Steve Faulkner <steve@bustle.com>",
   "license": "ISC",
   "repository": {
