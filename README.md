@@ -13,20 +13,20 @@ Shepherd can also be used just to deploy lambda functions. See the "Using withou
 ## Quick start
 
 ```
-shepherd new
+> shepherd new
 ... follow prompts ...
-cd <projet-folder>
-git init
-cp env.js.example env.js
-npm install
-shepherd pull
-shepherd create-function
+> cd <projet-folder>
+> git init
+> cp env.js.example env.js
+> npm install
+> shepherd pull
+> shepherd create-function
 ... follow prompts ...
-shepherd create-resource
+> shepherd create-resource
 ... follow prompts ...
-shepherd create-method
+> shepherd create-method
 ... follow prompts ...
-shepherd deploy
+> shepherd deploy
 ... follow prompts ...
 ```
 
