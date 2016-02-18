@@ -1,10 +1,10 @@
 ## Shepherd
 
-**Warning: Still in development. Not ready for production use**
-
 [![Build Status](https://travis-ci.org/bustlelabs/shepherd.svg?branch=master)](https://travis-ci.org/bustlelabs/shepherd)
 
-A framework for building resources using AWS resource Gateway and Lambda
+A framework for building applications using AWS API Gateway and Lambda.
+
+Shepherd can also be used just to deploy lambda functions. See the "Using without API Gateway" section for more information.
 
 ## Installation
 
@@ -29,6 +29,10 @@ shepherd create-method
 shepherd deploy
 ... follow prompts ...
 ```
+
+## Using Without API Gateway
+
+You can use `shepherd` without API gateway if you just need to deploy and version lambda functions. When creating a project use the following command: `shepherd new --no-api`. Your project will now skip any API gateway commands and integrations.
 
 ## Opinions
 
@@ -75,33 +79,31 @@ Shepherd automatically configures proper permissions and links between API Gatew
 
 ### Node Dependencies
 
-Dependencies can be specified for all project functions in your project root `package.json`. These are copied to each function on deployment and overidden by dependencies in each functions `package.json` file.
+Dependencies can be specified for all project functions in your project root `package.json`. These are copied to each function on deployment and overidden by the dependencies in each functions `package.json` file. Essentially each function 'inherits' any production dependencies from the root project.
 
-## Commands
+## Other projects
 
-`shepherd create project`
+[Serverless](https://github.com/serverless/serverless)
 
-Creates a new project
+Shepherd and Serverless have similar goals. The creation of Shepherd was definitely inspired by Serverless. With Shepherd we strive for a more minimal feature set with more opinions baked in. We encourage you to check out both and select the right one for your project.
 
-`shepherd create resource`
+[Apex](https://github.com/apex/apex)
 
-Creates a new resource
+Apex is very similar to using Shepherd with the `--no-api` flag. It is just for managing and deploying lambda functions. It also supports multiple lambda runtimes where Shepherd only supports nodejs.
 
-`shepherd create function`
+## CLI Commands
 
-Creates a new function
+`shepherd new` - Creates a new project
 
-`shepherd create method`
+`shepherd create-resource` - Creates a new resource
 
-Creates a new method. You should already have created the resource and the function before running this command
+`shepherd create-function` - Creates a new function
 
-`shepherd deploy`
+`shepherd create-method` - Creates a new method. You should already have created the resource and the function before running this command
 
-Deploys all functions, sets up permissions+versions, and makes a new API gateway deployment
+`shepherd deploy` - Deploys all functions, sets up permissions+versions, and makes a new API gateway deployment
 
-`shepherd pull`
-
-Pulls a JSON representation of your API and writes it to `api.json`. This is used by shepherd to match up functions with resources and endpoints. If you make changes using the API gateway web UI make sure to pull down those changes by running `shepherd pull`
+`shepherd pull` - Pulls a JSON representation of your API and writes it to `api.json`. This is used by shepherd to match up functions with resources and endpoints. If you make changes using the API gateway web UI make sure to pull down those changes by running this command
 
 ## Development
 
