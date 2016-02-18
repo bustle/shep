@@ -1,8 +1,8 @@
 import { tmpdir } from 'os'
 import { promisify } from 'bluebird'
 import { access, F_OK } from 'fs-extra'
-import exec from '../lib/util/exec'
-import shepherd from '../lib'
+import exec from '../src/util/exec'
+import newProject from '../src/new'
 
 const tmpDir = tmpdir()
 const accessPromise = promisify(access)
@@ -10,7 +10,7 @@ const origCwd = process.cwd()
 
 export function setup(){
   process.chdir(tmpDir)
-  return shepherd({ input: ['new','test-api'], flags: {} })
+  return newProject({api: false, folder: 'test-api', functionNamespace: 'test-namespace'})
 }
 
 export function clean(){

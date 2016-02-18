@@ -1,7 +1,7 @@
 import { setup, clean, exists } from './helpers'
 
-describe('shepherd new', ()=>{
-  
+describe('shepherd new --no-api', ()=>{
+
   before(setup)
   after(clean)
 
