@@ -105,6 +105,8 @@ Apex is very similar to using Shepherd with the `--no-api` flag. It is just for 
 
 `shepherd pull` - Pulls a JSON representation of your API and writes it to `api.json`. This is used by shepherd to match up functions with resources and endpoints. If you make changes using the API gateway web UI make sure to pull down those changes by running this command
 
+`shepherd run` - Will run a function using the `development` environment and the event found at `functions/{funcName}/event.json`
+
 ## Development
 
 Rebuild on file change: `npm run compile -- -w`
