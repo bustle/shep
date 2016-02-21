@@ -24,6 +24,7 @@ export default function(opts){
     return Promise.all([
       fs.mkdirAsync(opts.folder + '/functions'),
       fs.writeFileAsync(opts.folder + '/package.json', require('./templates/package').default(opts)),
+      fs.writeFileAsync(opts.folder + '/env.js', require('./templates/env').default(opts)),
       fs.writeFileAsync(opts.folder + '/env.js.example', require('./templates/env').default(opts)),
       fs.writeFileAsync(opts.folder + '/.gitignore', require('./templates/gitignore').default(opts)),
       fs.writeFileAsync(opts.folder + '/README.md', require('./templates/readme').default(opts))

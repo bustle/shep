@@ -15,7 +15,6 @@ Shepherd can also be used just to deploy lambda functions. See the "Using withou
 ... follow prompts ...
 > cd <projet-folder>
 > git init
-> cp env.js.example env.js
 > npm install
 > shepherd pull
 > shepherd create-function
