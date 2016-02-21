@@ -13,7 +13,7 @@ Shepherd can also be used just to deploy lambda functions. See the "Using withou
 ```
 > shepherd new
 ... follow prompts ...
-> cd <projet-folder>
+> cd <project-folder>
 > git init
 > npm install
 > shepherd pull
