@@ -63,7 +63,7 @@ export default function({ name, namespace, env = {} }){
   }
 
   function zipDir(){
-    return exec(`zip -r ${tmpFuncZipFile} *`, { cwd: tmpFuncDir })
+    return exec(`zip -q -r ${tmpFuncZipFile} *`, { cwd: tmpFuncDir })
   }
 
   function upload(){
