@@ -3,12 +3,15 @@ import glob from '../util/glob'
 import deployFunction from '../deploy-function'
 import { getAlias, createAlias, updateAlias, addPermission, publishVersion } from '../util/lambda'
 import { createDeployment } from '../util/api-gateway'
+import observatory from 'observatory'
 
 export default function({ namespace, env, envName }, config){
   const funcs = glob.sync('functions/*').map((path) => path.split('/').pop())
+  const funcTask = observatory.add(`Deploying functions to AWS`)
 
   Promise.resolve(funcs)
   .map((name) => deployFunction({ name, namespace, env }) )
+  .tap(()=>{ funcTask.done('All functions deployed!')})
   .map(publish)
   .map(setAlias)
   .map(setPermissions)

@@ -7,6 +7,7 @@ import { tmpdir } from 'os'
 import exec  from '../util/exec'
 import * as babel from 'babel-core'
 import glob from '../util/glob'
+import observatory from 'observatory'
 
 const tmpDir = tmpdir()
 
@@ -18,6 +19,7 @@ export default function({ name, namespace, env = {} }){
   const tmpFuncDir = path.join(tmpDir, name)
   const tmpFuncZipFile = path.join(tmpDir, `${name}.zip`)
   const remoteFuncName = namespace ? `${namespace}-${name}` : name
+  const task = observatory.add(`${remoteFuncName}`)
 
   return Promise.all([fs.removeAsync(tmpFuncDir), fs.removeAsync(tmpFuncZipFile)])
   .then(copyFunc)
@@ -27,12 +29,15 @@ export default function({ name, namespace, env = {} }){
   .then(installDeps)
   .then(zipDir)
   .then(upload)
+  .tap(()=> { task.done('Deployed!') })
 
   function copyFunc(){
+    task.status('Copying Files')
     return fs.copyAsync(funcDir, tmpFuncDir, { dereference: true, filter: (path) => path.indexOf('node_modules') < 0 })
   }
 
   function transpile(){
+    task.status('Transpiling ES2015')
     return glob(`${tmpFuncDir}/**/*.js`).map((path)=>{
       return fs.readFileAsync(path, 'utf8')
       .then((file) => {
@@ -46,6 +51,7 @@ export default function({ name, namespace, env = {} }){
   }
 
   function writeConfig(){
+    task.status('Writing env variables')
     return Promise.all([
       fs.removeAsync(path.join(tmpFuncDir, 'env.js')),
       fs.writeJSONAsync(path.join(tmpFuncDir, 'env.json'), env)
@@ -59,14 +65,17 @@ export default function({ name, namespace, env = {} }){
   }
 
   function installDeps(){
+    task.status('Installing dependencies')
     return exec('npm install --silent --production', { cwd: tmpFuncDir })
   }
 
   function zipDir(){
+    task.status('Zipping function')
     return exec(`zip -q -r ${tmpFuncZipFile} *`, { cwd: tmpFuncDir })
   }
 
   function upload(){
+    task.status('Uploading zip to AWS')
     return Promise.join(
       fs.readFileAsync(tmpFuncZipFile),
       get(),
