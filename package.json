@@ -42,6 +42,7 @@
     "inquirer": "^0.11.3",
     "lodash": "^3.10.1",
     "meow": "^3.7.0",
+    "observatory": "^1.0.0",
     "pkg-conf": "^1.1.1"
   },
   "devDependencies": {
