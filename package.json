@@ -1,6 +1,6 @@
 {
   "name": "shepherd-cli",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "description": "A framework for building APIs with AWS API Gateway and Lambda",
   "main": "lib/index.js",
   "scripts": {
