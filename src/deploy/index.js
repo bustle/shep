@@ -10,7 +10,7 @@ export default function({ namespace, env, envName }, config){
   const funcTask = observatory.add(`Deploying functions to AWS`)
 
   Promise.resolve(funcs)
-  .map((name) => deployFunction({ name, namespace, env }) )
+  .map((name) => deployFunction({ name, namespace, env, babelConfig: config.babelConfig }) )
   .tap(()=>{ funcTask.done('All functions deployed!')})
   .map(publish)
   .map(setAlias)

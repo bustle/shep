@@ -11,7 +11,7 @@ import observatory from 'observatory'
 
 const tmpDir = tmpdir()
 
-export default function({ name, namespace, env = {} }){
+export default function({ name, namespace, env = {}, babelConfig }){
   const funcDir = `functions/${name}`
   const funcPackage = fs.readJsonSync(`${funcDir}/package.json`)
   const rootPackage = fs.readJsonSync('package.json')
@@ -41,7 +41,7 @@ export default function({ name, namespace, env = {} }){
     return glob(`${tmpFuncDir}/**/*.js`).map((path)=>{
       return fs.readFileAsync(path, 'utf8')
       .then((file) => {
-        return babel.transform(file, { presets: ["es2015"] })
+        return babel.transform(file, babelConfig)
       })
       .get('code')
       .then((code) => {
