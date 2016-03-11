@@ -20,6 +20,7 @@ const cli = meow(
 let config
 try {
   config = pkgConf.sync('shepherd')
+  config.babelConfig = pkgConf.sync('babel')
   AWS.config.update({region: config.region })
 } catch (e){
   config = {}
