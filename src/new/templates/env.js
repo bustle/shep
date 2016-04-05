@@ -1,4 +1,4 @@
-export default function(){
+module.exports = function(){
   return `module.exports = {
   development: {
     env: 'development',

@@ -1,10 +1,9 @@
 import AWS from 'aws-sdk'
 import Promise from 'bluebird'
 
-const apiGateway = new AWS.APIGateway()
-
 export function createRestApi(params){
   return new Promise((resolve, reject)=>{
+    const apiGateway = new AWS.APIGateway()
     apiGateway.createRestApi(params, (err, res)=>{
       if (err) {
         reject(err)
@@ -17,6 +16,7 @@ export function createRestApi(params){
 
 export function createDeployment(params){
   return new Promise((resolve, reject) => {
+    const apiGateway = new AWS.APIGateway()
     apiGateway.createDeployment(params, (err, res)=>{
       if (err) {
         reject(err)
@@ -29,6 +29,7 @@ export function createDeployment(params){
 
 export function getResources(id){
   return new Promise((resolve, reject)=>{
+    const apiGateway = new AWS.APIGateway()
     const params = { restApiId: id, embed: 'methods'}
     apiGateway.getResources(params, function(err, data) {
       if (err) {
@@ -42,6 +43,7 @@ export function getResources(id){
 
 export function createResource(params){
   return new Promise((resolve, reject) => {
+    const apiGateway = new AWS.APIGateway()
     apiGateway.createResource(params, (err, res)=>{
       if (err) {
         reject(err)
@@ -54,6 +56,7 @@ export function createResource(params){
 
 export function putMethod(params){
   return new Promise((resolve, reject) => {
+    const apiGateway = new AWS.APIGateway()
     apiGateway.putMethod(params, (err, res)=>{
       if (err) {
         reject(err)
@@ -66,6 +69,7 @@ export function putMethod(params){
 
 export function putMethodResponse(params){
   return new Promise((resolve, reject) => {
+    const apiGateway = new AWS.APIGateway()
     apiGateway.putMethodResponse(params, (err, res)=>{
       if (err) {
         reject(err)
@@ -78,6 +82,7 @@ export function putMethodResponse(params){
 
 export function putIntegration(params){
   return new Promise((resolve, reject) => {
+    const apiGateway = new AWS.APIGateway()
     apiGateway.putIntegration(params, (err, res)=>{
       if (err) {
         reject(err)
@@ -90,6 +95,7 @@ export function putIntegration(params){
 
 export function putIntegrationResponse(params){
   return new Promise((resolve, reject) => {
+    const apiGateway = new AWS.APIGateway()
     apiGateway.putIntegrationResponse(params, (err, res)=>{
       if (err) {
         reject(err)

@@ -1,15 +1,3 @@
-import AWS from 'aws-sdk'
-import Promise from 'bluebird'
-import fs from 'fs-extra-promise'
-import { assign } from 'lodash'
-
-export default function({apiId, region}){
-
-  if (region){ AWS.config.update({ region }) }
-
-  return require('../util/api-gateway').getResources(apiId)
-  .get('items')
-  .then((api)=>{
-    return fs.writeJsonAsync('api.json', api , { spaces: 2 })
-  })
-}
+module.exports.helpText = 'Pulls a JSON representation of your API from AWS and writes it to api.json '
+module.exports.exec = require('./exec')
+module.exports.opts = require('./opts')

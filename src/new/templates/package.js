@@ -1,4 +1,4 @@
-export default function({ apiName, folder, region, accountId, functionNamespace, api, apiId }){
+module.exports = function({ apiName, folder, region, accountId, functionNamespace, api, apiId }){
   let obj = {
     name: apiName || folder,
     version: "1.0.0",

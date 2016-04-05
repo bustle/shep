@@ -1,9 +1,9 @@
-import AWS from 'aws-sdk'
-import Promise from 'bluebird'
+const AWS = require('aws-sdk')
+const Promise =  require('bluebird')
 
 const lambda = new AWS.Lambda()
 
-export function getFunc(params){
+module.exports.getFunc = function (params){
   return new Promise((resolve, reject)=>{
     lambda.getFunction(params, (err, res)=>{
       if (err) {
@@ -15,7 +15,7 @@ export function getFunc(params){
   })
 }
 
-export function createFunc(params){
+module.exports.createFunc = function(params){
   return new Promise((resolve, reject)=>{
     lambda.createFunction(params, (err, res)=>{
       if (err) {
@@ -27,7 +27,7 @@ export function createFunc(params){
   })
 }
 
-export function updateFuncCode(params){
+module.exports.updateFuncCode = function(params){
   return new Promise((resolve, reject)=>{
     lambda.updateFunctionCode(params, (err, res)=>{
       if (err) {
@@ -39,7 +39,7 @@ export function updateFuncCode(params){
   })
 }
 
-export function updateFuncConfig(params){
+module.exports.updateFuncConfig = function(params){
   return new Promise((resolve, reject)=>{
     lambda.updateFunctionConfiguration(params, (err, res)=>{
       if (err) {
@@ -51,7 +51,7 @@ export function updateFuncConfig(params){
   })
 }
 
-export function createAlias(params){
+module.exports.createAlias = function(params){
   return new Promise((resolve, reject)=>{
     lambda.createAlias(params, (err, res)=>{
       if (err) {
@@ -63,7 +63,7 @@ export function createAlias(params){
   })
 }
 
-export function getAlias(params){
+module.exports.getAlias = function(params){
   return new Promise((resolve, reject)=>{
     lambda.getAlias(params, (err, res)=>{
       if (err) {
@@ -75,7 +75,7 @@ export function getAlias(params){
   })
 }
 
-export function updateAlias(params){
+module.exports.updateAlias = function(params){
   return new Promise((resolve, reject)=>{
     lambda.updateAlias(params, (err, res)=>{
       if (err) {
@@ -87,7 +87,7 @@ export function updateAlias(params){
   })
 }
 
-export function publishVersion(params){
+module.exports.publishVersion = function(params){
   return new Promise((resolve, reject)=>{
     lambda.publishVersion(params, (err, res)=>{
       if (err) {
@@ -100,7 +100,7 @@ export function publishVersion(params){
 }
 
 
-export function addPermission(params){
+module.exports.addPermission = function(params){
   return (new Promise((resolve, reject) => {
     lambda.addPermission(params, (err, res)=>{
       if (err) {

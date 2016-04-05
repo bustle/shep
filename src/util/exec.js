@@ -1,4 +1,4 @@
-import { promisify } from 'bluebird'
-import { exec } from 'child_process'
+const { promisify } = require('bluebird')
+const { exec } = require('child_process')
 
-export default promisify(exec)
+module.exports = promisify(exec)

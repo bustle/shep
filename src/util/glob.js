@@ -1,4 +1,4 @@
-import glob from 'glob'
-import { promisify } from 'bluebird'
+const glob = require('glob')
+const { promisify } = require('bluebird')
 
-export default promisify(glob)
+module.exports = promisify(glob)
