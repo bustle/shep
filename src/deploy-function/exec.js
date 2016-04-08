@@ -8,7 +8,7 @@ const exec  = require('../util/exec')
 const babel = require('babel-core')
 const glob = require('../util/glob')
 const observatory = require('observatory')
-const dotEnv = require('dotEnv')
+const dotEnv = require('dotenv')
 
 const tmpDir = tmpdir()
 
