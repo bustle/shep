@@ -21,8 +21,6 @@ module.exports = function(opts, api, pkg){
   const remoteFuncName = opts.functionNamespace ? `${opts.functionNamespace}-${opts.name}` : opts.name
   const task = observatory.add(`${remoteFuncName}`)
 
-  console.log(tmpFuncDir)
-
   return Promise.all([fs.removeAsync(tmpFuncDir), fs.removeAsync(tmpFuncZipFile)])
   .then(copyFunc)
   .then(writeEnvVars)
