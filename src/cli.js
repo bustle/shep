@@ -18,8 +18,8 @@ try {
 
 const shep = require(shepPath)
 
-if (shep[command]){
-  shep[command](flags).catch((err) => { console.log(err.message); process.exit(1)})
+if (shep[camelCase(command)]){
+  shep[camelCase(command)](flags).catch((err) => { throw(err) })
 } else {
   console.log(`${command} is not a valid command`)
   process.exit(1)

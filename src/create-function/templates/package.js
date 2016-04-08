@@ -1,4 +1,4 @@
-export default function({ name }){
+module.exports = function({ name }){
   let obj = {
     name: name,
     version: '1.0.0',

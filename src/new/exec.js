@@ -3,11 +3,13 @@ const fs = require('../util/fs')
 const AWS = require('aws-sdk')
 const apiGateway = require('../util/api-gateway')
 const templates = require('./templates')
+const { assign } = require('lodash')
 
 module.exports = function(opts = {}){
 
   return createProjectFolder()
   .then(createApi)
+  .then(createFolders)
   .then(createFiles)
 
   function createProjectFolder(){
@@ -22,12 +24,19 @@ module.exports = function(opts = {}){
     }
   }
 
-  function createFiles(){
+  function createFolders(){
     return Promise.all([
       fs.mkdirAsync(opts.folder + '/functions'),
+      fs.mkdirAsync(opts.folder + '/config')
+    ])
+  }
+
+  function createFiles(){
+    return Promise.all([
       fs.writeFileAsync(opts.folder + '/package.json', templates.package(opts)),
-      fs.writeFileAsync(opts.folder + '/env.js', templates.env(opts)),
-      fs.writeFileAsync(opts.folder + '/env.js.example', templates.env(opts)),
+      fs.writeFileAsync(opts.folder + '/config/development.env', templates.env(assign({env: 'development'},opts))),
+      fs.writeFileAsync(opts.folder + '/config/beta.env', templates.env(assign({env: 'beta'},opts))),
+      fs.writeFileAsync(opts.folder + '/config/production.env', templates.env(assign({env: 'production'},opts))),
       fs.writeFileAsync(opts.folder + '/.gitignore', templates.gitignore(opts)),
       fs.writeFileAsync(opts.folder + '/README.md', templates.readme(opts))
     ])

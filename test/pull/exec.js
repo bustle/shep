@@ -10,17 +10,17 @@ test.before(()=> {
   apiGateway = td.replace('../../src/util/api-gateway')
 
   td.when(fs.writeJsonAsync(td.matchers.anything())).thenReturn(Promise.resolve({}))
-  td.when(apiGateway.getResources(td.matchers.anything())).thenReturn(Promise.resolve({items: []}))
+  td.when(apiGateway.getResources(td.matchers.isA(Object)), { ignoreExtraArgs: true }).thenReturn(Promise.resolve({}))
 
   const pull  = require('../../src/pull/exec')
 
-  return pull()
+  return pull({ apiId: 'test' })
 })
 
-test('Gets API json from AWS', () => {
+test('Gets exported API from AWS', () => {
   td.verify(apiGateway.getResources(), { times: 1, ignoreExtraArgs: true })
 })
 
 test('Creates an api.json file', () => {
-  td.verify(fs.writeJsonAsync(), { times: 1, ignoreExtraArgs: true })
+  td.verify(fs.writeJsonAsync(td.matchers.contains('api.json')), { times: 1, ignoreExtraArgs: true })
 })

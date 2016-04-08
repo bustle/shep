@@ -23,7 +23,7 @@ let config, pkg, api
 
 try {
   pkg = readPkgUp.sync({cwd: process.cwd()})
-  config = pkg.shep || {}
+  config = pkg.pkg.shep || {}
   if (config) { AWS.config.update({ region: config.region }) }
 } catch (e){
   config = {}
@@ -50,7 +50,7 @@ function buildCmd({ helpText, opts, exec }){
           return prompt(prompts)
         }
       })
-      .then((answers) => [ assign({}, config, answers, flags), api, pkg ] )
+      .then((answers) => [ assign({}, config, answers, flags), api, pkg.pkg ] )
       .spread(exec)
     }
 

@@ -12,7 +12,7 @@ module.exports = function({ apiName, folder, region, accountId, functionNamespac
     devDependencies: {
       "babel-preset-es2015": "^6.5.0"
     },
-    shepherd: { region, functionNamespace, accountId, apiId }
+    shep: { region, functionNamespace, accountId, apiId }
   }
 
   if (api === false) { obj.shepherd.api = false }

@@ -1,15 +1,12 @@
-import prompt from '../util/prompt'
-import index from './index'
-import { assign } from 'lodash'
-import path from 'path'
-import glob from 'glob'
+const path = require('path')
+const glob = require('glob')
 
-export default function(flags, config){
+module.exports = function(){
 
   const funcs = glob.sync('functions/*').map((path) => path.split('/').pop())
   const envs = require(path.join(process.cwd(),'env.js'))
 
-  return prompt([
+  return [
     {
       name: 'name',
       type: 'list',
@@ -22,8 +19,5 @@ export default function(flags, config){
       choices: Object.keys(envs),
       message: 'Which environment variables?'
     }
-  ])
-
-  .then((answers) => assign({},flags,answers))
-  .then((opts) => index({name: opts.name, namespace: config.functionNamespace, env: envs[opts.env] }))
+  ]
 }

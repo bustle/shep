@@ -1,107 +1,46 @@
-import AWS from 'aws-sdk'
-import Promise from 'bluebird'
+const AWS = require('aws-sdk')
+const Promise = require('bluebird')
 
-export function createRestApi(params){
+const methods = [
+  'createRestApi',
+  'createDeployment',
+  'createResource',
+  'putMethod',
+  'putMethodResponse',
+  'putIntegration',
+  'putIntegrationResponse'
+]
+
+methods.map((name)=>{
+  module.exports[name] = function(params){
+    return new Promise((resolve, reject)=>{
+      const apiGateway = new AWS.APIGateway()
+      apiGateway[name](params, (err, res)=>{
+        if (err) {
+          reject(err)
+        } else {
+          resolve(res)
+        }
+      })
+    })
+  }
+})
+
+
+// We have to hack this method because of this bug: https://github.com/aws/aws-sdk-js/issues/764
+module.exports.getResources = function(params){
   return new Promise((resolve, reject)=>{
     const apiGateway = new AWS.APIGateway()
-    apiGateway.createRestApi(params, (err, res)=>{
-      if (err) {
-        reject(err)
-      } else {
-        resolve(res)
-      }
+    const req = apiGateway.getResources(params)
+    req.on('build', function(req) {
+        req.httpRequest.path += '/?embed=methods';
     })
-  })
-}
-
-export function createDeployment(params){
-  return new Promise((resolve, reject) => {
-    const apiGateway = new AWS.APIGateway()
-    apiGateway.createDeployment(params, (err, res)=>{
-      if (err) {
-        reject(err)
-      } else {
-        resolve(res)
-      }
-    })
-  })
-}
-
-export function getResources(id){
-  return new Promise((resolve, reject)=>{
-    const apiGateway = new AWS.APIGateway()
-    const params = { restApiId: id, embed: 'methods'}
-    apiGateway.getResources(params, function(err, data) {
-      if (err) {
-        reject(err)
-      } else {
-        resolve(data)
-      }
-    })
-  })
-}
-
-export function createResource(params){
-  return new Promise((resolve, reject) => {
-    const apiGateway = new AWS.APIGateway()
-    apiGateway.createResource(params, (err, res)=>{
-      if (err) {
-        reject(err)
-      } else {
-        resolve(res)
-      }
-    })
-  })
-}
-
-export function putMethod(params){
-  return new Promise((resolve, reject) => {
-    const apiGateway = new AWS.APIGateway()
-    apiGateway.putMethod(params, (err, res)=>{
-      if (err) {
-        reject(err)
-      } else {
-        resolve(res)
-      }
-    })
-  })
-}
-
-export function putMethodResponse(params){
-  return new Promise((resolve, reject) => {
-    const apiGateway = new AWS.APIGateway()
-    apiGateway.putMethodResponse(params, (err, res)=>{
-      if (err) {
-        reject(err)
-      } else {
-        resolve(res)
-      }
-    })
-  })
-}
-
-export function putIntegration(params){
-  return new Promise((resolve, reject) => {
-    const apiGateway = new AWS.APIGateway()
-    apiGateway.putIntegration(params, (err, res)=>{
-      if (err) {
-        reject(err)
-      } else {
-        resolve(res)
-      }
-    })
-  })
-}
-
-export function putIntegrationResponse(params){
-  return new Promise((resolve, reject) => {
-    const apiGateway = new AWS.APIGateway()
-    apiGateway.putIntegrationResponse(params, (err, res)=>{
-      if (err) {
-        reject(err)
-      } else {
-        resolve(res)
-      }
+    req.send(function(err, data) {
+        if (err) {
+            reject(err)
+        } else {
+            resolve(data)
+        }
     })
   })
 }
