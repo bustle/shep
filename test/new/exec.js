@@ -5,14 +5,16 @@ const Promise = require('bluebird')
 
 const apiName = 'test-api'
 
-let fs, apiGateway
+let fs, apiGateway, exec
 
 test.before(()=> {
   fs = td.replace('../../src/util/fs')
   apiGateway = td.replace('../../src/util/api-gateway')
+  exec = td.replace('../../src/util/exec')
 
   td.when(fs.mkdirAsync(td.matchers.anything())).thenReturn(Promise.resolve({}))
   td.when(fs.writeFileAsync(td.matchers.anything())).thenReturn(Promise.resolve({}))
+  td.when(exec(td.matchers.anything()), { ignoreExtraArgs: true}).thenReturn(Promise.resolve())
   td.when(apiGateway.createRestApi(td.matchers.contains(apiName))).thenReturn(Promise.resolve({id: 'test-api-id'}))
 
   const newProj  = require('../../src/new/exec')
@@ -57,4 +59,14 @@ test('Creates a production env file', () => {
 })
 test('Creates a gitignore', () => {
   td.verify(fs.writeFileAsync(td.matchers.contains('.gitignore'), td.matchers.isA(String)))
+})
+
+test('Calls exec only twice', () => {
+  td.verify(exec(), { times: 2, ignoreExtraArgs: true })
+})
+test('Creates an initial git commit', () => {
+  td.verify(exec(td.matchers.contains('git commit'), td.matchers.isA(Object)))
+})
+test('Runs npm install', () => {
+  td.verify(exec(td.matchers.contains('npm install'), td.matchers.isA(Object)))
 })

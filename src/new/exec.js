@@ -4,6 +4,7 @@ const AWS = require('aws-sdk')
 const apiGateway = require('../util/api-gateway')
 const templates = require('./templates')
 const { assign } = require('lodash')
+const exec = require('../util/exec')
 
 module.exports = function(opts = {}){
 
@@ -11,9 +12,19 @@ module.exports = function(opts = {}){
   .then(createApi)
   .then(createFolders)
   .then(createFiles)
+  .then(npmInstall)
+  .then(initialCommit)
 
   function createProjectFolder(){
     return fs.mkdirAsync(opts.folder)
+  }
+
+  function npmInstall(){
+    return exec('npm install', { cwd: opts.folder })
+  }
+
+  function initialCommit(){
+    return exec('git init && git add . && git commit -am "Initial Commit"', { cwd: opts.folder })
   }
 
   function createApi(){

@@ -3,12 +3,12 @@ const fs = require('../util/fs')
 const deploy = require('../deploy-function/exec')
 const templates = require('./templates')
 
-module.exports = function(opts){
+module.exports = function(opts, api, pkg){
 
   return createDir()
   .then(createFiles)
-  .return(opts)
-  .then(deploy)
+  .return([opts,api,pkg])
+  .spread(deploy)
 
   function createDir(){
     return fs.mkdirAsync(`functions/${opts.name}`)

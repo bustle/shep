@@ -1,10 +1,12 @@
-const path = require('path')
+const loadEnvs = require('../util/load-envs')
 const glob = require('glob')
 
 module.exports = function(){
 
-  const funcs = glob.sync('functions/*').map((path) => path.split('/').pop())
-  const envs = require(path.join(process.cwd(),'env.js'))
+  const funcs = glob.sync('functions/*')
+  .map((path) => path.split('/').pop())
+
+  const envs = loadEnvs()
 
   return [
     {
@@ -16,7 +18,7 @@ module.exports = function(){
     {
       name: 'env',
       type: 'list',
-      choices: Object.keys(envs),
+      choices: envs,
       message: 'Which environment variables?'
     }
   ]

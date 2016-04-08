@@ -41,5 +41,5 @@ test('Creates a lambda.json', () => {
 
 
 test('Deploys the function', () => {
-  td.verify(deploy(td.matchers.isA(Object)))
+  td.verify(deploy(td.matchers.isA(Object)), { ignoreExtraArgs: true })
 })
