@@ -1,11 +1,9 @@
 const loadEnvs = require('../util/load-envs')
-const glob = require('glob')
+const loadFuncs = require('../util/load-funcs')
 
 module.exports = function(){
 
-  const funcs = glob.sync('functions/*')
-  .map((path) => path.split('/').pop())
-
+  const funcs = loadFuncs()
   const envs = loadEnvs()
 
   return [
