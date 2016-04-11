@@ -2,7 +2,7 @@ module.exports = function({ apiName, folder, region, accountId, functionNamespac
   let obj = {
     name: apiName || folder,
     version: "1.0.0",
-    repository: "",
+    private: true,
     description: "",
     license: "",
     babel: {
