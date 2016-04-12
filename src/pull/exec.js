@@ -5,6 +5,6 @@ module.exports = function(opts = {}){
   return apiGateway.getResources({ restApiId: opts.apiId})
   .get('items')
   .then((api)=>{
-    return fs.writeJsonAsync('api.json', api , { spaces: 2 })
+    return fs.writeJsonAsync(opts.output || 'api.json', api , { spaces: 2 })
   })
 }

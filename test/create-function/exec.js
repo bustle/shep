@@ -38,9 +38,6 @@ test('Creates a package.json', () => {
 test('Creates a lambda.json', () => {
   td.verify(fs.writeFileAsync(td.matchers.contains('lambda.json'), td.matchers.isA(String)))
 })
-test('Creates an event.json', () => {
-  td.verify(fs.writeFileAsync(td.matchers.contains('event.json'), td.matchers.isA(String)))
-})
 
 
 test('Deploys the function', () => {

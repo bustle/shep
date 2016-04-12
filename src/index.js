@@ -3,7 +3,7 @@ const readPkgUp = require('read-pkg-up')
 const AWS = require('aws-sdk')
 
 const printHelp = require('./util/print-help')
-const fs = require('./util/print-help')
+const fs = require('./util/fs')
 const prompt = require('./util/prompt')
 const validateFlags = require('./util/validate-flags')
 const missingFlags = require('./util/missing-flags')
@@ -24,7 +24,7 @@ let config, pkg, api
 try {
   pkg = readPkgUp.sync({cwd: process.cwd()})
   config = pkg.pkg.shep || {}
-  if (config) { AWS.config.update({ region: config.region }) }
+  AWS.config.update({ region: config.region })
 } catch (e){
   config = {}
 }
@@ -36,12 +36,12 @@ validCommands.map((cmd) => { module.exports[camelCase(cmd)] = buildCmd(require(`
 function buildCmd({ helpText, opts, exec }){
 
   return function(flags = {}){
-    const optsWithFlags = opts(flags)
+    const optsWithContext = opts(flags, api, config)
 
     if (flags.help){
-      return printHelp(helpText, optsWithFlags)
+      return printHelp(helpText, optsWithContext)
     } else {
-      return validateFlags(flags, optsWithFlags)
+      return validateFlags(flags, optsWithContext)
       .then(generatePrompts)
       .then((prompts) => {
         if (flags.interactive === false && prompts.length !== 0){

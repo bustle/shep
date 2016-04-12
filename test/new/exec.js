@@ -5,17 +5,19 @@ const Promise = require('bluebird')
 
 const apiName = 'test-api'
 
-let fs, apiGateway, exec
+let fs, apiGateway, exec, pull
 
 test.before(()=> {
   fs = td.replace('../../src/util/fs')
   apiGateway = td.replace('../../src/util/api-gateway')
   exec = td.replace('../../src/util/exec')
+  pull = td.replace('../../src/pull/exec')
 
   td.when(fs.mkdirAsync(td.matchers.anything())).thenReturn(Promise.resolve({}))
   td.when(fs.writeFileAsync(td.matchers.anything())).thenReturn(Promise.resolve({}))
   td.when(exec(td.matchers.anything()), { ignoreExtraArgs: true}).thenReturn(Promise.resolve())
   td.when(apiGateway.createRestApi(td.matchers.contains(apiName))).thenReturn(Promise.resolve({id: 'test-api-id'}))
+  td.when(pull(td.matchers.contains({id: 'test-api-id'}))).thenReturn(Promise.resolve({}))
 
   const newProj  = require('../../src/new/exec')
 
@@ -69,4 +71,7 @@ test('Creates an initial git commit', () => {
 })
 test('Runs npm install', () => {
   td.verify(exec(td.matchers.contains('npm install'), td.matchers.isA(Object)))
+})
+test('Pulls the latest api', () => {
+  td.verify(pull(td.matchers.contains({apiId: "test-api-id", output: "test-api/api.json"})))
 })

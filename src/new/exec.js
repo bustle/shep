@@ -5,11 +5,13 @@ const apiGateway = require('../util/api-gateway')
 const templates = require('./templates')
 const { assign } = require('lodash')
 const exec = require('../util/exec')
+const pull = require('../pull/exec')
 
 module.exports = function(opts = {}){
 
   return createProjectFolder()
   .then(createApi)
+  .then(() => { pull({apiId: opts.apiId, output: `${opts.folder}/api.json`})})
   .then(createFolders)
   .then(createFiles)
   .then(npmInstall)
