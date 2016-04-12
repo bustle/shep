@@ -11,13 +11,18 @@ module.exports = function(){
       name: 'name',
       type: 'list',
       choices: funcs,
-      message: 'Which function?'
+      message: 'Function name'
     },
     {
       name: 'env',
       type: 'list',
       choices: envs,
-      message: 'Which environment variables?'
+      message: 'Environment'
+    },
+    {
+      name: 'output',
+      message: 'Output path. Setting this will not upload function to AWS',
+      when: () => false
     }
   ]
 }

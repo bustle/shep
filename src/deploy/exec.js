@@ -1,13 +1,13 @@
 const Promise = require('bluebird')
-const glob = require('../util/glob')
 const deployFunction = require('../deploy-function')
 const lambda = require('../util/lambda')
 const apiGateway = require('../util/api-gateway')
 const observatory = require('observatory')
 const { assign } = require('lodash')
+const loadFuncs = require('../util/load-funcs')
 
 export default function(opts, api, pkg){
-  const funcs = glob.sync('functions/*').map((path) => path.split('/').pop())
+  const funcs = loadFuncs()
   const funcTask = observatory.add(`Deploying functions to AWS`)
 
   Promise.resolve(funcs)

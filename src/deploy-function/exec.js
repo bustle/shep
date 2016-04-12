@@ -1,5 +1,5 @@
 const Promise = require('bluebird')
-const _ = require('lodash')
+const { clone, assign } = require('lodash')
 const lambda = require('../util/lambda')
 const fs = require('../util/fs')
 const path = require('path')
@@ -17,7 +17,7 @@ module.exports = function(opts, api, pkg){
   const funcPackage = fs.readJsonSync(`${funcDir}/package.json`)
   const lambdaConfig = fs.readJsonSync(`${funcDir}/lambda.json`)
   const tmpFuncDir = path.join(tmpDir, opts.name)
-  const tmpFuncZipFile = path.join(tmpDir, `${opts.name}.zip`)
+  const tmpFuncZipFile = opts.output || path.join(tmpDir, `${opts.name}.zip`)
   const remoteFuncName = opts.functionNamespace ? `${opts.functionNamespace}-${opts.name}` : opts.name
   const task = observatory.add(`${remoteFuncName}`)
 
@@ -29,7 +29,13 @@ module.exports = function(opts, api, pkg){
   .then(installDeps)
   .then(zipDir)
   .then(upload)
-  .tap(()=> { task.done('Deployed!') })
+  .tap(()=> {
+    if (opts.output){
+      task.done(`File written to ${tmpFuncZipFile}`)
+    } else {
+      task.done('Deployed!')
+    }
+  })
 
   function copyFunc(){
     task.status('Copying Files')
@@ -49,7 +55,6 @@ module.exports = function(opts, api, pkg){
     if (opts.env){
       task.status('Writing env variables')
       const handler = `${tmpFuncDir}/${lambdaConfig.Handler}`
-      console.log(lambdaConfig)
       const handlerFileName = handler.substring(0, handler.lastIndexOf('.')) + '.js'
       return Promise.join(
         fs.readFileAsync(handlerFileName, 'utf8'),
@@ -70,7 +75,7 @@ module.exports = function(opts, api, pkg){
     return fs.readFileAsync(`config/${opts.env}.env`)
     .then(dotEnv.parse)
     .then((env)=>{
-      return `__env = ${JSON.stringify(env, null, 2)}
+      return `var __env = ${JSON.stringify(env, null, 2)}
 Object.keys(__env).forEach(function (key) {
   process.env[key] = process.env[key] || __env[key]
 })
@@ -79,7 +84,7 @@ Object.keys(__env).forEach(function (key) {
   }
 
   function inheritDeps(){
-    funcPackage.dependencies = _.assign(funcPackage.dependencies, pkg.dependencies)
+    funcPackage.dependencies = assign(funcPackage.dependencies, pkg.dependencies)
     return fs.writeJSONAsync(path.join(tmpFuncDir, 'package.json'), funcPackage)
   }
 
@@ -90,25 +95,29 @@ Object.keys(__env).forEach(function (key) {
 
   function zipDir(){
     task.status('Zipping function')
-    return exec(`zip -q -r ${tmpFuncZipFile} *`, { cwd: tmpFuncDir })
+    return exec(`zip -q -r -j ${tmpFuncZipFile} ${tmpFuncDir}`)
   }
 
   function upload(){
-    task.status('Uploading zip to AWS')
-    return Promise.join(
-      fs.readFileAsync(tmpFuncZipFile),
-      get(),
-      (zipFile, remoteFunc)=> {
-        if (remoteFunc){
-          return Promise.all([updateCode(zipFile), updateConfig()]).get(0)
-        } else {
-          return create(zipFile)
+    if (opts.output){
+      return Promise.resolve()
+    } else {
+      task.status('Uploading zip to AWS')
+      return Promise.join(
+        fs.readFileAsync(tmpFuncZipFile),
+        get(),
+        (zipFile, remoteFunc)=> {
+          if (remoteFunc){
+            return Promise.all([updateCode(zipFile), updateConfig()]).get(0)
+          } else {
+            return create(zipFile)
+          }
         }
-      }
-    )
+      )
+    }
 
     function create(ZipFile) {
-      var params = _.clone(lambdaConfig)
+      var params = clone(lambdaConfig)
 
       params.Code = { ZipFile }
       params.FunctionName = remoteFuncName
@@ -135,7 +144,7 @@ Object.keys(__env).forEach(function (key) {
     }
 
     function updateConfig() {
-      var params = _.clone(lambdaConfig)
+      var params = clone(lambdaConfig)
       params.FunctionName = remoteFuncName
       return lambda.updateFunctionConfiguration(params)
     }
