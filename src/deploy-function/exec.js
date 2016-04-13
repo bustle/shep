@@ -18,7 +18,8 @@ module.exports = function(opts, api, pkg){
   const tmpFuncDir = path.join(tmpDir, opts.name)
   const tmpFuncZipFile = opts.output || path.join(tmpDir, `${opts.name}.zip`)
   const remoteFuncName = opts.functionNamespace ? `${opts.functionNamespace}-${opts.name}` : opts.name
-  const task = observatory.add(`${remoteFuncName}`)
+  let task
+  if (opts.slient !== true) { observatory.add(`${remoteFuncName}`)}
 
   return Promise.all([fs.removeAsync(tmpFuncDir), fs.removeAsync(tmpFuncZipFile)])
   .then(copyFunc)
@@ -30,19 +31,19 @@ module.exports = function(opts, api, pkg){
   .then(upload)
   .tap(()=> {
     if (opts.output){
-      task.done(`File written to ${tmpFuncZipFile}`)
+      if (task) { task.done(`File written to ${tmpFuncZipFile}`) }
     } else {
-      task.done('Deployed!')
+      if (task) { task.done('Deployed!') }
     }
   })
 
   function copyFunc(){
-    task.status('Copying Files')
+    if (task) { task.status('Copying Files') }
     return fs.copyAsync(funcDir, tmpFuncDir, { dereference: true, filter: (path) => path.indexOf('node_modules') < 0 })
   }
 
   function transpile(){
-    task.status('Transpiling ES2015')
+    if (task) { task.status('Transpiling ES2015') }
     return glob(`${tmpFuncDir}/**/*.js`).map((path)=>{
       return fs.readFileAsync(path, 'utf8')
       .then((file) => babel.transform(file, pkg.babel).code )
@@ -52,7 +53,7 @@ module.exports = function(opts, api, pkg){
 
   function writeEnvVars(){
     if (opts.env){
-      task.status('Writing env variables')
+      if (task) { task.status('Writing env variables') }
       const handler = `${tmpFuncDir}/${lambdaConfig.Handler}`
       const handlerFileName = handler.substring(0, handler.lastIndexOf('.')) + '.js'
       return Promise.join(
@@ -83,12 +84,12 @@ module.exports = function(opts, api, pkg){
   }
 
   function installDeps(){
-    task.status('Installing dependencies')
+    if (task) { task.status('Installing dependencies') }
     return exec('npm install --silent --production', { cwd: tmpFuncDir })
   }
 
   function zipDir(){
-    task.status('Zipping function')
+    if (task) { task.status('Zipping function') }
     return exec(`zip -q -r -j ${tmpFuncZipFile} ${tmpFuncDir}`)
   }
 
@@ -96,7 +97,7 @@ module.exports = function(opts, api, pkg){
     if (opts.output){
       return Promise.resolve()
     } else {
-      task.status('Uploading zip to AWS')
+      if (task) { task.status('Uploading zip to AWS') }
       return Promise.join(
         fs.readFileAsync(tmpFuncZipFile),
         get(),
@@ -117,7 +118,7 @@ module.exports = function(opts, api, pkg){
       params.FunctionName = remoteFuncName
       params.Runtime = 'nodejs4.3'
 
-      return lambda.createFunction(params).tap(()=> console.log(`Created ${remoteFuncName} on AWS`))
+      return lambda.createFunction(params)
     }
 
     function get(){
@@ -130,7 +131,6 @@ module.exports = function(opts, api, pkg){
         }
       })
     }
-
 
     function updateCode(ZipFile) {
       var params = { ZipFile, FunctionName: remoteFuncName }

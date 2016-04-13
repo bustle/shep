@@ -19,7 +19,7 @@ test.before(()=> {
 
   const deploy = require('../../src/deploy/exec')
 
-  return deploy({ region: 'us-east-1', api: false})
+  return deploy({ region: 'us-east-1', api: false })
 })
 
 test('Deploys functions', () => {
