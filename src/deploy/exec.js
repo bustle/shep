@@ -13,7 +13,7 @@ module.exports = function(opts, api, pkg){
   .map(publish)
   .map(setAlias)
   .map(setPermissions)
-  ``.then(createApiDeployment)
+  .then(createApiDeployment)
 
   function publish(func){
     return lambda.publishVersion({ FunctionName: func.FunctionName })
