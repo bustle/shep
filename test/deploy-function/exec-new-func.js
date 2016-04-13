@@ -3,7 +3,7 @@ import test from 'ava'
 const td = require('testdouble')
 const Promise = require('bluebird')
 
-let lambda, exec
+let lambda
 
 test.before(()=> {
   process.chdir('../fixtures/test-api')
