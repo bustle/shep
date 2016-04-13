@@ -1,5 +1,8 @@
 module.exports = function({env}){
-  return `env=${env}
-secret=${env}-key
-`
+  let obj = {}
+
+  obj.env = env
+  obj.secretkey = `${env}-secret-key`
+
+  return JSON.stringify(obj, null, 2)
 }

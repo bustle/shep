@@ -1,22 +1,19 @@
 const Promise = require('bluebird')
-const deployFunction = require('../deploy-function')
+const deployFunction = require('../deploy-function/exec')
 const lambda = require('../util/lambda')
 const apiGateway = require('../util/api-gateway')
-const observatory = require('observatory')
 const { assign } = require('lodash')
 const loadFuncs = require('../util/load-funcs')
 
-export default function(opts, api, pkg){
+module.exports = function(opts, api, pkg){
   const funcs = loadFuncs()
-  const funcTask = observatory.add(`Deploying functions to AWS`)
 
-  Promise.resolve(funcs)
+  return Promise.resolve(funcs)
   .map((name) => deployFunction(assign({ name }, opts), api, pkg) )
-  .tap(()=>{ funcTask.done('All functions deployed!')})
   .map(publish)
   .map(setAlias)
   .map(setPermissions)
-  .then(createApiDeployment)
+  ``.then(createApiDeployment)
 
   function publish(func){
     return lambda.publishVersion({ FunctionName: func.FunctionName })

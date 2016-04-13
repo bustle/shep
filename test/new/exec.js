@@ -50,14 +50,14 @@ test('Creates a README', () => {
 test('Creates a package.json', () => {
   td.verify(fs.writeFileAsync(td.matchers.contains('package.json'), td.matchers.isA(String)))
 })
-test('Creates a development env file', () => {
-  td.verify(fs.writeFileAsync(td.matchers.contains('development.env'), td.matchers.isA(String)))
+test('Creates a development json file', () => {
+  td.verify(fs.writeFileAsync(td.matchers.contains('config/development.json'), td.matchers.isA(String)))
 })
-test('Creates a beta env file', () => {
-  td.verify(fs.writeFileAsync(td.matchers.contains('beta.env'), td.matchers.isA(String)))
+test('Creates a beta json file', () => {
+  td.verify(fs.writeFileAsync(td.matchers.contains('config/beta.json'), td.matchers.isA(String)))
 })
-test('Creates a production env file', () => {
-  td.verify(fs.writeFileAsync(td.matchers.contains('production.env'), td.matchers.isA(String)))
+test('Creates a production json file', () => {
+  td.verify(fs.writeFileAsync(td.matchers.contains('config/production.json'), td.matchers.isA(String)))
 })
 test('Creates a gitignore', () => {
   td.verify(fs.writeFileAsync(td.matchers.contains('.gitignore'), td.matchers.isA(String)))

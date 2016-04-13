@@ -47,9 +47,9 @@ module.exports = function(opts = {}){
   function createFiles(){
     return Promise.all([
       fs.writeFileAsync(opts.folder + '/package.json', templates.package(opts)),
-      fs.writeFileAsync(opts.folder + '/config/development.env', templates.env(assign({env: 'development'},opts))),
-      fs.writeFileAsync(opts.folder + '/config/beta.env', templates.env(assign({env: 'beta'},opts))),
-      fs.writeFileAsync(opts.folder + '/config/production.env', templates.env(assign({env: 'production'},opts))),
+      fs.writeFileAsync(opts.folder + '/config/development.json', templates.env(assign({env: 'development'},opts))),
+      fs.writeFileAsync(opts.folder + '/config/beta.json', templates.env(assign({env: 'beta'},opts))),
+      fs.writeFileAsync(opts.folder + '/config/production.json', templates.env(assign({env: 'production'},opts))),
       fs.writeFileAsync(opts.folder + '/.gitignore', templates.gitignore(opts)),
       fs.writeFileAsync(opts.folder + '/README.md', templates.readme(opts))
     ])

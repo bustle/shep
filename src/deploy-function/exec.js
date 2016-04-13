@@ -8,7 +8,6 @@ const exec  = require('../util/exec')
 const babel = require('babel-core')
 const glob = require('../util/glob')
 const observatory = require('observatory')
-const dotEnv = require('dotenv')
 
 const tmpDir = tmpdir()
 
@@ -72,14 +71,9 @@ module.exports = function(opts, api, pkg){
   }
 
   function readEnvFile(){
-    return fs.readFileAsync(`config/${opts.env}.env`)
-    .then(dotEnv.parse)
+    return fs.readJSONAsync(`config/${opts.env}.json`)
     .then((env)=>{
-      return `var __env = ${JSON.stringify(env, null, 2)}
-Object.keys(__env).forEach(function (key) {
-  process.env[key] = process.env[key] || __env[key]
-})
-`
+      return `globals.env = ${JSON.stringify(env, null, 2)}`
     })
   }
 
