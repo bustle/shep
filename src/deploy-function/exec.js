@@ -8,6 +8,8 @@ const exec  = require('../util/exec')
 const babel = require('babel-core')
 const glob = require('../util/glob')
 const observatory = require('observatory')
+const archiver = require('archiver')
+const streamBuffers = require('stream-buffers')
 
 const tmpDir = tmpdir()
 
@@ -19,7 +21,7 @@ module.exports = function(opts, api, pkg){
   const tmpFuncZipFile = opts.output || path.join(tmpDir, `${opts.name}.zip`)
   const remoteFuncName = opts.functionNamespace ? `${opts.functionNamespace}-${opts.name}` : opts.name
   let task
-  if (opts.slient !== true) { observatory.add(`${remoteFuncName}`)}
+  if (opts.slient !== true) { task = observatory.add(`${remoteFuncName}`)}
 
   return Promise.all([fs.removeAsync(tmpFuncDir), fs.removeAsync(tmpFuncZipFile)])
   .then(copyFunc)
@@ -29,13 +31,6 @@ module.exports = function(opts, api, pkg){
   .then(installDeps)
   .then(zipDir)
   .then(upload)
-  .tap(()=> {
-    if (opts.output){
-      if (task) { task.done(`File written to ${tmpFuncZipFile}`) }
-    } else {
-      if (task) { task.done('Deployed!') }
-    }
-  })
 
   function copyFunc(){
     if (task) { task.status('Copying Files') }
@@ -89,17 +84,31 @@ module.exports = function(opts, api, pkg){
   }
 
   function zipDir(){
-    if (task) { task.status('Zipping function') }
-    return exec(`zip -q -r -j ${tmpFuncZipFile} ${tmpFuncDir}`)
+    return new Promise((resolve, reject)=>{
+      if (task) { task.status('Zipping function') }
+      const archive = archiver.create('zip')
+      let output
+      if (opts.output){
+        output = fs.createWriteStream(tmpFuncZipFile)
+      } else {
+        output = new streamBuffers.WritableStreamBuffer()
+      }
+
+      output.on('finish', function() { resolve(output) })
+      archive.on('error', function(err) { reject(err) })
+      archive.pipe(output)
+      archive.directory(tmpFuncDir, './').finalize()
+    })
   }
 
-  function upload(){
+  function upload(stream){
     if (opts.output){
+      task.done(`Zip written to ${tmpFuncZipFile}`)
       return Promise.resolve()
     } else {
       if (task) { task.status('Uploading zip to AWS') }
       return Promise.join(
-        fs.readFileAsync(tmpFuncZipFile),
+        stream.getContents(),
         get(),
         (zipFile, remoteFunc)=> {
           if (remoteFunc){
@@ -116,7 +125,6 @@ module.exports = function(opts, api, pkg){
 
       params.Code = { ZipFile }
       params.FunctionName = remoteFuncName
-      params.Runtime = 'nodejs4.3'
 
       return lambda.createFunction(params)
     }

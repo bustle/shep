@@ -3,7 +3,8 @@ module.exports = function({ role }){
     Handler: 'index.handler',
     MemorySize: 128,
     Role: role,
-    Timeout: 3
+    Timeout: 3,
+    Runtime: 'nodejs4.3'
   }
 
   return JSON.stringify(obj, null, 2)

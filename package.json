@@ -32,6 +32,7 @@
     "shep": "lib/cli.js"
   },
   "dependencies": {
+    "archiver": "^1.0.0",
     "aws-sdk": "^2.3.1",
     "babel-core": "^6.4.5",
     "babel-register": "^6.5.2",
@@ -44,7 +45,8 @@
     "minimist": "^1.2.0",
     "observatory": "^1.0.0",
     "read-pkg-up": "^1.0.1",
-    "resolve": "^1.1.7"
+    "resolve": "^1.1.7",
+    "stream-buffers": "^3.0.0"
   },
   "devDependencies": {
     "ava": "^0.14.0",

@@ -12,6 +12,7 @@ let shepPath
 
 try {
   shepPath = resolve.sync('shep', { basedir: process.cwd() })
+  if (flags.debug){ console.log('Local version found!')}
 } catch (e) {
   shepPath = './index'
   if (flags.debug){ console.log('Local version not found. Using global.')}
