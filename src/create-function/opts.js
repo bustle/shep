@@ -1,9 +1,5 @@
-import prompt from '../util/prompt'
-import index from './index'
-import { assign } from 'lodash'
-
-export default function(flags, config){
-  return prompt([
+module.exports = function(){
+  return [
     {
       name: 'name',
       message: 'Function name?',
@@ -13,7 +9,5 @@ export default function(flags, config){
       name: 'role',
       message: 'Lambda execution role. This must already exist. See your IAM console for details'
     }
-  ])
-  .then((answers) => assign({},flags,answers))
-  .then((opts) => index(opts, config))
+  ]
 }

@@ -1,38 +1,27 @@
 #! /usr/bin/env node
-import meow from 'meow'
-import pkgConf from 'pkg-conf'
-import AWS from 'aws-sdk'
-import fs from 'fs-extra-promise'
+const minimist = require('minimist')
+const resolve = require('resolve')
+const { mapKeys, camelCase } = require('lodash')
 
-const cli = meow(
-`
-    Usage
-      $ shepherd new
-      $ shepherd new --no-api
-      $ shepherd create-function
-      $ shepherd deploy
+const args = minimist(process.argv.slice(2))
+const command = args._
+delete args._
+const flags = mapKeys(args, (v, k) => camelCase(k) )
 
-    Options
-      -r, --rainbow  Include a rainbow
-`
-)
-
-let config
-try {
-  config = pkgConf.sync('shepherd')
-  config.babelConfig = pkgConf.sync('babel')
-  AWS.config.update({region: config.region })
-} catch (e){
-  config = {}
-}
+let shepPath
 
 try {
-  config.resources = fs.readJSONSync('api.json')
-} catch (e){
+  shepPath = resolve.sync('shep', { basedir: process.cwd() })
+} catch (e) {
+  shepPath = './index'
+  if (flags.debug){ console.log('Local version not found. Using global.')}
 }
 
-run(cli)
+const shep = require(shepPath)
 
-function run({ input, flags }){
-  require(`./${input.join('/')}/prompt`).default(flags, config)
+if (shep[camelCase(command)]){
+  shep[camelCase(command)](flags).catch((err) => { throw(err) })
+} else {
+  console.log(`${command} is not a valid command`)
+  process.exit(1)
 }

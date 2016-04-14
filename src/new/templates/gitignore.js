@@ -1,4 +1,5 @@
-export default function(){
+module.exports = function(){
   return `node_modules/*
-/env.js`
+functions/*/node_modules/*
+config/*`
 }

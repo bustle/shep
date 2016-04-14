@@ -2,8 +2,7 @@ language: node_js
 node_js:
   - stable
 install:
-  - npm install -g mocha
-  - npm install -g jshint
+  - npm install -g ava
   - npm install
 
 script:

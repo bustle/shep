@@ -1,16 +1,8 @@
-export default function(){
-  return `module.exports = {
-  development: {
-    env: 'development',
-    secret: 'dev-key'
-  },
-  beta: {
-    env: 'beta',
-    secret: 'beta-key'
-  },
-  production: {
-    env: 'production',
-    secret: 'prod-key'
-  }
-}`
+module.exports = function({env}){
+  let obj = {}
+
+  obj.env = env
+  obj.secretkey = `${env}-secret-key`
+
+  return JSON.stringify(obj, null, 2)
 }

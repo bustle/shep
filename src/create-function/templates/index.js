@@ -1,9 +1,8 @@
-export default function(){
-  return `import env from './env'
+let templates = {}
 
-export function handler({ headers, pathParameters, queryParameters, body }, context) {
-  // Replace below with your own code!
-  console.log({ headers, pathParameters, queryParameters, body, env })
-  context.succeed({ headers, pathParameters, queryParameters, body, env })
-}`
-}
+templates.index = require('./_index')
+templates.event = require('./event')
+templates.lambda = require('./lambda')
+templates.package = require('./package')
+
+module.exports = templates

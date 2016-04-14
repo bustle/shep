@@ -1,4 +1,4 @@
-export default function({ role }){
+module.exports = function({ role }){
   let obj = {
     Handler: 'index.handler',
     MemorySize: 128,

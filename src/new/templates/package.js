@@ -1,8 +1,8 @@
-export default function({ apiName, folder, region, accountId, functionNamespace, api, apiId }){
+module.exports = function({ apiName, folder, region, accountId, functionNamespace, api, apiId }){
   let obj = {
     name: apiName || folder,
     version: "1.0.0",
-    repository: "",
+    private: true,
     description: "",
     license: "",
     babel: {
@@ -12,7 +12,7 @@ export default function({ apiName, folder, region, accountId, functionNamespace,
     devDependencies: {
       "babel-preset-es2015": "^6.5.0"
     },
-    shepherd: { region, functionNamespace, accountId, apiId }
+    shep: { region, functionNamespace, accountId, apiId }
   }
 
   if (api === false) { obj.shepherd.api = false }

@@ -1,7 +1,7 @@
-import inquirer from 'inquirer'
-import { Promise } from 'bluebird'
+const inquirer = require('inquirer')
+const Promise = require('bluebird')
 
-export default function(questions) {
+module.exports = function(questions) {
   return new Promise(function(resolve) {
     inquirer.prompt(questions,resolve)
   })

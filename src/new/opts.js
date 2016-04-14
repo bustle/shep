@@ -1,24 +1,27 @@
-import prompt from '../util/prompt'
-import { kebabCase, assign } from 'lodash'
-import index from './index'
+const { kebabCase } = require('lodash')
 
-export default function(flags){
-  return prompt([
+module.exports = function(flags){
+  return [
+    {
+      name: 'api',
+      message: 'Set to false if using shep just for lambda functions and not integrating with API gateway',
+      when: () => false // Never promp the user for this
+    },
     {
       name: 'apiName',
-      message: 'API name?',
+      message: 'API name',
       default: 'api.example.com',
       when: () => flags.api !== false
     },
     {
       name: 'folder',
-      message: 'Project folder?',
-      default: (answers) => answers.apiName
+      message: 'Project folder',
+      default: (answers) => flags.apiName || answers.apiName
     },
     {
       name: 'functionNamespace',
-      message: 'Lambda function namespace?',
-      default: (answers) => answers.apiName ? kebabCase(answers.apiName) : null,
+      message: 'Lambda function namespace',
+      default: (opts) => opts.apiName ? kebabCase(opts.apiName) : null,
       validate: (input) => /^[a-zA-Z0-9-_]+$/.test(input) ? true : 'Namespace must contain only letters, numbers, hyphens, or underscores'
     },
     {
@@ -28,12 +31,9 @@ export default function(flags){
     },
     {
       name: 'accountId',
-      message: 'AWS Account ID? NOT your secret key or access key',
+      message: 'AWS Account ID. NOT your secret key or access key',
       validate: (input) => /^[0-9]+$/.test(input) ? true : 'AWS Account ID must contain only numbers',
       when: () => flags.api !== false
-
     }
-  ])
-  .then((answers) => assign({},flags,answers))
-  .then(index)
+  ]
 }

@@ -1,3 +1,3 @@
-export default function({apiName, folder}){
+module.exports = function({apiName, folder}){
   return `#${apiName || folder}`
 }

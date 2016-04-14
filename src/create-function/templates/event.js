@@ -1,7 +1,9 @@
-export default function(){
+module.exports = function(){
   let obj = {
-    key1: 'value',
-    key2: 'value'
+    headers: {},
+    pathParameters: {},
+    queryParameters: {},
+    body: {}
   }
 
   return JSON.stringify(obj, null, 2)
