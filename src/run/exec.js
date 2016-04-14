@@ -5,6 +5,8 @@ const Promise = require('bluebird')
 
 module.exports = function(opts){
   return new Promise((resolve, reject) => {
+    global.env = require(path.join( process.cwd(), 'config/development.json'))
+
     const func = require(path.join( process.cwd(), 'functions/' + opts.name))
     const event = require(path.join( process.cwd(), 'functions/' + opts.name, 'event.json'))
     const context = {}

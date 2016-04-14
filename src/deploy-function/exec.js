@@ -21,7 +21,7 @@ module.exports = function(opts, api, pkg){
   const tmpFuncZipFile = opts.output || path.join(tmpDir, `${opts.name}.zip`)
   const remoteFuncName = opts.functionNamespace ? `${opts.functionNamespace}-${opts.name}` : opts.name
   let task
-  if (opts.slient !== true) { task = observatory.add(`${remoteFuncName}`)}
+  if (opts.slient !== true) { task = observatory.add(`Deploying ${remoteFuncName}`)}
 
   return Promise.all([fs.removeAsync(tmpFuncDir), fs.removeAsync(tmpFuncZipFile)])
   .then(copyFunc)
@@ -69,7 +69,7 @@ module.exports = function(opts, api, pkg){
   function readEnvFile(){
     return fs.readJSONAsync(`config/${opts.env}.json`)
     .then((env)=>{
-      return `globals.env = ${JSON.stringify(env, null, 2)}`
+      return `global.env = ${JSON.stringify(env, null, 2)}`
     })
   }
 
@@ -106,7 +106,7 @@ module.exports = function(opts, api, pkg){
       task.done(`Zip written to ${tmpFuncZipFile}`)
       return Promise.resolve()
     } else {
-      if (task) { task.status('Uploading zip to AWS') }
+      if (task) { task.status('Uploading to AWS') }
       return Promise.join(
         stream.getContents(),
         get(),
@@ -117,7 +117,7 @@ module.exports = function(opts, api, pkg){
             return create(zipFile)
           }
         }
-      )
+      ).tap(() => { if (task) { task.done('Complete!') }})
     }
 
     function create(ZipFile) {
