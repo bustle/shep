@@ -14,6 +14,7 @@ try {
   shepPath = resolve.sync('shep', { basedir: process.cwd() })
 } catch (e) {
   shepPath = './index'
+  if (flags.debug){ console.log('Local version not found. Using global.')}
 }
 
 const shep = require(shepPath)
@@ -24,7 +25,3 @@ if (shep[camelCase(command)]){
   console.log(`${command} is not a valid command`)
   process.exit(1)
 }
-
-
-// READ IN API.json
-// READ IN project package.json

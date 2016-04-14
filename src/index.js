@@ -8,6 +8,8 @@ const prompt = require('./util/prompt')
 const validateFlags = require('./util/validate-flags')
 const missingFlags = require('./util/missing-flags')
 
+const shepVersion = require('../package.json').version
+
 const validCommands = [
   'new',
   'pull',
@@ -37,6 +39,8 @@ function buildCmd({ helpText, opts, exec }){
 
   return function(flags = {}){
     const optsWithContext = opts(flags, api, config)
+
+    if (flags.debug){ console.log( 'version:', shepVersion )}
 
     if (flags.help){
       return printHelp(helpText, optsWithContext)
