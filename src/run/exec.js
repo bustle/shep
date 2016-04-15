@@ -22,5 +22,8 @@ module.exports = function(opts){
     }
 
     func.handler(event, context, callback)
+    setTimeout(()=>{
+      func.handler(event, context, callback)
+    },2000)
   })
 }

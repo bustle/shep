@@ -15,7 +15,7 @@ test.before(()=> {
 
   const deployFunction = require('../../src/deploy-function/exec')
 
-  return deployFunction({ name: 'fail', functionNamespace: 'test-api', slient: true, env: 'beta' }, [], { babel: { presets: [] }})
+  return deployFunction({ name: 'fail', functionNamespace: 'test-api', silent: true, env: 'beta' }, [], { babel: { presets: [] }})
 })
 
 test('Creates a new function', ()=> {

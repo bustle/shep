@@ -13,6 +13,8 @@ const streamBuffers = require('stream-buffers')
 
 const tmpDir = tmpdir()
 
+const crufRegex = /^\/dist|\/(appveyor.yml|\.appveyor.yml|\.github|appdmg|AUTHORS|CONTRIBUTORS|bench|benchmark|benchmark\.js|bin|bower\.json|component\.json|coverage|doc|docs|docs\.mli|dragdrop\.min\.js|example|examples|example\.html|example\.js|externs|ipaddr\.min\.js|Makefile|min|minimist|perf|rusha|simplepeer\.min\.js|simplewebsocket\.min\.js|static\/screenshot\.png|test|tests|test\.js|tests\.js|\.[^\/]*|.*\.md|.*\.markdown)$/
+
 module.exports = function(opts, api, pkg){
   const funcDir = `functions/${opts.name}`
   const funcPackage = fs.readJsonSync(`${funcDir}/package.json`)
@@ -21,14 +23,15 @@ module.exports = function(opts, api, pkg){
   const tmpFuncZipFile = opts.output || path.join(tmpDir, `${opts.name}.zip`)
   const remoteFuncName = opts.functionNamespace ? `${opts.functionNamespace}-${opts.name}` : opts.name
   let task
-  if (opts.slient !== true) { task = observatory.add(`Deploying ${remoteFuncName}`)}
+  if (opts.silent !== true) { task = observatory.add(`Deploying ${remoteFuncName}`)}
 
   return Promise.all([fs.removeAsync(tmpFuncDir), fs.removeAsync(tmpFuncZipFile)])
   .then(copyFunc)
-  .then(writeEnvVars)
   .then(transpile)
+  .then(writeEnvVars)
   .then(inheritDeps)
   .then(installDeps)
+  .then(cleanCruft)
   .then(zipDir)
   .then(upload)
 
@@ -55,10 +58,12 @@ module.exports = function(opts, api, pkg){
         fs.readFileAsync(handlerFileName, 'utf8'),
         readEnvFile(),
         (handlerFile, envHeader) => {
-          return envHeader + '\n' + handlerFile
+          let arr = handlerFile.split('\n')
+          arr.splice(1,0,envHeader)
+          return arr.join('\n')
         }
-      ).
-      then((file)=>{
+      )
+      .then((file)=>{
         return fs.writeFileAsync(handlerFileName, file)
       })
     } else {
@@ -68,14 +73,19 @@ module.exports = function(opts, api, pkg){
 
   function readEnvFile(){
     return fs.readJSONAsync(`config/${opts.env}.json`)
-    .then((env)=>{
-      return `global.env = ${JSON.stringify(env, null, 2)}`
-    })
+    .then((env) => `global.env = ${JSON.stringify(env, null, 2)}` )
   }
 
   function inheritDeps(){
     funcPackage.dependencies = assign(funcPackage.dependencies, pkg.dependencies)
     return fs.writeJSONAsync(path.join(tmpFuncDir, 'package.json'), funcPackage)
+  }
+
+  function cleanCruft(){
+    if (task) { task.status('Removing cruft') }
+    return glob(`${tmpFuncDir}/node_modules/**`)
+    .filter((file) => file.match(crufRegex) )
+    .map(file => fs.unlinkAsync(file).catch(()=>{}) )
   }
 
   function installDeps(){
