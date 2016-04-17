@@ -1,4 +1,4 @@
-## Shep [![Build Status](https://travis-ci.org/bustlelabs/shep.svg?branch=master)](https://travis-ci.org/bustlelabs/shep) [![npm version](https://badge.fury.io/js/shep-cli.svg)](https://badge.fury.io/js/shep-cli)
+## Shep [![Build Status](https://travis-ci.org/bustlelabs/shep.svg?branch=master)](https://travis-ci.org/bustlelabs/shep) [![npm version](https://badge.fury.io/js/shep.svg)](https://badge.fury.io/js/shep)
 
 A framework for building applications using AWS API Gateway and Lambda.
 
