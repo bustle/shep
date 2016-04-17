@@ -78,6 +78,13 @@ Shep automatically configures proper permissions and links between API Gateway s
 
 Dependencies can be specified for all project functions in your project root `package.json`. These are copied to each function on deployment and overidden by the dependencies in each functions `package.json` file. Essentially each function 'inherits' any production dependencies from the root project.
 
+## AWS Wishlist
+
+### Swagger export without stage name
+### Install dependencies
+
+
+
 ## Other projects
 
 [Serverless](https://github.com/serverless/serverless)
@@ -107,3 +114,5 @@ Apex is very similar to using Shep with the `--no-api` flag. It is just for mana
 ## Development
 
 Rebuild on file change: `npm run compile -- -w`
+
+Test: `npm test`
