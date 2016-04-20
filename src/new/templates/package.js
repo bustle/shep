@@ -15,7 +15,7 @@ module.exports = function({ apiName, folder, region, accountId, functionNamespac
     shep: { region, functionNamespace, accountId, apiId }
   }
 
-  if (api === false) { obj.shepherd.api = false }
+  if (api === false) { obj.shep.api = false }
 
   return JSON.stringify(obj, null, 2)
 }

@@ -11,7 +11,7 @@ module.exports = function(opts = {}){
 
   return createProjectFolder()
   .then(createApi)
-  .then(() => { pull({apiId: opts.apiId, output: `${opts.folder}/api.json`})})
+  .then(pullApi)
   .then(createFolders)
   .then(createFiles)
   .then(npmInstall)
@@ -19,6 +19,12 @@ module.exports = function(opts = {}){
 
   function createProjectFolder(){
     return fs.mkdirAsync(opts.folder)
+  }
+
+  function pullApi(){
+    if (opts.api !== false){
+      return pull({apiId: opts.apiId, output: `${opts.folder}/api.json`})
+    }
   }
 
   function npmInstall(){
