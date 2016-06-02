@@ -9,7 +9,6 @@ const methods = [
   'createAlias',
   'getAlias',
   'updateAlias',
-  'publishVersion',
   'addPermission'
 ]
 
