@@ -72,16 +72,11 @@ module.exports = function(name, env) {
     },
     resolve: {
       modules: [ 'node_modules', 'lib' ],
-      alias: { 'config': path.resolve(\`config/\${env}.js\`) }
+      alias: { 'shep-config': path.resolve(\`config/\${env}.js\`) }
     },
     externals: { 'aws-sdk': 'aws-sdk' },
     module: {
-      loaders: [
-        {
-          test: /\.json$/,
-          loader: 'json-loader'
-        }
-      ]
+      loaders: []
     }
   }
 }

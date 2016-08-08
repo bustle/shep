@@ -1,8 +1,11 @@
 export function index(){
-  return `exports.handler = function(event, context, callback) {
+  return `const config = require('shep-config')
+
+exports.handler = function(event, context, callback) {
   // Replace below with your own code!
   console.log(event)
   console.log(context)
+  console.log(config)
 
   callback(null, 'success!')
 }`

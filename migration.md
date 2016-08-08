@@ -29,6 +29,7 @@ example:
 - Remove all symlinks and instead reference the file directly. Webpack will handle bundling these files for you.
 - Add `dist/*` to .gitignore
 - Change all files in `config/` from `.json` to `.js`
+- Use config by importing it at the top of your file like: `const config = require('shep-config')`. This is not a real module, but an alias that will be handled by webpack.
 - Run `shep pull`. This will pull down a swagger representation of the latest deployed API for your project. This will now be imported/exported to manage changes with API Gateway.
 - Add a webpack.config.js file to the project root.
 
@@ -50,7 +51,7 @@ module.exports = function(name, env) {
     },
     resolve: {
       modules: [ 'node_modules', 'lib' ],
-      alias: { 'config': path.resolve(`config/${env}.js`) }
+      alias: { 'shep-config': path.resolve(`config/${env}.js`) }
     },
     externals: { 'aws-sdk': 'aws-sdk' },
     module: {
