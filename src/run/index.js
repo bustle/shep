@@ -18,7 +18,7 @@ export default function(opts){
     const requireEnd = new Date()
     const func = entryFile[handler]
 
-    const timeoutMS = lambdaConfig.Timeout * 1000
+    // const timeoutMS = lambdaConfig.Timeout * 1000
 
     console.log('Load Time:', requireEnd - requireStart, 'ms')
 
