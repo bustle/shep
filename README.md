@@ -43,7 +43,8 @@ Shep uses a prompt based interface. The simplest API with one function and one e
 
 ## CLI Documentation
 
-### shep
+### `shep`
+```
 Usage: shep <command> [options]
 
 Commands:
@@ -60,7 +61,9 @@ Options:
   --help     Show help                                                                                         [boolean]
 
 
-#### shep new
+```
+#### `shep new`
+```
 shep new [path]
 
 Options:
@@ -73,7 +76,9 @@ Examples:
   shep new my-api  Generates a project at `my-api`
 
 
-#### shep pull
+```
+#### `shep pull`
+```
 shep pull
 
 Options:
@@ -91,7 +96,9 @@ Examples:
   shep pull --output other-path.json  Writes the JSON swagger file to `other-path.json`
 
 
-#### shep push
+```
+#### `shep push`
+```
 shep push
 
 Options:
@@ -106,7 +113,9 @@ Examples:
   shep push --api-id foo --region us-east-1
 
 
-#### shep run
+```
+#### `shep run`
+```
 shep run [name]
 
 Options:
@@ -122,7 +131,9 @@ Examples:
   shep run foo --environment production  Runs the `foo` function with production environment
 
 
-#### shep deploy
+```
+#### `shep deploy`
+```
 shep deploy [env] [functions..]
 
 Options:
@@ -137,7 +148,9 @@ Examples:
   shep deploy production *-user       Deploy only functions matching the pattern *-user
 
 
-#### shep build
+```
+#### `shep build`
+```
 shep build [env] [functions..]
 
 Options:
@@ -150,6 +163,11 @@ Examples:
   shep build beta              Build all functions with beta environment variables
   shep build beta create-user  Build only the create-user function
   shep build beta *-user       Build functions matching the pattern *-user
+
+
+```
+
+
 ## Other Tools
 
 [Serverless](https://github.com/serverless/serverless)
