@@ -6,18 +6,19 @@ export default function(opts) {
 
   const name = opts.name
 
-  return createDir()
+  return createDirs()
   .then(createFiles)
 
-  function createDir(){
+  function createDirs(){
     return fs.ensureDirAsync(`./functions/${name}`)
+    .then(() => fs.ensureDirAsync(`./functions/${name}/events`) )
   }
 
   function createFiles(){
     return all([
       fs.writeFileAsync(`./functions/${name}/index.js`, templates.index()),
       fs.writeFileAsync(`./functions/${name}/lambda.json`, templates.lambda(name)),
-      fs.writeFileAsync(`./functions/${name}/event.json`, templates.event())
+      fs.writeFileAsync(`./functions/${name}/events/default.json`, templates.event())
     ])
   }
 }

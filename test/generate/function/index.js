@@ -14,6 +14,7 @@ test.before(() => {
 })
 
 test(() => dirExists(`functions/${name}`))
-test(() => fileExists(`functions/${name}/event.json`))
+test(() => dirExists(`functions/${name}/events`))
+test(() => fileExists(`functions/${name}/events/default.json`))
 test(() => fileExists(`functions/${name}/index.js`))
 test(() => fileExists(`functions/${name}/lambda.json`))

@@ -27,6 +27,8 @@ example:
 
 
 - Remove all symlinks and instead reference the file directly. Webpack will handle bundling these files for you.
+- Create `function/events` for each function
+- Move `event.json` for each function into `function/events` and name it whatever descriptive thing you like
 - Add `dist/*` to .gitignore
 - Change all files in `config/` from `.json` to `.js`
 - Use config by importing it at the top of your file like: `const config = require('shep-config')`. This is not a real module, but an alias that will be handled by webpack.

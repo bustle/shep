@@ -1,39 +1,98 @@
 import requireProject from '../util/require-project'
 import loadLambdaConfig from '../util/load-lambda-config'
+import loadEvents from '../util/load-events'
 import build from '../build'
+import Promise from 'bluebird'
+import chalk from 'chalk'
+
+import cliui from 'cliui'
+const ui = cliui({ width: 80 })
+
+const results = { success: 'SUCCESS' , error: 'ERROR', exception: 'EXCEPTION' }
 
 export default function(opts){
   const name = opts.name
   const env = opts.environemnt || 'development'
+  const lambdaConfig = loadLambdaConfig(name)
+  const events = loadEvents(name, opts.events)
+  const [ fileName, handler ] = lambdaConfig.Handler.split('.')
 
   const context = {}
 
   return build({ functions: name, env: env })
-  .then(() => {
-    const lambdaConfig = loadLambdaConfig(name)
-    const [ fileName, handler ] = lambdaConfig.Handler.split('.')
-
-    const requireStart = new Date()
-    const entryFile = requireProject(`dist/${name}/${fileName}`)
-    const requireEnd = new Date()
-    const func = entryFile[handler]
-
-    // const timeoutMS = lambdaConfig.Timeout * 1000
-
-    console.log('Load Time:', requireEnd - requireStart, 'ms')
-
-    const callback = function(err, res){
-      if (err) {
-        console.log('Result: ERROR')
-        console.log(err)
-      } else {
-        console.log('Result: SUCCESS')
-        console.log(res)
-      }
-    }
-
-    const event = requireProject(`functions/${name}/event.json`)
-
-    return func(event, context, callback)
+  .then(() => requireProject(`dist/${name}/${fileName}`)[handler] )
+  .then((func) => {
+    return Promise.map(events, (eventFilename) => {
+      const event = requireProject(`functions/${name}/events/${eventFilename}`)
+      return new Promise((resolve) => {
+        let output = { name: eventFilename }
+        const start = new Date()
+        try {
+          func(event, context, (err, res)=>{
+            const end = new Date()
+            output.time = `${end-start}ms`
+            if (err){
+              output.result = results.error
+              output.response = err
+            } else {
+              output.result = results.success
+              output.response = res
+            }
+            resolve(output)
+          })
+        } catch (e){
+          const end = new Date()
+          output.time = `${end-start}ms`
+          output.result = results.exception
+          output.response = e
+          resolve(output)
+        }
+      })
+    })
   })
+  .tap((outputs) => { if(outputs.length === 1) console.log(outputs[0].response) })
+  .map((output) => {
+      ui.div(
+        {
+          text: output.name,
+          width: 20,
+        },
+        {
+          text: formatResult(output),
+          width: 15
+        },
+        {
+          text: output.time,
+          width: 10
+        },
+        {
+          text: formatResponse(output)
+        }
+      )
+  })
+  .then(() => console.log(ui.toString()))
+}
+
+function formatResponse({ result, response }){
+  if (response){
+    if (result === results.success ){
+      return JSON.stringify(response).trim(30)
+    } else if (result === results.error) {
+      return JSON.stringify(response).trim(30)
+    } else if (result === results.exception){
+      return `${response.name} ${response.message}`.trim(30)
+    }
+  } else {
+    return ""
+  }
+}
+
+function formatResult({ result }){
+  if (result === results.success ){
+    return chalk.green(results.success)
+  } else if (result === results.error) {
+    return chalk.yellow(results.error)
+  } else if (result === results.exception){
+    return chalk.red(results.exception)
+  }
 }
