@@ -9,11 +9,12 @@ export function builder (yargs){
   return yargs
   .pkgConf('shep', process.cwd())
   .describe('environment', 'Environment variables to use')
+  .describe('event', 'Event to use')
   .default('environment', 'development')
-  .alias('environment', 'e')
   .example('shep run', 'Launch an interactive CLI')
-  .example('shep run foo', 'Runs the `foo` function')
-  .example('shep run foo -e production', 'Runs the `foo` function with production environment')
+  .example('shep run foo', 'Runs the `foo` function for all events')
+  .example('shep run foo --event default', 'Runs the `foo` function for just the `default` event')
+  .example('shep run foo --environment production', 'Runs the `foo` function with production environment')
 }
 
 export function handler(opts) {

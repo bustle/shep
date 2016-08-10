@@ -1,11 +1,15 @@
 import globby from 'globby'
 
-export default function(name, inputs){
-  const patterns = inputs && inputs.length !== 0 ? inputs : ['*']
-  const events = globby.sync(patterns, { cwd: `functions/${name}/events` })
-  if (events.length === 0) {
-    throw new Error(`No events in 'functions/${name}/events' found matching patterns: ${JSON.stringify(inputs)}`)
-  } else {
-    return events
+export default function(func, eventName){
+
+  const eventDir = `functions/${func}/events`
+  let events = globby.sync('*', { cwd: eventDir })
+  if (eventName){
+    events = events.filter((event) => event === `${eventName}.json`)
+    if (events.length === 0) {
+      throw new Error(`No event in '${eventDir}' called ${eventName}`)
+    }
   }
+
+  return events
 }

@@ -14,7 +14,7 @@ export default function(opts){
   const name = opts.name
   const env = opts.environemnt || 'development'
   const lambdaConfig = loadLambdaConfig(name)
-  const events = loadEvents(name, opts.events)
+  const events = loadEvents(name, opts.event)
   const [ fileName, handler ] = lambdaConfig.Handler.split('.')
 
   const context = {}
@@ -26,11 +26,10 @@ export default function(opts){
       const event = requireProject(`functions/${name}/events/${eventFilename}`)
       return new Promise((resolve) => {
         let output = { name: eventFilename }
-        const start = new Date()
+        output.start = new Date()
         try {
           func(event, context, (err, res)=>{
-            const end = new Date()
-            output.time = `${end-start}ms`
+            output.end = new Date()
             if (err){
               output.result = results.error
               output.response = err
@@ -41,8 +40,7 @@ export default function(opts){
             resolve(output)
           })
         } catch (e){
-          const end = new Date()
-          output.time = `${end-start}ms`
+          output.end = new Date()
           output.result = results.exception
           output.response = e
           resolve(output)
@@ -50,7 +48,11 @@ export default function(opts){
       })
     })
   })
-  .tap((outputs) => { if(outputs.length === 1) console.log(outputs[0].response) })
+  .tap((outputs) => {
+    if(outputs.length === 1){
+      console.log(outputs[0].response)
+    }
+  })
   .map((output) => {
       ui.div(
         {
@@ -62,7 +64,7 @@ export default function(opts){
           width: 15
         },
         {
-          text: output.time,
+          text: formatDate(output),
           width: 10
         },
         {
@@ -85,6 +87,10 @@ function formatResponse({ result, response }){
   } else {
     return ""
   }
+}
+
+function formatDate({ start, end }){
+  return `${end-start}ms`
 }
 
 function formatResult({ result }){

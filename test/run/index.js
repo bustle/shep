@@ -18,3 +18,7 @@ test.before(() => {
 test('Calls the function', (t)=>{
   t.truthy(run({ name: 'foo' }))
 })
+
+test('Throws an exception for an event that does not exist', (t)=>{
+  t.throws(() => run({ name: 'foo', event: 'doesnotexist' }))
+})
