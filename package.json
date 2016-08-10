@@ -41,6 +41,7 @@
     "glob": "^7.0.0",
     "globby": "^5.0.0",
     "inquirer": "^1.0.3",
+    "json-loader": "^0.5.4",
     "lodash": "^4.7.0",
     "loud-rejection": "^1.6.0",
     "observatory": "^1.0.0",
