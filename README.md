@@ -43,24 +43,113 @@ Shep uses a prompt based interface. The simplest API with one function and one e
 
 ## CLI Documentation
 
-`shep new` - Creates a new project. Will create a new API on AWS
+### shep
+Usage: shep <command> [options]
 
-`shep create-resource` - Creates a new resource
+Commands:
+  build [env] [functions..]   Builds functions and writes them to disk
+  deploy [env] [functions..]  Deploy both functions and APIs to AWS. Will create a new API if the ID is not specified
+  generate                    Run `shep generate --help` for additional information
+  new [path]                  Create a new shep project
+  pull                        Pulls a swagger JSON representation of an existing API and writes it to a local file
+  push                        Create a new shep project
+  run [name]                  Run a function in your local environemnt
 
-`shep create-function` - Creates a new function. Will create a new function on AWS
+Options:
+  --version  Show version number                                                                               [boolean]
+  --help     Show help                                                                                         [boolean]
 
-`shep create-method` - Creates a new method. You should already have created the resource and the function before running this command.
 
-`shep deploy` - Deploys all functions, sets up permissions+versions, and creates a new API gateway deployment
+#### shep new
+shep new [path]
 
-`shep pull` - Pulls a JSON representation of your API and writes it to `api.json`. This is used by shep to match up functions with resources and endpoints. If you make changes using the API gateway web UI make sure to pull down those changes by running this command
+Options:
+  --version  Show version number                                                                               [boolean]
+  --help     Show help                                                                                         [boolean]
+  --path     Location to create the new shep project
 
-`shep run` - Will run a function using the `development` environment and the event found at `functions/{funcName}/event.json`
+Examples:
+  shep new         Launch an interactive CLI
+  shep new my-api  Generates a project at `my-api`
 
-## Using Without API Gateway
 
-You can use `shep` without API gateway if you just need to deploy and version lambda functions. When creating a project use the following command: `shep new --no-api`. Your project will now skip any API gateway commands and integrations.
+#### shep pull
+shep pull
 
+Options:
+  --version     Show version number                                                                            [boolean]
+  --help        Show help                                                                                      [boolean]
+  --region, -r  AWS region                                                                                    [required]
+  --stage, -s   AWS API Gateway stage. Read from the shep config in project.json if not provided              [required]
+  --api-id, -a  AWS API Gateway ID. Read from the shep config in project.json if not provided                 [required]
+  --output, -o  Path of the file to output                                                         [default: "api.json"]
+
+Examples:
+  shep pull                           Download a JSON swagger file for `apiId` in package.json and prompts for stage via
+                                      interactive CLI
+  shep pull --api-id foo --stage bar  Downloads a JSON swagger file for stage `bar` of API id `foo`
+  shep pull --output other-path.json  Writes the JSON swagger file to `other-path.json`
+
+
+#### shep push
+shep push
+
+Options:
+  --version  Show version number                                                                               [boolean]
+  --help     Show help                                                                                         [boolean]
+  --api-id   API Gateway resource id. Read from package.json if not provided                                  [required]
+  --region   AWS region. Read from package.json if not provided                                               [required]
+
+Examples:
+  shep push                                  Pushes the api.json swagger configuration to API Gateway. Does not deploy
+                                             the API.
+  shep push --api-id foo --region us-east-1
+
+
+#### shep run
+shep run [name]
+
+Options:
+  --version      Show version number                                                                           [boolean]
+  --help         Show help                                                                                     [boolean]
+  --environment  Environment variables to use                                                   [default: "development"]
+  --event        Event to use
+
+Examples:
+  shep run                               Launch an interactive CLI
+  shep run foo                           Runs the `foo` function for all events
+  shep run foo --event default           Runs the `foo` function for just the `default` event
+  shep run foo --environment production  Runs the `foo` function with production environment
+
+
+#### shep deploy
+shep deploy [env] [functions..]
+
+Options:
+  --version          Show version number                                                                       [boolean]
+  --help             Show help                                                                                 [boolean]
+  --api-id           The API Gateway API id. Read from package.json if not provided.                          [required]
+  --concurrency, -c  Number of functions to build and upload at one time                             [default: Infinity]
+
+Examples:
+  shep deploy production              Deploy all functions with production env variables
+  shep deploy production create-user  Deploy only the create-user function
+  shep deploy production *-user       Deploy only functions matching the pattern *-user
+
+
+#### shep build
+shep build [env] [functions..]
+
+Options:
+  --version          Show version number                                                                       [boolean]
+  --help             Show help                                                                                 [boolean]
+  --concurrency, -c  The number of functions to build at one time                                    [default: Infinity]
+
+Examples:
+  shep build                   Launch an interactive CLI
+  shep build beta              Build all functions with beta environment variables
+  shep build beta create-user  Build only the create-user function
+  shep build beta *-user       Build functions matching the pattern *-user
 ## Other Tools
 
 [Serverless](https://github.com/serverless/serverless)
