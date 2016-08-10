@@ -59,8 +59,6 @@ Commands:
 Options:
   --version  Show version number                                                                               [boolean]
   --help     Show help                                                                                         [boolean]
-
-
 ```
 #### `shep new`
 ```
@@ -74,8 +72,6 @@ Options:
 Examples:
   shep new         Launch an interactive CLI
   shep new my-api  Generates a project at `my-api`
-
-
 ```
 #### `shep pull`
 ```
@@ -94,8 +90,6 @@ Examples:
                                       interactive CLI
   shep pull --api-id foo --stage bar  Downloads a JSON swagger file for stage `bar` of API id `foo`
   shep pull --output other-path.json  Writes the JSON swagger file to `other-path.json`
-
-
 ```
 #### `shep push`
 ```
@@ -111,8 +105,6 @@ Examples:
   shep push                                  Pushes the api.json swagger configuration to API Gateway. Does not deploy
                                              the API.
   shep push --api-id foo --region us-east-1
-
-
 ```
 #### `shep run`
 ```
@@ -129,8 +121,6 @@ Examples:
   shep run foo                           Runs the `foo` function for all events
   shep run foo --event default           Runs the `foo` function for just the `default` event
   shep run foo --environment production  Runs the `foo` function with production environment
-
-
 ```
 #### `shep deploy`
 ```
@@ -146,8 +136,6 @@ Examples:
   shep deploy production              Deploy all functions with production env variables
   shep deploy production create-user  Deploy only the create-user function
   shep deploy production *-user       Deploy only functions matching the pattern *-user
-
-
 ```
 #### `shep build`
 ```
@@ -163,10 +151,7 @@ Examples:
   shep build beta              Build all functions with beta environment variables
   shep build beta create-user  Build only the create-user function
   shep build beta *-user       Build functions matching the pattern *-user
-
-
 ```
-
 
 ## Other Tools
 
