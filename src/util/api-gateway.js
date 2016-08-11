@@ -1,46 +1,18 @@
-const AWS = require('aws-sdk')
-const Promise = require('bluebird')
+import AWS from 'aws-sdk'
+import Promise from 'bluebird'
 
-const methods = [
-  'createRestApi',
-  'createDeployment',
-  'createResource',
-  'putMethod',
-  'putMethodResponse',
-  'putIntegration',
-  'putIntegrationResponse'
-]
+const createDeployment = promisify('createDeployment')
+const getExport = promisify('getExport')
+const importRestApi = promisify('importRestApi')
+const putRestApi = promisify('putRestApi')
 
-methods.map((name)=>{
-  module.exports[name] = function(params){
-    return new Promise((resolve, reject)=>{
+function promisify(method){
+  return function(params){
+    return Promise.fromCallback((callback)=>{
       const apiGateway = new AWS.APIGateway()
-      apiGateway[name](params, (err, res)=>{
-        if (err) {
-          reject(err)
-        } else {
-          resolve(res)
-        }
-      })
+      apiGateway[method](params, callback)
     })
   }
-})
-
-
-// We have to hack this method because of this bug: https://github.com/aws/aws-sdk-js/issues/764
-module.exports.getResources = function(params){
-  return new Promise((resolve, reject)=>{
-    const apiGateway = new AWS.APIGateway()
-    const req = apiGateway.getResources(params)
-    req.on('build', function(req) {
-        req.httpRequest.path += '/?embed=methods';
-    })
-    req.send(function(err, data) {
-        if (err) {
-            reject(err)
-        } else {
-            resolve(data)
-        }
-    })
-  })
 }
+
+export { createDeployment, getExport, importRestApi, putRestApi }

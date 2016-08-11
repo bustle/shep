@@ -1,11 +1,23 @@
 import test from 'ava'
+import loadFuncs from '../../src/util/load-funcs'
+import { create } from '../helpers/fixture'
+import generateFunction from '../../src/generate/function'
 
-const loadFuncs = require('../../src/util/load-funcs')
+test.before(() => {
+  return create('load-funcs')
+  .then(() => generateFunction({ name: 'foo' }) )
+  .then(() => generateFunction({ name: 'bar' }) )
 
-test.before(()=> {
-  process.chdir('../fixtures/test-api')
 })
 
-test('Loads the possible functions', (t) => {
-  t.deepEqual(loadFuncs(), ['fail', 'pass'])
+test('Loads all functions', (t) => {
+  t.deepEqual(loadFuncs().sort(), ['bar', 'foo'])
+})
+
+test('Loads matching functions', (t) => {
+  t.deepEqual(loadFuncs('*ar').sort(), ['bar'])
+})
+
+test('No functions exist', (t) => {
+  t.throws(() => loadFuncs('no_match'), /No functions found/)
 })

@@ -1,11 +1,9 @@
 import test from 'ava'
+import loadEnvs from '../../src/util/load-envs'
+import { create } from '../helpers/fixture'
 
-const loadEnvs = require('../../src/util/load-envs')
-
-test.before(()=> {
-  process.chdir('../fixtures/test-api')
-})
+test.before(() => create('load-envs'))
 
 test('Loads the possible envs', (t) => {
-  t.deepEqual(loadEnvs(), ['beta', 'production'])
+  t.deepEqual(loadEnvs().sort(), ['beta', 'development','production'])
 })

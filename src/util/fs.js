@@ -1,1 +1,3 @@
-module.exports = require('fs-extra-promise')
+import fs from 'fs-extra-promise'
+
+export default fs;
