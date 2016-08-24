@@ -4,6 +4,7 @@ import loadEvents from '../util/load-events'
 import build from '../build'
 import Promise from 'bluebird'
 import chalk from 'chalk'
+import AWS from 'aws-sdk'
 
 import cliui from 'cliui'
 const ui = cliui({ width: 80 })
@@ -12,7 +13,7 @@ const results = { success: 'SUCCESS' , error: 'ERROR', exception: 'EXCEPTION' }
 
 export default function(opts){
   AWS.config.update({region: opts.region})
-  
+
   const name = opts.name
   const env = opts.environemnt || 'development'
   const lambdaConfig = loadLambdaConfig(name)
