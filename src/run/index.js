@@ -11,6 +11,8 @@ const ui = cliui({ width: 80 })
 const results = { success: 'SUCCESS' , error: 'ERROR', exception: 'EXCEPTION' }
 
 export default function(opts){
+  AWS.config.update({region: opts.region})
+  
   const name = opts.name
   const env = opts.environemnt || 'development'
   const lambdaConfig = loadLambdaConfig(name)
