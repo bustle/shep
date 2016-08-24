@@ -9,7 +9,6 @@ export function builder (yargs){
   return yargs
   .pkgConf('shep', process.cwd())
   .describe('api-id', 'The API Gateway API id. Read from package.json if not provided.')
-  .require('api-id')
   .describe('concurrency', 'Number of functions to build and upload at one time')
   .default('concurrency', Infinity)
   .alias('concurrency', 'c')
