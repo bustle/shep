@@ -11,7 +11,7 @@ import fs from 'fs-extra-promise'
 
 const pushApiTask = 'Upload api.json'
 const aliasesTask = 'Promote function aliases'
-const permissionsTask = 'Setup API Gateway <-> Lamda Permissions'
+const permissionsTask = 'Setup API Gateway <-> Lambda Permissions'
 const deployTask = 'Deploy API'
 
 export default function(opts){
