@@ -1,4 +1,4 @@
-import Listr from 'Listr'
+import Listr from 'listr'
 
 export default function listr(tasks, quiet, concurrent){
   const renderer = quiet ? 'silent' : 'default'
