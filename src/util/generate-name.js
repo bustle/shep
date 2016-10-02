@@ -1,5 +1,5 @@
 import { pkg } from './load'
-import kebabCase from 'lodash.kebabCase'
+import kebabCase from 'lodash.kebabcase'
 
 export default function(str){
   return {
