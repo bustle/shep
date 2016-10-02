@@ -1,7 +1,7 @@
 import inquirer from 'inquirer'
 import run from '../run'
 import loadFuncs from '../util/load-funcs'
-import { merge } from 'lodash'
+import merge from 'lodash.merge'
 
 export const command = 'run [name]'
 export const desc = 'Run a function in your local environemnt'

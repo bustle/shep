@@ -1,6 +1,6 @@
 import inquirer from 'inquirer'
 import generateFunction from '../../generate/function'
-import { merge } from 'lodash'
+import merge from 'lodash.merge'
 
 const questions = [
   {
@@ -14,6 +14,7 @@ export const command = 'function [name]'
 export const desc = 'Generate a new function'
 export function builder (yargs){
   return yargs
+  .pkgConf('shep', process.cwd())
   .describe('name', 'Function name')
   .example('shep generate function', 'Launch an interactive CLI')
   .example('shep generate function foo', 'Genereate a new functon called "foo"')

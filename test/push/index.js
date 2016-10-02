@@ -1,33 +1,25 @@
 import test from 'ava'
-import { create } from '../helpers/fixture'
-import td from 'testdouble'
-import Promise from 'bluebird'
-import fs from 'fs-extra-promise'
+import td from '../helpers/testdouble'
+import { fs } from '../helpers/fs'
 
-td.config({ promiseConstructor: Promise })
-
-let apiGateway
-
-const id = 'newApi'
-const response = { id }
+const apiId = 'foo'
 const region = 'test'
+const api = {
+  swagger: '2.0',
+  paths: {}
+}
+
+const apiGateway = td.replace('../../src/util/aws/api-gateway')
+const pkgConfig = td.replace('../../src/util/pkg-config')
+
+td.when(fs.readJSONSync('api.json')).thenReturn(api)
+td.when(apiGateway.pushApi(td.matchers.isA(Object), undefined)).thenResolve(apiId)
 
 test.before(() => {
-  apiGateway = td.replace('../../src/util/api-gateway')
-  td.when(apiGateway.pushApi(td.matchers.contains({swagger: "2.0"}), undefined )).thenResolve(response)
-
-  return create('push')
-  .then(() => {
-    const push  = require('../../src/push')
-    return push({ region })
-  })
+  const shep  = require('../../src')
+  return shep.push({ region, quiet: true })
 })
 
-test('Calls API Gateway', ()=>{
-  td.verify(apiGateway.pushApi(td.matchers.contains({swagger: "2.0"}), undefined), { times: 1 })
-})
-
-
-test('Updates package.json', t =>{
-  t.deepEqual(fs.readJSONSync('package.json').shep, { apiId: id, region })
+test('Updates package.json', () =>{
+  td.verify(pkgConfig.update({apiId, region}))
 })

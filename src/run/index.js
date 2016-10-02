@@ -1,7 +1,6 @@
 import requireProject from '../util/require-project'
-import loadLambdaConfig from '../util/load-lambda-config'
-import loadEvents from '../util/load-events'
-import build from '../build'
+import * as load from '../util/load'
+import build from '../util/build-functions'
 import Promise from 'bluebird'
 import chalk from 'chalk'
 import AWS from 'aws-sdk'
@@ -12,10 +11,11 @@ const ui = cliui({ width: 80 })
 const results = { success: 'SUCCESS' , error: 'ERROR', exception: 'EXCEPTION' }
 
 const awsNodeVersion = '4.3.2'
-const processVersion = process.versions.node
 
 export default function(opts){
   AWS.config.update({region: opts.region})
+
+  const processVersion = process.versions.node
 
   if (processVersion !== awsNodeVersion ){
     console.log(`Warning: Lambda currently runs node v${awsNodeVersion} but you are using v${processVersion}`)
@@ -24,14 +24,14 @@ export default function(opts){
   const performBuild = opts.build
   const name = opts.name
   const env = opts.environemnt || 'development'
-  const lambdaConfig = loadLambdaConfig(name)
-  const events = loadEvents(name, opts.event)
+  const lambdaConfig = load.lambdaConfig(name)
+  const events = load.events(name, opts.event)
   const [ fileName, handler ] = lambdaConfig.Handler.split('.')
 
   const context = {}
 
   return Promise.resolve()
-  .then(() => { if (performBuild === true) return build({ functions: name, env: env }) })
+  .then(() => { if (performBuild === true) return build(name, env) })
   .then(() => requireProject(`dist/${name}/${fileName}`)[handler] )
   .then((func) => {
     return Promise.map(events, (eventFilename) => {

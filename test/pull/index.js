@@ -1,39 +1,26 @@
 import test from 'ava'
-import { create } from '../helpers/fixture'
-import td from 'testdouble'
-import Promise from 'bluebird'
-import fs from 'fs-extra-promise'
+import td from '../helpers/testdouble'
 
-td.config({ promiseConstructor: Promise })
-
-let apiGateway
-
-const response = { body: '{ "foo": "bar" }' }
+const response = '{ "foo": "bar" }'
 const apiId = 'test'
-const region = 'east'
 const stage = 'prod'
+const region = 'east'
 
-const apiGatewayOpts = { restApiId: apiId, stageName: stage }
+const apiGateway = td.replace('../../src/util/aws/api-gateway')
+const fs = td.replace('../../src/util/modules/fs')
+const pkgConfig = td.replace('../../src/util/pkg-config')
+
+td.when(apiGateway.exportStage(apiId, stage)).thenResolve(response)
 
 test.before(() => {
-  apiGateway = td.replace('../../src/util/api-gateway')
-  td.when(apiGateway.getExport(td.matchers.contains(apiGatewayOpts))).thenResolve(response)
-
-  return create('pull')
-  .then(() => {
-    const pull  = require('../../src/pull')
-    return pull({ apiId, region, stage })
-  })
+  const shep  = require('../../src')
+  return shep.pull({ apiId, region, stage, quiet: true })
 })
 
-test('Calls API Gateway', ()=>{
-  td.verify(apiGateway.getExport(td.matchers.contains(apiGatewayOpts)), { times: 1 })
+test('Writes api.json', () =>{
+  td.verify(fs.writeFile('api.json', response, td.matchers.isA(Object)))
 })
 
-test('Writes api.json', t =>{
-  t.deepEqual(fs.readJSONSync('api.json'), { foo: "bar" })
-})
-
-test('Updates package.json', t =>{
-  t.deepEqual(fs.readJSONSync('package.json').shep, { apiId, region })
+test('Updates package.json', () =>{
+  td.verify(pkgConfig.update({apiId, region}))
 })

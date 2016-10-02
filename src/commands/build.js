@@ -1,15 +1,12 @@
 import inquirer from 'inquirer'
 import build from '../build'
 import loadEnvs from '../util/load-envs'
-import { merge } from 'lodash'
+import merge from 'lodash.merge'
 
-export const command = 'build [env] [functions..]'
+export const command = 'build [env] [functions]'
 export const desc = 'Builds functions and writes them to disk'
 export function builder (yargs){
   return yargs
-  .describe('concurrency', 'The number of functions to build at one time')
-  .alias('concurrency', 'c')
-  .default('concurrency', Infinity )
   .example('shep build', 'Launch an interactive CLI')
   .example('shep build beta', 'Build all functions with beta environment variables')
   .example('shep build beta create-user', 'Build only the create-user function')

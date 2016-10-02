@@ -1,37 +1,64 @@
-import Promise from 'bluebird'
-import fs from 'fs-extra-promise'
+import { mkdir, writeFile } from '../util/modules/fs'
 import * as templates from './templates'
+import Promise from 'bluebird'
+import exec from '../util/modules/exec'
+import listr from '../util/modules/listr'
 
-/**
- * @param opts Options for this command.
- * @param opts.path The path where the project should be generated.
- */
 export default function run(opts) {
   const path = opts.path
 
-  return createFolders()
-  .then(createFiles)
+  const tasks = listr([
+    {
+      title: `Create ${path}/`,
+      task: () => mkdir(path)
+    },
+    {
+      title: 'Create Subdirectories',
+      task: () => createSubDirs(path)
+    },
+    {
+      title: 'Create Files',
+      task: () => createFiles(path)
+    },
+    {
+      title: 'Install Depedencies',
+      task: () => npmInstall(path)
+    },
+    {
+      title: 'Initialize Git',
+      task: () => initGit(path)
+    }
+  ], opts.quiet)
 
-  function createFolders(){
-    return Promise.all([
-      fs.ensureDirAsync(path + '/functions'),
-      fs.ensureDirAsync(path + '/config')
-    ])
-  }
+  return tasks.run()
+}
 
-  function createFiles() {
-    let files = [
-      fs.outputFileAsync(path + '/package.json', templates.pkg(path, opts.api)),
-      fs.outputFileAsync(path + '/config/development.js', templates.env('development')),
-      fs.outputFileAsync(path + '/config/beta.js', templates.env('beta')),
-      fs.outputFileAsync(path + '/config/production.js', templates.env('production')),
-      fs.outputFileAsync(path + '/.gitignore', templates.gitignore()),
-      fs.outputFileAsync(path + '/README.md', templates.readme(path)),
-      fs.outputFileAsync(path + '/lambda.json', templates.lambda()),
-      fs.outputFileAsync(path + '/api.json', templates.api(path)),
-      fs.outputFileAsync(path + '/webpack.config.js', templates.webpack())
-    ]
+function createSubDirs(path){
+  return Promise.all([
+    mkdir(path + '/functions'),
+    mkdir(path + '/config')
+  ])
+}
 
-    return Promise.all(files)
-  }
+
+function createFiles(path){
+  return Promise.all([
+    writeFile(path + '/package.json', templates.pkg(path)),
+    writeFile(path + '/config/development.js', templates.env('development')),
+    writeFile(path + '/config/beta.js', templates.env('beta')),
+    writeFile(path + '/config/production.js', templates.env('production')),
+    writeFile(path + '/.gitignore', templates.gitignore()),
+    writeFile(path + '/README.md', templates.readme(path)),
+    writeFile(path + '/lambda.json', templates.lambda()),
+    writeFile(path + '/api.json', templates.api(path)),
+    writeFile(path + '/webpack.config.js', templates.webpack())
+  ])
+}
+
+function npmInstall(path){
+  return exec('npm', ['install'], { cwd: path })
+}
+
+function initGit(path){
+  return exec('git', ['init'], { cwd: path })
 }

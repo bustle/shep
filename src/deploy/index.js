@@ -1,90 +1,70 @@
-import Promise from 'bluebird'
-import loadFuncs from '../util/load-funcs'
-import build from '../util/build-function'
-import upload from '../util/upload-function'
-import { deployApi } from '../util/api-gateway'
-import { setPermission, setAlias } from '../util/lambda'
-import pushApi from '../push'
+import build from '../util/build-functions'
+import upload from '../util/upload-functions'
+import { deploy } from '../util/aws/api-gateway'
+import promoteAliases from '../util/promote-aliases'
+import setPermissions from '../util/set-permissions'
+import * as load from '../util/load'
+import push from '../util/push-api'
 import AWS from 'aws-sdk'
-import { queue, done } from '../util/tasks'
-import fs from 'fs-extra-promise'
-
-const pushApiTask = 'Upload api.json'
-const aliasesTask = 'Promote function aliases'
-const permissionsTask = 'Setup API Gateway <-> Lambda Permissions'
-const deployTask = 'Deploy API'
+import listr from '../util/modules/listr'
 
 export default function(opts){
-  const functions = loadFuncs(opts.functions)
-  const concurrency = opts.concurrency || Infinity
-  const env = opts.env
+  const functions = opts.functions || '*'
+  const env = opts.env || 'development'
   const region = opts.region
   const performBuild = opts.build
+  const api = load.api()
 
-  let api
-  try {
-    api = fs.readJSONSync(`api.json`)
-  } catch(e) {
-    console.log('No api.json file found. Skipping API deployment steps')
-  }
+  let apiId, uploadedFuncs
 
-  AWS.config.update({region: region})
+  if (opts.apiId){ apiId = opts.apiId }
 
-  return Promise.resolve(functions)
-  .each(queue)
-  .tap(() => {
-    if (api) {
-      queue(pushApiTask)
-      queue(aliasesTask)
-      queue(permissionsTask)
-      queue(deployTask)
-    } else {
-      queue(aliasesTask)
-    }
-  })
-  .map((func) => buildAndUploadFunction(func).tap(() => done(func)), { concurrency })
-  .then((funcs) => api ? pushAndDeployApi(funcs) : promoteAliases(funcs) )
+  AWS.config.update({region})
 
-  function promoteAliases(funcs){
-    return Promise.resolve(funcs)
-    .map((func) => setAlias(func, env) )
-    .tap(() => done(aliasesTask))
-  }
-  function buildAndUploadFunction(name) {
-    return Promise.resolve()
-    .then(() => { if (performBuild === true) return build(name, env) })
-    .then(() => upload(name) )
-  }
-
-  function pushAndDeployApi(funcs){
-    return pushApi(opts)
-    .tap(() => done(pushApiTask))
-    .then((id) => {
-      return promoteAliases(funcs)
-      .then(() => setPermissions(api, id, env) )
-      .tap(() => done(permissionsTask))
-      .return(id)
-    })
-    .then((id) => deployApi(id, env))
-    .tap(() => done(deployTask))
-  }
-}
-
-function setPermissions(api, id, env){
-  let promises = []
-  for (var path in api.paths){
-    for (var method in api.paths[path]){
-      if (api.paths[path][method]['x-amazon-apigateway-integration'].type === 'aws') {
-        const uri = api.paths[path][method]['x-amazon-apigateway-integration'].uri.split(':')
-        promises.push(setPermission({
-          env,
-          region: uri[8],
-          accountId: uri[9],
-          apiId: id,
-          name: uri[11]
-        }))
+  const tasks = listr([
+    {
+      title: `Build Functions`,
+      task: () => build(functions, env),
+      skip: () => {
+        if (performBuild === false){
+          return 'Called with --no-build'
+        }
       }
+    },
+    {
+      title: 'Upload Functions to AWS',
+      task: () => upload(functions).tap((funcs) => uploadedFuncs = funcs)
     }
+  ], opts.quiet)
+
+  if (api){
+    tasks.add([
+      {
+        title: 'Upload API.json',
+        task: () => push(api, apiId, region).tap((id) => apiId = id)
+      }
+    ])
   }
-  return Promise.all(promises)
+
+  tasks.add([
+    {
+      title: 'Promote Function Aliases',
+      task: () => promoteAliases(uploadedFuncs, env)
+    }
+  ])
+
+  if (api){
+    tasks.add([
+      {
+        title: 'Setup Lambda Permissions',
+        task: () => setPermissions(api, apiId, env)
+      },
+      {
+        title: 'Deploy API',
+        task: () => deploy(apiId, env)
+      }
+    ])
+  }
+
+  return tasks.run()
 }

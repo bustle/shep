@@ -1,6 +1,6 @@
 import _new from '../new'
 import inquirer from 'inquirer'
-import { merge } from 'lodash'
+import merge from 'lodash.merge'
 
 const questions = [
   {

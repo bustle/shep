@@ -144,6 +144,10 @@ Examples:
   shep build beta *-user       Build functions matching the pattern *-user
 ```
 
+## Lambda Execution Role
+
+More details to come, but check out the AWS docs about setting up the proper IAM role for lambda: http://docs.aws.amazon.com/lambda/latest/dg/intro-permission-model.html http://docs.aws.amazon.com/lambda/latest/dg/with-s3-example-create-iam-role.html
+
 ## Why the name 'shep'?
 
 It was called 'shepherd' at first because it was helpful for dealing with *lamb*da but everyone kept shortening it to 'shep' so we changed the name

@@ -19,7 +19,6 @@ export function env(env)  {
 export function gitignore()  {
   return `dist/*
 node_modules/*
-functions/*/node_modules/*
 config/*`
 }
 
@@ -35,18 +34,22 @@ export function lambda(){
   return JSON.stringify(obj, null, 2)
 }
 
-export function pkg(apiName, api)  {
+export function pkg(apiName)  {
   let obj = {
     name: apiName,
     version: "1.0.0",
     private: true,
     description: "",
     license: "",
-    dependencies: {},
-    shep: {}
+    devDependencies: {
+      webpack: "2.1.0-beta.25"
+    },
+    shep: {
+      region: "",
+      accountId: "",
+      apiId: ""
+    }
   }
-
-  if (api === false) { obj.shep.api = false }
 
   return JSON.stringify(obj, null, 2)
 }

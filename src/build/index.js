@@ -1,15 +1,18 @@
-import loadFuncs from '../util/load-funcs'
-import build from '../util/build-function'
-import Promise from 'bluebird'
-import { queue, done } from '../util/tasks'
+import listr from '../util/modules/listr'
+import build from '../util/build-functions'
 
 export default function(opts) {
 
-  const functions = loadFuncs(opts.functions)
+  const functions = opts.functions || '*'
   const env = opts.env || 'development'
-  const concurrency = opts.concurrency || Infinity
 
-  return Promise.resolve(functions)
-  .tap((funcs) => funcs.map(queue))
-  .map((func) => build(func, env).tap(() => done(func)), { concurrency })
+  const tasks = listr([
+    {
+      title: `Build Functions`,
+      task: () => build(functions, env)
+    }
+  ], opts.quiet)
+
+  return tasks.run()
+
 }
