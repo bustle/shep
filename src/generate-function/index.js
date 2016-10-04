@@ -4,7 +4,7 @@ import * as templates from './templates'
 import listr from '../util/modules/listr'
 import Promise from 'bluebird'
 
-export default function(opts) {
+export default function (opts) {
   const { shortName, fullName } = genName(opts.name)
 
   const tasks = listr([
@@ -24,7 +24,7 @@ export default function(opts) {
 
   return tasks.run()
 
-  function createFiles(){
+  function createFiles () {
     return Promise.all([
       writeFile(`./functions/${shortName}/index.js`, templates.index()),
       writeFile(`./functions/${shortName}/lambda.json`, templates.lambda(fullName)),

@@ -8,16 +8,16 @@ import AWS from 'aws-sdk'
 import cliui from 'cliui'
 const ui = cliui({ width: 80 })
 
-const results = { success: 'SUCCESS' , error: 'ERROR', exception: 'EXCEPTION' }
+const results = { success: 'SUCCESS', error: 'ERROR', exception: 'EXCEPTION' }
 
 const awsNodeVersion = '4.3.2'
 
-export default function(opts){
+export default function (opts) {
   AWS.config.update({region: opts.region})
 
   const processVersion = process.versions.node
 
-  if (processVersion !== awsNodeVersion ){
+  if (processVersion !== awsNodeVersion) {
     console.log(`Warning: Lambda currently runs node v${awsNodeVersion} but you are using v${processVersion}`)
   }
 
@@ -32,7 +32,7 @@ export default function(opts){
 
   return Promise.resolve()
   .then(() => { if (performBuild === true) return build(name, env) })
-  .then(() => requireProject(`dist/${name}/${fileName}`)[handler] )
+  .then(() => requireProject(`dist/${name}/${fileName}`)[handler])
   .then((func) => {
     return Promise.map(events, (eventFilename) => {
       const event = requireProject(`functions/${name}/events/${eventFilename}`)
@@ -40,9 +40,9 @@ export default function(opts){
         let output = { name: eventFilename }
         output.start = new Date()
         try {
-          func(event, context, (err, res)=>{
+          func(event, context, (err, res) => {
             output.end = new Date()
-            if (err){
+            if (err) {
               output.result = results.error
               output.response = err
             } else {
@@ -51,7 +51,7 @@ export default function(opts){
             }
             resolve(output)
           })
-        } catch (e){
+        } catch (e) {
           output.end = new Date()
           output.result = results.exception
           output.response = e
@@ -65,56 +65,56 @@ export default function(opts){
   .then(() => console.log(ui.toString()))
 }
 
-function logOutput(outputs){
-  if(outputs.length === 1){
+function logOutput (outputs) {
+  if (outputs.length === 1) {
     console.log(outputs[0].response)
   }
 }
 
-function formatOutput(output){
-    ui.div(
-      {
-        text: output.name,
-        width: 20,
-      },
-      {
-        text: formatResult(output),
-        width: 15
-      },
-      {
-        text: formatDate(output),
-        width: 10
-      },
-      {
-        text: formatResponse(output)
-      }
+function formatOutput (output) {
+  ui.div(
+    {
+      text: output.name,
+      width: 20
+    },
+    {
+      text: formatResult(output),
+      width: 15
+    },
+    {
+      text: formatDate(output),
+      width: 10
+    },
+    {
+      text: formatResponse(output)
+    }
     )
 }
 
-function formatResponse({ result, response }){
-  if (response){
-    if (result === results.success ){
+function formatResponse ({ result, response }) {
+  if (response) {
+    if (result === results.success) {
       return JSON.stringify(response).trim(30)
     } else if (result === results.error) {
       return JSON.stringify(response).trim(30)
-    } else if (result === results.exception){
+    } else if (result === results.exception) {
       return `${response.name} ${response.message}`.trim(30)
     }
   } else {
-    return ""
+    return ''
   }
 }
 
-function formatDate({ start, end }){
-  return `${end-start}ms`
+function formatDate ({ start, end }) {
+  return `${end - start}ms`
 }
 
-function formatResult({ result }){
-  if (result === results.success ){
+function formatResult ({ result }) {
+  if (result === results.success) {
     return chalk.green(results.success)
   } else if (result === results.error) {
     return chalk.yellow(results.error)
-  } else if (result === results.exception){
+  } else if (result === results.exception) {
     return chalk.red(results.exception)
   }
 }

@@ -4,8 +4,7 @@ import { update } from '../util/pkg-config'
 import AWS from 'aws-sdk'
 import listr from '../util/modules/listr'
 
-export default function(opts) {
-
+export default function (opts) {
   const apiId = opts.apiId
   const stage = opts.stage
   const region = opts.region
@@ -19,7 +18,7 @@ export default function(opts) {
       title: `Export API currenly on ${stage}`,
       task: () => {
         return exportStage(apiId, stage)
-        .tap((api) => exportedApi = api)
+        .tap((api) => { exportedApi = api })
         .tap(() => update({ apiId, region }))
       }
     },

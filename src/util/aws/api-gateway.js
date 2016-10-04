@@ -1,6 +1,6 @@
 import AWS from './'
 
-export function exportStage(restApiId, stageName){
+export function exportStage (restApiId, stageName) {
   const apiGateway = new AWS.APIGateway()
   const params = {
     restApiId,
@@ -16,12 +16,12 @@ export function exportStage(restApiId, stageName){
   .get('body')
 }
 
-export function deploy(id, env){
+export function deploy (id, env) {
   const apiGateway = new AWS.APIGateway()
   return apiGateway.createDeployment({restApiId: id, stageName: env, variables: { functionAlias: env }}).promise()
 }
 
-export function pushApi(api, id){
+export function pushApi (api, id) {
   const apiGateway = new AWS.APIGateway()
 
   let params = {
@@ -29,7 +29,7 @@ export function pushApi(api, id){
     failOnWarnings: true
   }
 
-  if (id){
+  if (id) {
     params.mode = 'overwrite'
     params.restApiId = id
     return apiGateway.putRestApi(params).promise().get('id')

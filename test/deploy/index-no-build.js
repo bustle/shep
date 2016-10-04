@@ -21,12 +21,10 @@ td.when(push(api), { ignoreExtraArgs: true }).thenResolve(apiId)
 const upload = td.replace('../../src/util/upload-functions')
 td.when(upload(functions)).thenResolve(uploadedFuncs)
 
-
 test.before(() => {
   const shep = require('../../src/index')
   return shep.deploy({ build: false, env, functions, quiet: true })
 })
-
 
 test('Builds functions', () => {
   td.verify(build(), { times: 0, ignoreExtraArgs: true })

@@ -1,4 +1,4 @@
-export function api(apiName)  {
+export function api (apiName) {
   return `{
   "swagger": "2.0",
   "info": {
@@ -9,56 +9,56 @@ export function api(apiName)  {
 }`
 }
 
-export function env(env)  {
+export function env (env) {
   return `module.exports = {
   env: "${env}",
   secretkey: "${env}-secret-key"
 }`
 }
 
-export function gitignore()  {
+export function gitignore () {
   return `dist/*
 node_modules/*
 config/*`
 }
 
-export function lambda(){
+export function lambda () {
   let obj = {
-    Handler: "index.handler",
+    Handler: 'index.handler',
     MemorySize: 128,
-    Role: "",
+    Role: '',
     Timeout: 10,
-    Runtime: "nodejs4.3"
+    Runtime: 'nodejs4.3'
   }
 
   return JSON.stringify(obj, null, 2)
 }
 
-export function pkg(apiName)  {
+export function pkg (apiName) {
   let obj = {
     name: apiName,
-    version: "1.0.0",
+    version: '1.0.0',
     private: true,
-    description: "",
-    license: "",
+    description: '',
+    license: '',
     devDependencies: {
-      webpack: "2.1.0-beta.25"
+      webpack: '2.1.0-beta.25'
     },
     shep: {
-      region: "",
-      accountId: "",
-      apiId: ""
+      region: '',
+      accountId: '',
+      apiId: ''
     }
   }
 
   return JSON.stringify(obj, null, 2)
 }
 
-export function readme(apiName){
+export function readme (apiName) {
   return `# ${apiName}`
 }
 
-export function webpack(){
+export function webpack () {
   return `const path = require('path')
 
 module.exports = function(name, env) {

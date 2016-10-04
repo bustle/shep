@@ -16,10 +16,10 @@ td.when(fs.readJSONSync('api.json')).thenReturn(api)
 td.when(apiGateway.pushApi(td.matchers.isA(Object), undefined)).thenResolve(apiId)
 
 test.before(() => {
-  const shep  = require('../../src')
+  const shep = require('../../src')
   return shep.push({ region, quiet: true })
 })
 
-test('Updates package.json', () =>{
+test('Updates package.json', () => {
   td.verify(pkgConfig.update({apiId, region}))
 })

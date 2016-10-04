@@ -5,7 +5,7 @@ import merge from 'lodash.merge'
 
 export const command = 'build [env] [functions]'
 export const desc = 'Builds functions and writes them to disk'
-export function builder (yargs){
+export function builder (yargs) {
   return yargs
   .example('shep build', 'Launch an interactive CLI')
   .example('shep build beta', 'Build all functions with beta environment variables')
@@ -13,7 +13,7 @@ export function builder (yargs){
   .example('shep build beta *-user', 'Build functions matching the pattern *-user')
 }
 
-export function handler(opts) {
+export function handler (opts) {
   const questions = [
     {
       name: 'env',
@@ -23,7 +23,7 @@ export function handler(opts) {
     }
   ]
 
-  inquirer.prompt(questions.filter((q)=> !opts[q.name] ))
-  .then((inputs) => merge({}, inputs, opts) )
+  inquirer.prompt(questions.filter((q) => !opts[q.name]))
+  .then((inputs) => merge({}, inputs, opts))
   .then(build)
 }

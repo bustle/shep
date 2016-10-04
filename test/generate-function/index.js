@@ -8,7 +8,7 @@ td.when(fs.readJSONSync('package.json')).thenReturn({ name: 'bar' })
 
 test.before(() => {
   const shep = require('../../src/index')
-  return shep.generateFunction({ name , quiet: true })
+  return shep.generateFunction({ name, quiet: true })
 })
 
 test(createdDir, `functions/${name}`)

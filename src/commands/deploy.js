@@ -5,7 +5,7 @@ import merge from 'lodash.merge'
 
 export const command = 'deploy [env] [functions]'
 export const desc = 'Deploy both functions and APIs to AWS. Will create a new API if the ID is not specified'
-export function builder (yargs){
+export function builder (yargs) {
   return yargs
   .pkgConf('shep', process.cwd())
   .describe('build', 'Build functions before deployment. Use --no-build to skip this step')
@@ -17,7 +17,7 @@ export function builder (yargs){
   .example('shep deploy beta *-user', 'Deploy only functions matching the pattern *-user')
 }
 
-export function handler(opts) {
+export function handler (opts) {
   const questions = [
     {
       name: 'env',
@@ -27,7 +27,7 @@ export function handler(opts) {
     }
   ]
 
-  inquirer.prompt(questions.filter((q)=> !opts[q.name] ))
-  .then((inputs) => merge({}, inputs, opts) )
+  inquirer.prompt(questions.filter((q) => !opts[q.name]))
+  .then((inputs) => merge({}, inputs, opts))
   .then(deploy)
 }

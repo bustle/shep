@@ -14,7 +14,7 @@ td.when(load.api()).thenReturn({ paths: {} })
 
 test.before(() => {
   const shep = require('../../src/index')
-  return shep.generateEndpoint({ accountId, path, method , quiet: true })
+  return shep.generateEndpoint({ accountId, path, method, quiet: true })
 })
 
 test('Writes a new api.json', () => {

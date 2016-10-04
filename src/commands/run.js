@@ -5,7 +5,7 @@ import merge from 'lodash.merge'
 
 export const command = 'run [name]'
 export const desc = 'Run a function in your local environemnt'
-export function builder (yargs){
+export function builder (yargs) {
   return yargs
   .pkgConf('shep', process.cwd())
   .describe('environment', 'Environment variables to use')
@@ -20,7 +20,7 @@ export function builder (yargs){
   .example('shep run foo --environment production', 'Runs the `foo` function with production environment')
 }
 
-export function handler(opts) {
+export function handler (opts) {
   const questions = [
     {
       name: 'name',
@@ -30,7 +30,7 @@ export function handler(opts) {
     }
   ]
 
-  inquirer.prompt(questions.filter((q)=> !opts[q.name] ))
-  .then((inputs) => merge({}, inputs, opts) )
+  inquirer.prompt(questions.filter((q) => !opts[q.name]))
+  .then((inputs) => merge({}, inputs, opts))
   .then(run)
 }

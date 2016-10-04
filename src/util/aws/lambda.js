@@ -1,7 +1,7 @@
 import AWS from './'
 import merge from 'lodash.merge'
 
-export function putFunction(config, ZipFile){
+export function putFunction (config, ZipFile) {
   const lambda = new AWS.Lambda()
 
   validateConfig(config)
@@ -12,33 +12,32 @@ export function putFunction(config, ZipFile){
   return lambda.getFunction({ FunctionName }).promise()
   .then(() => lambda.updateFunctionCode({ ZipFile, FunctionName, Publish }).promise())
   .then(() => lambda.updateFunctionConfiguration(config).promise())
-  .catch({ code: 'ResourceNotFoundException' }, () =>{
-    const params = merge(config, { Publish, Code: { ZipFile }})
+  .catch({ code: 'ResourceNotFoundException' }, () => {
+    const params = merge(config, { Publish, Code: { ZipFile } })
     return lambda.createFunction(params).promise()
   })
 }
 
-export function setAlias({ Version, FunctionName }, Name){
+export function setAlias ({ Version, FunctionName }, Name) {
   const lambda = new AWS.Lambda()
 
   let params = {
     FunctionName,
-    Name,
+    Name
   }
 
   return lambda.getAlias(params).promise()
-  .then(()=>{
+  .then(() => {
     params.FunctionVersion = Version
     return lambda.updateAlias(params).promise()
   })
-  .catch({ code: 'ResourceNotFoundException' }, ()=>{
+  .catch({ code: 'ResourceNotFoundException' }, () => {
     params.FunctionVersion = Version
     return lambda.createAlias(params).promise()
   })
 }
 
-
-export function setPermission({ name, region, env, apiId, accountId }){
+export function setPermission ({ name, region, env, apiId, accountId }) {
   const lambda = new AWS.Lambda()
 
   let params = {
@@ -53,12 +52,12 @@ export function setPermission({ name, region, env, apiId, accountId }){
   return lambda.addPermission(params).promise()
   .catch((err) => {
     // Swallow errors if permission already exists
-    if (err.code !== 'ResourceConflictException'){ throw err }
+    if (err.code !== 'ResourceConflictException') { throw err }
   })
 }
 
-function validateConfig(config){
-  if (!config.Role){
+function validateConfig (config) {
+  if (!config.Role) {
     throw new Error('You need to specify a valid Role for your lambda functions. See the shep README for details.')
   }
 }

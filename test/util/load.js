@@ -3,23 +3,23 @@ import * as load from '../../src/util/load'
 
 test.before(() => process.chdir('../fixtures'))
 
-test('Loads environemnts', (t) =>{
+test('Loads environemnts', (t) => {
   t.deepEqual(load.envs().sort(), [ 'beta', 'prod' ])
 })
 
-test('Loads functions', (t) =>{
+test('Loads functions', (t) => {
   t.deepEqual(load.funcs().sort(), [ 'bar', 'foo' ])
 })
 
-test('Loads functions by pattern', (t) =>{
+test('Loads functions by pattern', (t) => {
   t.deepEqual(load.funcs('f*'), [ 'foo' ])
 })
 
-test('Loads function events', (t) =>{
+test('Loads function events', (t) => {
   t.deepEqual(load.events('foo').sort(), [ 'custom.json', 'default.json' ])
 })
 
-test('Loads lambda config', (t) =>{
+test('Loads lambda config', (t) => {
   const config = load.lambdaConfig('foo')
   t.is(config.Name, 'foo')
   t.is(config.Role, 'admin')

@@ -13,7 +13,7 @@ const name = 'foo'
 
 const api = {
   paths: {
-    '/' : {
+    '/': {
       get: {
         'x-amazon-apigateway-integration': {
           uri: `arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:${region}:${accountId}:function:${name}:\${stageVariables.functionAlias}/invocations`
@@ -23,10 +23,10 @@ const api = {
   }
 }
 
-test.before(() => setPermissions = require('../../src/util/set-permissions'))
+test.before(() => { setPermissions = require('../../src/util/set-permissions') })
 
-test('Calls setPermission', () =>{
-  return setPermissions(api, apiId, env).then(() =>{
+test('Calls setPermission', () => {
+  return setPermissions(api, apiId, env).then(() => {
     td.verify(lambda.setPermission(td.matchers.contains({
       apiId,
       accountId,

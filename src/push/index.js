@@ -3,7 +3,7 @@ import * as load from '../util/load'
 import listr from '../util/modules/listr'
 import AWS from 'aws-sdk'
 
-export default function(opts){
+export default function (opts) {
   AWS.config.update({region: opts.region})
 
   const apiId = opts.apiId

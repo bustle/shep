@@ -1,4 +1,4 @@
-export function index(){
+export function index () {
   return `import config from 'shep-config'
 
 export function handler(event, context, callback) {
@@ -11,11 +11,11 @@ export function handler(event, context, callback) {
 }`
 }
 
-export function event(){
+export function event () {
   let obj = {
-    resource: "",
-    path: "",
-    httpMethod: "GET",
+    resource: '',
+    path: '',
+    httpMethod: 'GET',
     headers: {},
     queryStringParameters: {},
     pathParameters: {},
@@ -26,7 +26,7 @@ export function event(){
   return JSON.stringify(obj, null, 2)
 }
 
-export function lambda(name){
+export function lambda (name) {
   let obj = {
     FunctionName: name
   }

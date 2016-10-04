@@ -8,7 +8,7 @@ import push from '../util/push-api'
 import AWS from 'aws-sdk'
 import listr from '../util/modules/listr'
 
-export default function(opts){
+export default function (opts) {
   const functions = opts.functions || '*'
   const env = opts.env || 'development'
   const region = opts.region
@@ -17,7 +17,7 @@ export default function(opts){
 
   let apiId, uploadedFuncs
 
-  if (opts.apiId){ apiId = opts.apiId }
+  if (opts.apiId) { apiId = opts.apiId }
 
   AWS.config.update({region})
 
@@ -26,22 +26,22 @@ export default function(opts){
       title: `Build Functions`,
       task: () => build(functions, env),
       skip: () => {
-        if (performBuild === false){
+        if (performBuild === false) {
           return 'Called with --no-build'
         }
       }
     },
     {
       title: 'Upload Functions to AWS',
-      task: () => upload(functions).tap((funcs) => uploadedFuncs = funcs)
+      task: () => upload(functions).tap((funcs) => { uploadedFuncs = funcs })
     }
   ], opts.quiet)
 
-  if (api){
+  if (api) {
     tasks.add([
       {
         title: 'Upload API.json',
-        task: () => push(api, apiId, region).tap((id) => apiId = id)
+        task: () => push(api, apiId, region).tap((id) => { apiId = id })
       }
     ])
   }
@@ -53,7 +53,7 @@ export default function(opts){
     }
   ])
 
-  if (api){
+  if (api) {
     tasks.add([
       {
         title: 'Setup Lambda Permissions',

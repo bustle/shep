@@ -7,12 +7,12 @@ import * as load from '../util/load'
 
 const integration = 'x-amazon-apigateway-integration'
 
-module.exports = function(opts){
+module.exports = function (opts) {
   let accountId = opts.accountId
   let path = opts.path
   let method = opts.method
 
-  if (!accountId){
+  if (!accountId) {
     throw new Error('Unable to determine your AWS Account ID. Please set it in the `shep` section of package.json')
   }
 
@@ -43,21 +43,20 @@ module.exports = function(opts){
   return tasks.run()
 }
 
-
-function addPath(api, path, method, accountId, functionName){
+function addPath (api, path, method, accountId, functionName) {
   if (method === 'any') { method = 'x-amazon-apigateway-any-method' }
 
   api.paths[path] = api.paths[path] || {}
-  if (api.paths[path][method] !== undefined){ throw new Error(`Method '${method}' on path '${path}' already exists`)}
+  if (api.paths[path][method] !== undefined) { throw new Error(`Method '${method}' on path '${path}' already exists`) }
   api.paths[path][method] = api.paths[path][method] || {}
   api.paths[path][method][integration] = {
-    uri : `arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:${accountId}:function:${functionName}:\${stageVariables.functionAlias}/invocations`,
-    passthroughBehavior: "when_no_match",
-    httpMethod: "POST",
-    type: "aws_proxy"
+    uri: `arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:${accountId}:function:${functionName}:\${stageVariables.functionAlias}/invocations`,
+    passthroughBehavior: 'when_no_match',
+    httpMethod: 'POST',
+    type: 'aws_proxy'
   }
 }
 
-function setupCORS(api, path){
+function setupCORS (api, path) {
   api.paths[path].options = api.paths[path].options || cors
 }

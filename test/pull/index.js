@@ -13,14 +13,14 @@ const pkgConfig = td.replace('../../src/util/pkg-config')
 td.when(apiGateway.exportStage(apiId, stage)).thenResolve(response)
 
 test.before(() => {
-  const shep  = require('../../src')
+  const shep = require('../../src')
   return shep.pull({ apiId, region, stage, quiet: true })
 })
 
-test('Writes api.json', () =>{
+test('Writes api.json', () => {
   td.verify(fs.writeFile('api.json', response, td.matchers.isA(Object)))
 })
 
-test('Updates package.json', () =>{
+test('Updates package.json', () => {
   td.verify(pkgConfig.update({apiId, region}))
 })

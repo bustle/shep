@@ -6,13 +6,13 @@ const questions = [
   {
     name: 'name',
     type: 'input',
-    message: 'Function name',
+    message: 'Function name'
   }
 ]
 
 export const command = 'function [name]'
 export const desc = 'Generate a new function'
-export function builder (yargs){
+export function builder (yargs) {
   return yargs
   .pkgConf('shep', process.cwd())
   .describe('name', 'Function name')
@@ -20,8 +20,8 @@ export function builder (yargs){
   .example('shep generate function foo', 'Genereate a new functon called "foo"')
 }
 
-export function handler(opts) {
-  inquirer.prompt(questions.filter((q)=> !opts[q.name] ))
-  .then((inputs) => merge({}, inputs, opts) )
+export function handler (opts) {
+  inquirer.prompt(questions.filter((q) => !opts[q.name]))
+  .then((inputs) => merge({}, inputs, opts))
   .then(generateFunction)
 }

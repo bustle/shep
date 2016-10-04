@@ -4,7 +4,7 @@ import Promise from 'bluebird'
 import exec from '../util/modules/exec'
 import listr from '../util/modules/listr'
 
-export default function run(opts) {
+export default function run (opts) {
   const path = opts.path
 
   const tasks = listr([
@@ -33,15 +33,14 @@ export default function run(opts) {
   return tasks.run()
 }
 
-function createSubDirs(path){
+function createSubDirs (path) {
   return Promise.all([
     mkdir(path + '/functions'),
     mkdir(path + '/config')
   ])
 }
 
-
-function createFiles(path){
+function createFiles (path) {
   return Promise.all([
     writeFile(path + '/package.json', templates.pkg(path)),
     writeFile(path + '/config/development.js', templates.env('development')),
@@ -55,10 +54,10 @@ function createFiles(path){
   ])
 }
 
-function npmInstall(path){
+function npmInstall (path) {
   return exec('npm', ['install'], { cwd: path })
 }
 
-function initGit(path){
+function initGit (path) {
   return exec('git', ['init'], { cwd: path })
 }
