@@ -1,6 +1,6 @@
 import inquirer from 'inquirer'
 import build from '../build'
-import loadEnvs from '../util/load-envs'
+import * as load from '../util/load'
 import merge from 'lodash.merge'
 
 export const command = 'build [env] [functions]'
@@ -19,7 +19,7 @@ export function handler(opts) {
       name: 'env',
       message: 'Environment',
       type: 'list',
-      choices: () => loadEnvs()
+      choices: () => load.envs()
     }
   ]
 

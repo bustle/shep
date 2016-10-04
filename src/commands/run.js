@@ -1,6 +1,6 @@
 import inquirer from 'inquirer'
 import run from '../run'
-import loadFuncs from '../util/load-funcs'
+import * as load from '../util/load'
 import merge from 'lodash.merge'
 
 export const command = 'run [name]'
@@ -26,7 +26,7 @@ export function handler(opts) {
       name: 'name',
       message: 'Function',
       type: 'list',
-      choices: () => loadFuncs()
+      choices: () => load.funcs()
     }
   ]
 

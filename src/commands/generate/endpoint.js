@@ -1,5 +1,5 @@
 import inquirer from 'inquirer'
-import generateEndpoint from '../../generate/endpoint'
+import generateEndpoint from '../../generate-endpoint'
 import merge from 'lodash.merge'
 
 const httpMethods = ['get','post','put','delete','options','any']
