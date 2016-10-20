@@ -42,7 +42,8 @@ export function pkg (apiName) {
     description: '',
     license: '',
     devDependencies: {
-      webpack: '2.1.0-beta.25'
+      webpack: '2.1.0-beta.25',
+      minimatch: '3.0.3'
     },
     shep: {
       region: '',
@@ -59,27 +60,36 @@ export function readme (apiName) {
 }
 
 export function webpack () {
-  return `const path = require('path')
+  return `/*
+ * WARNING: Tampering with how entry is populated could affect pattern matching
+ */
 
-module.exports = function(name, env) {
-  return {
-    target: 'node',
-    entry: {
-      [name]: path.resolve(\`functions/\${name}/index.js\`)
-    },
-    output: {
-      path: path.resolve(\`dist/\${name}\`),
-      filename: 'index.js',
-      chunkFilename: '[name]/[id].js',
-      libraryTarget: 'commonjs2'
-    },
-    resolve: {
-      modules: [ 'node_modules', 'lib' ],
-      alias: { 'shep-config': path.resolve(\`config/\${env}.js\`) }
-    },
-    externals: { 'aws-sdk': 'aws-sdk' },
-    module: {
-      loaders: []
+const fs = require('fs')
+const path = require('path')
+const minimatch = require('minimatch')
+
+const env = process.env.NODE_ENV || 'development'
+const pattern = process.env.PATTERN || '*'
+
+const entry = fs.readdirSync('functions')
+.filter(minimatch.filter(pattern))
+.reduce((map, funcName) => {
+  map[funcName] = path.resolve(\`functions/\${funcName}/index\`)
+  return map
+}, {})
+
+module.exports = {
+  target: 'node',
+  entry,
+  output: {
+    path: 'dist',
+    filename: '[name]/index.js',
+    libraryTarget: 'commonjs2'
+  },
+  resolve: {
+    modules: [ 'node_modules', 'lib' ],
+    alias: {
+      'shep-config': path.resolve(\`config/\${env}.js\`)
     }
   }
 }
