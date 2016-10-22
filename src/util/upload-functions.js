@@ -8,7 +8,7 @@ export default function (pattern) {
   .map((func) => {
     return Promise.join(
       lambdaConfig(func),
-      zipDir(`functions/${func}`),
+      zipDir(`dist/${func}`),
       putFunction
     )
   })
