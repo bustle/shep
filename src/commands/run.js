@@ -10,6 +10,7 @@ export function builder (yargs) {
   .pkgConf('shep', process.cwd())
   .describe('environment', 'Environment variables to use')
   .describe('event', 'Event to use')
+  .describe('v', 'Responses from functions aren\'t truncated')
   .default('environment', 'development')
   .describe('build', 'Build functions before running. Use --no-build to skip this step')
   .default('build', true)

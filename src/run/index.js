@@ -21,6 +21,7 @@ export default function (opts) {
     console.log(`Warning: Lambda currently runs node v${awsNodeVersion} but you are using v${processVersion}`)
   }
 
+  const verbose = opts.v
   const performBuild = opts.build
   const name = opts.name
   const env = opts.environemnt || 'development'
@@ -61,7 +62,7 @@ export default function (opts) {
     })
   })
   .tap(logOutput)
-  .map(formatOutput)
+  .map((out) => formatOutput(out, verbose))
   .then(() => console.log(ui.toString()))
 }
 
@@ -71,7 +72,7 @@ function logOutput (outputs) {
   }
 }
 
-function formatOutput (output) {
+function formatOutput (output, verbose) {
   ui.div(
     {
       text: output.name,
@@ -86,7 +87,7 @@ function formatOutput (output) {
       width: 10
     },
     {
-      text: formatResponse(output)
+      text: (verbose ? splitAt(formatResponse(output), ',', 30) : formatResponse(output).slice(0, 30))
     }
     )
 }
@@ -94,11 +95,11 @@ function formatOutput (output) {
 function formatResponse ({ result, response }) {
   if (response) {
     if (result === results.success) {
-      return JSON.stringify(response).trim(30)
+      return JSON.stringify(response)
     } else if (result === results.error) {
-      return JSON.stringify(response).trim(30)
+      return JSON.stringify(response)
     } else if (result === results.exception) {
-      return `${response.name} ${response.message}`.trim(30)
+      return `${response.name} ${response.message}`
     }
   } else {
     return ''
@@ -117,4 +118,19 @@ function formatResult ({ result }) {
   } else if (result === results.exception) {
     return chalk.red(results.exception)
   }
+}
+
+function splitAt (str, token, width) {
+  return str.split(token)
+  .reduce((sum, curr) => {
+    let lastLine = sum.slice(-1)[0]
+
+    if (!lastLine || curr.length > width || lastLine.length + curr.length >= width) {
+      sum.push(curr)
+    } else {
+      sum[sum.length - 1] = [lastLine, curr].join(token)
+    }
+
+    return sum
+  }, [])
 }

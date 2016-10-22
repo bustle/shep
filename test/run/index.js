@@ -1,6 +1,5 @@
 import test from 'ava'
 import td from '../helpers/testdouble'
-import Promise from 'bluebird'
 
 const funcName = 'foo'
 const handler = 'handler'
