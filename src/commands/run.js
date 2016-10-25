@@ -1,15 +1,16 @@
 import inquirer from 'inquirer'
 import run from '../run'
-import loadFuncs from '../util/load-funcs'
-import { merge } from 'lodash'
+import * as load from '../util/load'
+import merge from 'lodash.merge'
 
 export const command = 'run [name]'
 export const desc = 'Run a function in your local environemnt'
-export function builder (yargs){
+export function builder (yargs) {
   return yargs
   .pkgConf('shep', process.cwd())
   .describe('environment', 'Environment variables to use')
   .describe('event', 'Event to use')
+  .describe('v', 'Responses from functions aren\'t truncated')
   .default('environment', 'development')
   .describe('build', 'Build functions before running. Use --no-build to skip this step')
   .default('build', true)
@@ -20,17 +21,17 @@ export function builder (yargs){
   .example('shep run foo --environment production', 'Runs the `foo` function with production environment')
 }
 
-export function handler(opts) {
+export function handler (opts) {
   const questions = [
     {
       name: 'name',
       message: 'Function',
       type: 'list',
-      choices: () => loadFuncs()
+      choices: () => load.funcs()
     }
   ]
 
-  inquirer.prompt(questions.filter((q)=> !opts[q.name] ))
-  .then((inputs) => merge({}, inputs, opts) )
+  inquirer.prompt(questions.filter((q) => !opts[q.name]))
+  .then((inputs) => merge({}, inputs, opts))
   .then(run)
 }

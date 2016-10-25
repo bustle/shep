@@ -1,6 +1,6 @@
 import _new from '../new'
 import inquirer from 'inquirer'
-import { merge } from 'lodash'
+import merge from 'lodash.merge'
 
 const questions = [
   {
@@ -13,7 +13,7 @@ const questions = [
 
 export const command = 'new [path]'
 export const desc = 'Create a new shep project'
-export function builder (yargs){
+export function builder (yargs) {
   return yargs
   .describe('path', 'Location to create the new shep project')
   .example('shep new', 'Launch an interactive CLI')
@@ -21,7 +21,7 @@ export function builder (yargs){
 }
 
 export function handler (opts) {
-  inquirer.prompt(questions.filter((q)=> !opts[q.name] ))
-  .then((inputs) => merge({}, inputs, opts) )
+  inquirer.prompt(questions.filter((q) => !opts[q.name]))
+  .then((inputs) => merge({}, inputs, opts))
   .then(_new)
 }

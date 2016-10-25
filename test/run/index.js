@@ -1,29 +1,25 @@
 import test from 'ava'
-import { create } from '../helpers/fixture'
-import generateFunction from '../../src/generate/function'
-import td from 'testdouble'
-import Promise from 'bluebird'
-import run from '../../src/run'
+import td from '../helpers/testdouble'
 
-// Supress observetory output
-require('observatory').settings({ write: () => {} })
+const funcName = 'foo'
+const handler = 'handler'
+const config = { Handler: `index.${handler}` }
+const events = [{}]
+const lambdaFunc = td.object([handler])
+td.when(lambdaFunc[handler](td.matchers.isA(Object), td.matchers.isA(Object))).thenCallback(null, 'bar')
 
-td.config({ promiseConstructor: Promise })
+const load = td.replace('../../src/util/load')
+td.when(load.lambdaConfig(funcName)).thenReturn(config)
+td.when(load.events(funcName, td.matchers.anything())).thenReturn(events)
+
+const requireProject = td.replace('../../src/util/require-project')
+td.when(requireProject(td.matchers.contains(funcName))).thenReturn(lambdaFunc)
 
 test.before(() => {
-  return create('run')
-  .then(() => generateFunction({ name: 'foo' }) )
-  .then(() => generateFunction({ name: 'bar' }) )
+  return require('../../src/run/index')({ name: funcName, build: false })
 })
 
-test('Calls the function', (t)=>{
-  t.truthy(run({ name: 'foo', build: true }))
+test('Calls the function', () => {
+  td.verify(lambdaFunc[handler](), { ignoreExtraArgs: true })
 })
 
-test('Throws an exception for an event that does not exist', (t)=>{
-  t.throws(() => run({ name: 'foo', build: true, event: 'doesnotexist' }))
-})
-
-test('Throws an exception for unbuilt function', (t)=>{
-  t.throws(run({ name: 'bar', build: false }))
-})

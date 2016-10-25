@@ -1,6 +1,6 @@
 export const command = 'push'
 export const desc = 'Create a new shep project'
-export function builder(yargs){
+export function builder (yargs) {
   return yargs
   .pkgConf('shep', process.cwd())
   .describe('api-id', 'API Gateway resource id. Read from package.json if not provided')

@@ -1,5 +1,5 @@
-const path = require('path')
+import path from 'path'
 
-module.exports = function(projectPath){
+export default function (projectPath) {
   return require(path.join(process.cwd(), projectPath))
 }

@@ -1,15 +1,24 @@
 import test from 'ava'
-import { create } from '../helpers/fixture'
-import dirExists from '../helpers/dir-exists'
-import fileExists from '../helpers/file-exists'
+import { createdDir, wroteFile } from '../helpers/fs'
+import { didExec } from '../helpers/exec'
 
-test.before(() => create('new'))
+const path = 'foo-api'
 
-test(() => dirExists('functions'))
-test(() => dirExists('config'))
-test(() => fileExists('lambda.json'))
-test(() => fileExists('api.json'))
-test(() => fileExists('package.json'))
-test(() => fileExists('.gitignore'))
-test(() => fileExists('README.md'))
-test(() => fileExists('webpack.config.js'))
+test.before(() => {
+  const shep = require('../../src/index')
+  return shep.new({ path, quiet: true })
+})
+
+test(createdDir, `${path}/functions`)
+test(createdDir, `${path}/functions`)
+test(createdDir, `${path}/config`)
+
+test(wroteFile, `${path}/lambda.json`)
+test(wroteFile, `${path}/api.json`)
+test(wroteFile, `${path}/package.json`)
+test(wroteFile, `${path}/.gitignore`)
+test(wroteFile, `${path}/README.md`)
+test(wroteFile, `${path}/webpack.config.js`)
+
+test(didExec, 'npm', 'install')
+test(didExec, 'git', 'init')

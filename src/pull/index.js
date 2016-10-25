@@ -1,23 +1,32 @@
-import fs from '../util/fs'
-import { getExport } from '../util/api-gateway'
-import { update } from '../util/shep-config'
+import { writeFile } from '../util/modules/fs'
+import { exportStage } from '../util/aws/api-gateway'
+import { update } from '../util/pkg-config'
 import AWS from 'aws-sdk'
+import listr from '../util/modules/listr'
 
-export default function(opts) {
+export default function (opts) {
+  const apiId = opts.apiId
+  const stage = opts.stage
+  const region = opts.region
+
   AWS.config.update({region: opts.region})
 
-  const params = {
-    restApiId: opts.apiId,
-    stageName: opts.stage,
-    exportType: 'swagger',
-    accepts: 'json',
-    parameters: {
-      extensions: 'integrations,authorizers'
-    }
-  }
+  let exportedApi
 
-  return getExport(params)
-  .get('body')
-  .tap(() => update({ apiId: opts.apiId, region: opts.region }))
-  .then((api) => fs.writeFileAsync(opts.output || 'api.json', api))
+  const tasks = listr([
+    {
+      title: `Export API currenly on ${stage}`,
+      task: () => {
+        return exportStage(apiId, stage)
+        .tap((api) => { exportedApi = api })
+        .tap(() => update({ apiId, region }))
+      }
+    },
+    {
+      title: 'Write to api.json',
+      task: () => writeFile('api.json', exportedApi, { spaces: 2 })
+    }
+  ], opts.quiet)
+
+  return tasks.run()
 }
