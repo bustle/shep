@@ -39,13 +39,13 @@ _Coming soon!_
 Usage: shep <command> [options]
 
 Commands:
-  build [env] [functions..]   Builds functions and writes them to disk
-  deploy [env] [functions..]  Deploy both functions and APIs to AWS. Will create a new API if the ID is not specified
-  generate                    Run `shep generate --help` for additional information
-  new [path]                  Create a new shep project
-  pull                        Pulls a swagger JSON representation of an existing API and writes it to a local file
-  push                        Pushes the api.json swagger configuration to API Gateway. Does not deploy the API.
-  run [name]                  Run a function in your local environemnt
+  build [env] [functions]   Builds functions and writes them to disk
+  deploy [env] [functions]  Deploy both functions and APIs to AWS. Will create a new API if the ID is not specified
+  generate                  Run `shep generate --help` for additional information
+  new [path]                Create a new shep project
+  pull                      Pulls a swagger JSON representation of an existing API and writes it to a local file
+  push                      Create a new shep project
+  run [name]                Run a function in your local environemnt
 
 Options:
   --version  Show version number                                                                               [boolean]
@@ -106,42 +106,79 @@ Options:
   --help         Show help                                                                                     [boolean]
   --environment  Environment variables to use                                                   [default: "development"]
   --event        Event to use
+  -v             Responses from functions aren't truncated
+  --build        Build functions before running. Use --no-build to skip this step                        [default: true]
 
 Examples:
   shep run                               Launch an interactive CLI
   shep run foo                           Runs the `foo` function for all events
+  shep run foo --no-build                Run the already built `foo` function in the dist folder
   shep run foo --event default           Runs the `foo` function for just the `default` event
   shep run foo --environment production  Runs the `foo` function with production environment
 ```
 #### `shep deploy`
 ```
-shep deploy [env] [functions..]
+shep deploy [env] [functions]
 
 Options:
-  --version          Show version number                                                                       [boolean]
-  --help             Show help                                                                                 [boolean]
-  --api-id           The API Gateway API id. Read from package.json if not provided.                          [required]
-  --concurrency, -c  Number of functions to build and upload at one time                             [default: Infinity]
+  --version  Show version number                                                                               [boolean]
+  --help     Show help                                                                                         [boolean]
+  --build    Build functions before deployment. Use --no-build to skip this step                         [default: true]
 
 Examples:
+  shep deploy                         Launch an interactive CLI
   shep deploy production              Deploy all functions with production env variables
+  shep deploy beta --no-build         Deploy all functions as currently built in the dist folder
   shep deploy production create-user  Deploy only the create-user function
-  shep deploy production *-user       Deploy only functions matching the pattern *-user
+  shep deploy beta *-user             Deploy only functions matching the pattern *-user
 ```
 #### `shep build`
 ```
-shep build [env] [functions..]
+shep build [env] [functions]
 
 Options:
-  --version          Show version number                                                                       [boolean]
-  --help             Show help                                                                                 [boolean]
-  --concurrency, -c  The number of functions to build at one time                                    [default: Infinity]
+  --version  Show version number                                                                               [boolean]
+  --help     Show help                                                                                         [boolean]
 
 Examples:
   shep build                   Launch an interactive CLI
   shep build beta              Build all functions with beta environment variables
   shep build beta create-user  Build only the create-user function
   shep build beta *-user       Build functions matching the pattern *-user
+```
+#### `shep generate function`
+```
+shep generate function [name]
+
+Options:
+  --version  Show version number                                                                               [boolean]
+  --help     Show help                                                                                         [boolean]
+  --name     Function name
+
+Examples:
+  shep generate function      Launch an interactive CLI
+  shep generate function foo  Genereate a new functon called "foo"
+
+```
+#### `shep generate endpoint`
+```
+shep generate endpoint [path]
+
+Options:
+  --version  Show version number                                                                               [boolean]
+  --help     Show help                                                                                         [boolean]
+  --method   HTTP Method                                     [choices: "get", "post", "put", "delete", "options", "any"]
+
+```
+#### `shep generate webpack`
+```
+shep generate webpack
+
+Options:
+  --version     Show version number                                                                            [boolean]
+  --help        Show help                                                                                      [boolean]
+  --output, -o  Output file                                                               [default: "webpack.config.js"]
+
 ```
 
 ## Lambda Execution Role

@@ -8,6 +8,7 @@ export function builder (yargs) {
   .describe('output', 'Output file')
   .alias('output', 'o')
   .default('output', 'webpack.config.js')
+  .example('shep generate webpack -o foo.js', 'Writes default webpack configuration to foo.js')
 }
 
 export const handler = generateWebpack
