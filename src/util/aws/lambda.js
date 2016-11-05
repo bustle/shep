@@ -8,16 +8,10 @@ export function putFunction (config, ZipFile) {
 
   const FunctionName = config.FunctionName
   const Publish = true
-  let functionVersion
 
   return lambda.getFunction({ FunctionName }).promise()
-  .then(() => lambda.updateFunctionCode({ ZipFile, FunctionName, Publish }).promise())
-  .tap(({ Version }) => { functionVersion = Version })
   .then(() => lambda.updateFunctionConfiguration(config).promise())
-  .then((func) => {
-    func['Version'] = functionVersion
-    return Promise.resolve(func)
-  })
+  .then(() => lambda.updateFunctionCode({ ZipFile, FunctionName, Publish }).promise())
   .catch({ code: 'ResourceNotFoundException' }, () => {
     const params = merge(config, { Publish, Code: { ZipFile } })
     return lambda.createFunction(params).promise()
