@@ -10,8 +10,8 @@ export function putFunction (config, ZipFile) {
   const Publish = true
 
   return lambda.getFunction({ FunctionName }).promise()
-  .then(() => lambda.updateFunctionCode({ ZipFile, FunctionName, Publish }).promise())
   .then(() => lambda.updateFunctionConfiguration(config).promise())
+  .then(() => lambda.updateFunctionCode({ ZipFile, FunctionName, Publish }).promise())
   .catch({ code: 'ResourceNotFoundException' }, () => {
     const params = merge(config, { Publish, Code: { ZipFile } })
     return lambda.createFunction(params).promise()
