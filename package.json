@@ -44,6 +44,7 @@
     "lodash.kebabcase": "^4.1.1",
     "lodash.merge": "^4.6.0",
     "loud-rejection": "^1.6.0",
+    "minimatch": "^3.0.3",
     "stream-buffers": "^3.0.0",
     "yargs": "^6.0.0"
   },
@@ -53,7 +54,6 @@
     "babel-plugin-add-module-exports": "^0.2.1",
     "babel-preset-es2015-node4": "^2.1.0",
     "babel-register": "^6.7.2",
-    "standard": "^8.3.0",
     "testdouble": "^1.6.1"
   },
   "babel": {
