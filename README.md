@@ -56,9 +56,12 @@ Options:
 shep new [path]
 
 Options:
-  --version  Show version number                                                                               [boolean]
-  --help     Show help                                                                                         [boolean]
-  --path     Location to create the new shep project
+  --version      Show version number                                                                           [boolean]
+  --help         Show help                                                                                     [boolean]
+  --path         Location to create the new shep project
+  --skip-config  Skips configuring shep project                                                                [boolean]
+  --region       Region for new shep project
+  --rolename     Name of IAM Role which will be used to execute Lambda functions
 
 Examples:
   shep new         Launch an interactive CLI
@@ -158,7 +161,6 @@ Options:
 Examples:
   shep generate function      Launch an interactive CLI
   shep generate function foo  Genereate a new functon called "foo"
-
 ```
 #### `shep generate endpoint`
 ```
@@ -168,7 +170,6 @@ Options:
   --version  Show version number                                                                               [boolean]
   --help     Show help                                                                                         [boolean]
   --method   HTTP Method                                     [choices: "get", "post", "put", "delete", "options", "any"]
-
 ```
 #### `shep generate webpack`
 ```
@@ -179,6 +180,8 @@ Options:
   --help        Show help                                                                                      [boolean]
   --output, -o  Output file                                                               [default: "webpack.config.js"]
 
+Examples:
+  shep generate webpack -o foo.js  Writes default webpack configuration to foo.js
 ```
 
 ## Lambda Execution Role
