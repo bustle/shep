@@ -30,10 +30,6 @@ export default function run (opts) {
     {
       title: 'Install Depedencies',
       task: npmInstall
-    },
-    {
-      title: 'Initialize Git',
-      task: initGit
     }
   ]
 
@@ -88,6 +84,3 @@ function npmInstall ({ path }) {
   return exec('npm', ['install'], { cwd: path })
 }
 
-function initGit ({ path }) {
-  return exec('git', ['init'], { cwd: path })
-}

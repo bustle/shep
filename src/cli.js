@@ -9,4 +9,5 @@ require('yargs')
   .commandDir('./commands')
   .version()
   .help()
+  .strict()
   .argv

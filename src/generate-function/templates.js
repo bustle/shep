@@ -7,7 +7,7 @@ export function handler(event, context, callback) {
   console.log(context)
   console.log(config)
 
-  callback(null, { statusCode: 200, headers: {}, body: "success!" })
+  callback(null, { statusCode: 200, headers: {}, body: 'success!' })
 }`
 }
 

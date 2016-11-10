@@ -28,5 +28,4 @@ test(wroteFile, `${path}/README.md`)
 test(wroteFile, `${path}/webpack.config.js`)
 
 test(didExec, 'npm', 'install')
-test(didExec, 'git', 'init')
 
