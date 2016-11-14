@@ -21,8 +21,7 @@ example:
 
 ```json
 {
-  "FunctionName": "$PROJECT_NAME-$FUNCTION_NAME",
-  "Description": ""
+  "FunctionName": "$PROJECT_NAME-$FUNCTION_NAME"
 }
 ```
 
