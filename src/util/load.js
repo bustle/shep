@@ -32,6 +32,10 @@ export function lambdaConfig (name) {
   const functionConfig = readJSONSync(`functions/${name}/lambda.json`)
   const projectConfig = readJSONSync(`lambda.json`)
 
+  if (!functionConfig.Description) {
+    console.log(`Warning: "functions/${name}/lambda.json" is missing a "Description" field.`)
+  }
+
   return Object.assign(projectConfig, functionConfig)
 }
 
