@@ -3,9 +3,9 @@ export function index () {
 
 export function handler(event, context, callback) {
   // Replace below with your own code!
-  console.log(JSON.stringify(event))
-  console.log(JSON.stringify(context))
-  console.log(JSON.stringify(config))
+  console.log(event)
+  console.log(context)
+  console.log(config)
 
   callback(null, { statusCode: 200, headers: {}, body: 'success!' })
 }`
@@ -28,8 +28,7 @@ export function event () {
 
 export function lambda (name) {
   let obj = {
-    FunctionName: name,
-    Description: ''
+    FunctionName: name
   }
 
   return JSON.stringify(obj, null, 2)
