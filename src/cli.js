@@ -1,13 +1,16 @@
 import loudRejection from 'loud-rejection'
+import yargs from 'yargs'
 
-loudRejection()
+export default function cli () {
+  loudRejection()
 
-require('yargs')
-  .wrap(120)
-  .usage('Usage: $0 <command> [options]')
-  .demand(1)
-  .commandDir('./commands')
-  .version()
-  .help()
-  .strict()
-  .argv
+  yargs
+    .wrap(120)
+    .usage('Usage: $0 <command> [options]')
+    .demand(1)
+    .commandDir('./commands')
+    .version()
+    .help()
+    .strict()
+    .argv
+}
