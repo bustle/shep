@@ -7,3 +7,5 @@ export { default as build } from './build'
 export { default as generateFunction } from './generate-function'
 export { default as generateEndpoint } from './generate-endpoint'
 export { default as generateWebpack } from './generate-webpack'
+export { version } from '../package.json'
+

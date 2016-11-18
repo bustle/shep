@@ -9,6 +9,9 @@
     "lint": "standard",
     "prepublish": "npm run compile"
   },
+  "engines" : {
+    "node" : ">=4.0.0"
+  },
   "keywords": [
     "serverless",
     "serverless framework",
@@ -45,6 +48,7 @@
     "lodash.merge": "^4.6.0",
     "loud-rejection": "^1.6.0",
     "minimatch": "^3.0.3",
+    "resolve": "^1.1.7",
     "stream-buffers": "^3.0.0",
     "yargs": "^6.0.0"
   },
