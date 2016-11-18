@@ -1,6 +1,6 @@
 {
   "name": "shep",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "A framework for building JavaScript APIs with AWS API Gateway and Lambda",
   "main": "lib/index.js",
   "scripts": {
@@ -9,8 +9,8 @@
     "lint": "standard",
     "prepublish": "npm run compile"
   },
-  "engines" : {
-    "node" : ">=4.0.0"
+  "engines": {
+    "node": ">=4.0.0"
   },
   "keywords": [
     "serverless",
