@@ -207,3 +207,5 @@ Pull requests welcome!
 Test: `npm test`
 
 Rebuild on file change: `npm run compile -- -w`
+
+Publish: `npm run pub` "publish" is reserved by npm
