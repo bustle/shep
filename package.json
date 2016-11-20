@@ -7,7 +7,8 @@
     "compile": "babel -d lib/ src/",
     "test": "ava",
     "lint": "standard",
-    "prepublish": "npm run compile"
+    "prepublish": "npm run compile",
+    "pub":  "np"
   },
   "engines": {
     "node": ">=4.0.0"
@@ -58,6 +59,7 @@
     "babel-plugin-add-module-exports": "^0.2.1",
     "babel-preset-es2015-node4": "^2.1.0",
     "babel-register": "^6.7.2",
+    "np": "^2.10.1",
     "standard": "^8.5.0",
     "testdouble": "^1.6.1"
   },
