@@ -1,6 +1,6 @@
 {
   "name": "shep",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A framework for building JavaScript APIs with AWS API Gateway and Lambda",
   "main": "lib/index.js",
   "scripts": {
@@ -8,7 +8,7 @@
     "test": "ava",
     "lint": "standard",
     "prepublish": "npm run compile",
-    "pub":  "np"
+    "pub": "np"
   },
   "engines": {
     "node": ">=4.0.0"
