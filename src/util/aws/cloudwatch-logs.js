@@ -1,8 +1,9 @@
 import AWS from './'
 
-export function getLogGroup({ functionName }) {
+export function getLogGroup ({ functionName }) {
   const cwLogs = new AWS.CloudWatchLogs()
   const expetedName = `/aws/lambda/${functionName}`
+
   const params = {
     logGroupNamePrefix: expetedName
   }
@@ -13,30 +14,32 @@ export function getLogGroup({ functionName }) {
   .get('logGroupName')
 }
 
-export function getLogStreams({ logGroupName, functionVersion }) {
+export function getLogStream ({ logGroupName, functionVersion }) {
   const cwLogs = new AWS.CloudWatchLogs()
-  const date = new Date()
 
   const params = {
     logGroupName,
-    logStreamNamePrefix: `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/[${functionVersion}]`
-    //orderBy: 'LastEventTime'
+    orderBy: 'LastEventTime',
+    descending: true
   }
 
   return cwLogs.describeLogStreams(params).promise()
-  .then((response) => response.logStreams.map((stream) => stream.logStreamName))
+  .get('logStreams')
+  .get(0)
+  .get('logStreamName')
 }
 
-export function getLogEvents({ logGroupName, logStreamNames, start }) {
+export function getLogEvents ({ logGroupName, logStreamName, start, end }) {
   const cwLogs = new AWS.CloudWatchLogs()
 
   const params = {
     logGroupName,
-    logStreamNames,
-    startTime: start
+    logStreamName,
+    startTime: start,
+    endTime: end,
+    startFromHead: true
   }
 
-  return cwLogs.filterLogEvents(params).promise()
+  return cwLogs.getLogEvents(params).promise()
   .get('events')
-  .tap(console.log)
 }
