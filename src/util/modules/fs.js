@@ -1,6 +1,6 @@
 import fs from 'fs-extra-promise'
 
-export const mkdir = fs.mkdirAsync
+export const mkdirp = fs.mkdirpAsync
 export const writeFile = fs.writeFileAsync
 export const writeJSON = fs.writeJSONAsync
 export const readJSON = fs.readJSONAsync

@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from '../util/modules/fs'
+import { mkdirp, writeFile } from '../util/modules/fs'
 import { getRole, createRole, attachPolicy } from '../util/aws/iam'
 import * as templates from './templates'
 import Promise from 'bluebird'
@@ -17,7 +17,7 @@ export default function run (opts) {
     },
     {
       title: `Create ${path}/`,
-      task: () => mkdir(path)
+      task: () => mkdirp(path)
     },
     {
       title: 'Create Subdirectories',
@@ -59,8 +59,8 @@ function setupIam (context) {
 
 function createSubDirs ({ path }) {
   return Promise.all([
-    mkdir(path + '/functions'),
-    mkdir(path + '/config')
+    mkdirp(path + '/functions'),
+    mkdirp(path + '/config')
   ])
 }
 
