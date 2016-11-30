@@ -21,7 +21,22 @@ Shep will require your amazon credentials and will load them using the same meth
 
 ### Installation
 
-`npm install -g shep`
+```bash
+npm install -g shep
+npm install --save-dev shep // the global shep will run the local shep
+```
+
+Add a few lines to your `package.json`. Your [account id](https://console.aws.amazon.com/billing/home?#/account),
+
+```json
+{
+  "name": "my-great-package",
+  "shep": {
+    "accountId": "XXXXX",
+    "region": "us-east-1"
+  }
+}
+```
 
 ### Creating a new API
 

@@ -3,7 +3,7 @@ import td from 'testdouble'
 const fs = td.replace('../../src/util/modules/fs')
 
 function createdDir (t, dirName) {
-  td.verify(fs.mkdir(td.matchers.contains(dirName)))
+  td.verify(fs.mkdirp(td.matchers.contains(dirName)))
 }
 createdDir.title = (providedTitle, dirName) => `Created dir ${dirName}`
 

@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from '../util/modules/fs'
+import { mkdirp, writeFile } from '../util/modules/fs'
 import genName from '../util/generate-name'
 import * as templates from './templates'
 import listr from '../util/modules/listr'
@@ -10,11 +10,11 @@ export default function (opts) {
   const tasks = listr([
     {
       title: `Create functions/${shortName}/`,
-      task: () => mkdir(`./functions/${shortName}`)
+      task: () => mkdirp(`./functions/${shortName}`)
     },
     {
       title: `Create functions/${shortName}/events`,
-      task: () => mkdir(`./functions/${shortName}/events`)
+      task: () => mkdirp(`./functions/${shortName}/events`)
     },
     {
       title: 'Create files',

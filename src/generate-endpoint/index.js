@@ -16,7 +16,7 @@ module.exports = function (opts) {
     throw new Error('Unable to determine your AWS Account ID. Please set it in the `shep` section of package.json')
   }
 
-  const api = load.api()
+  const api = load.api() || {}
 
   const name = `${path} ${method}`
   const { shortName, fullName } = genName(name)
@@ -45,6 +45,10 @@ module.exports = function (opts) {
 
 function addPath (api, path, method, accountId, functionName) {
   if (method === 'any') { method = 'x-amazon-apigateway-any-method' }
+
+  if (!api.paths) {
+    api.paths = {}
+  }
 
   api.paths[path] = api.paths[path] || {}
   if (api.paths[path][method] !== undefined) { throw new Error(`Method '${method}' on path '${path}' already exists`) }
