@@ -24,7 +24,7 @@ export default function (opts) {
   const verbose = opts.v
   const performBuild = opts.build
   const name = opts.name
-  const env = opts.environemnt || 'development'
+  const env = opts.environment || 'development'
   const lambdaConfig = load.lambdaConfig(name)
   const events = load.events(name, opts.event)
   const [ fileName, handler ] = lambdaConfig.Handler.split('.')
