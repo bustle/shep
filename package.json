@@ -50,7 +50,7 @@
     "loud-rejection": "^1.6.0",
     "minimatch": "^3.0.3",
     "resolve": "^1.1.7",
-    "stream-buffers": "^3.0.0",
+    "stream-buffers": "^3.0.1",
     "yargs": "^6.0.0"
   },
   "devDependencies": {
