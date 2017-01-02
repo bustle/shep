@@ -10,6 +10,7 @@ export function builder (yargs) {
   .pkgConf('shep', process.cwd())
   .describe('stage', 'Name of stage to use')
   .describe('name', 'Name of function to use')
+  .describe('region', 'Name of region to use, uses region in `package.json` if not given')
   .boolean('stream', 'Stream logs')
   .default('stream', true)
   .example('shep logs', 'Launch an interactive CLI')

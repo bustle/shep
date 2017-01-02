@@ -14,9 +14,11 @@ export function getLogGroup ({ functionName }) {
   .get('logGroupName')
 }
 
-export function getLogStream ({ logGroupName, functionVersion }) {
+export function getLogStreams ({ logGroupName, functionVersion }) {
   const cwLogs = new AWS.CloudWatchLogs()
+  const versionRegExp = new RegExp(`\\[${functionVersion}\\]`)
 
+  // LastEventTime isn't always accurate
   const params = {
     logGroupName,
     orderBy: 'LastEventTime',
@@ -25,21 +27,21 @@ export function getLogStream ({ logGroupName, functionVersion }) {
 
   return cwLogs.describeLogStreams(params).promise()
   .get('logStreams')
-  .get(0)
-  .get('logStreamName')
+  .filter((stream) => versionRegExp.test(stream.logStreamName))
+  .map((x) => x.logStreamName)
 }
 
-export function getLogEvents ({ logGroupName, logStreamName, start, end }) {
+export function getLogEvents ({ logGroupName, logStreamNames, start, end }) {
   const cwLogs = new AWS.CloudWatchLogs()
 
   const params = {
     logGroupName,
-    logStreamName,
+    logStreamNames,
     startTime: start,
     endTime: end,
-    startFromHead: true
+    interleaved: true
   }
 
-  return cwLogs.getLogEvents(params).promise()
+  return cwLogs.filterLogEvents(params).promise()
   .get('events')
 }
