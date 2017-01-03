@@ -1,27 +1,40 @@
 import test from 'ava'
 import td from '../helpers/testdouble'
+import Promise from 'bluebird'
 
+const pkg = {
+  name: 'foo',
+  shep: {
+    region: 'us-east-1'
+  }
+}
 const env = 'development'
-const region = 'us-east-1'
-const functionName = 'foo'
-const aliasName = 'beta'
-const functionVersion = 6
-const logGroupName = `/aws/lambda/${functionName}`
-const start = Date.now()
-const streams = []
+const functionName = 'bar'
+const callback = td.function('callback')
+const getLogResponse = {
+  events: [],
+  nextLogCall: callback
+}
+
+const load = td.replace('../../src/util/load')
+td.when(load.pkg()).thenReturn(pkg)
 
 const cloudwatchLogs = td.replace('../../src/util/aws/cloudwatch-logs')
 const lambda = td.replace('../../src/util/aws/lambda')
 
-td.when(cloudwatchLogs.getLogGroup({ functionName })).thenReturn(Promise.resolve(logGroupName))
-td.when(lambda.getAliasVersion(aliasName)).thenReturn(Promise.resolve(functionVersion))
-td.when(cloudwatchLogs.getLogStreams({ logGroupName, functionVersion })).thenReturn(Promise.resolve(streams))
+const getLogs = td.replace('../../src/util/get-logs')
+td.when(getLogs(), { ignoreExtraArgs: true }).thenReturn(Promise.resolve(getLogResponse))
 
 test.before(() => {
   const shep = require('../../src/index')
-  shep.logs({ env, functionName, stream: false, region })
+  shep.logs({ env, name: functionName, stream: false })
 })
 
-test('Logs to console', () => {
-  td.verify(cloudwatchLogs.getLogEvents({ logGroupName, streams, start }))
+test('Gets alias version', () => {
+  td.verify(lambda.getAliasVersion(td.matchers.anything()))
 })
+
+test('Gets log group', () => {
+  td.verify(cloudwatchLogs.getLogGroup(td.matchers.anything()))
+})
+
