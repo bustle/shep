@@ -11,9 +11,9 @@ export function api (apiName) {
 }
 
 export function env (env) {
-  return `module.exports = {
-  env: "${env}",
-  secretkey: "${env}-secret-key"
+  return `{
+  "ENV": "${env}",
+  "SECRET_KEY": "${env}-secret-key"
 }
 `
 }
@@ -21,7 +21,7 @@ export function env (env) {
 export function gitignore () {
   return `dist/*
 node_modules/*
-config/*
+environments/*
 `
 }
 
@@ -90,15 +90,6 @@ const path = require('path')
 const minimatch = require('minimatch')
 
 const env = process.env.NODE_ENV || 'development'
-
-const shepConfig = path.resolve(\`config/$\{env}.js\`)
-
-try {
-  fs.statSync(shepConfig)
-} catch (e) {
-  throw new Error(\`cannot read config file for environment "$\{env}": $\{e.message}\`)
-}
-
 const pattern = process.env.PATTERN || '*'
 
 const entry = fs.readdirSync('functions')
@@ -117,9 +108,7 @@ module.exports = {
     libraryTarget: 'commonjs2'
   },
   resolve: {
-    modules: [ 'node_modules', 'lib' ],
-    alias: {
-      'shep-config': shepConfig
+    modules: [ 'node_modules', 'lib' ]
   }
 }
 `

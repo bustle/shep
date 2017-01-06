@@ -15,7 +15,7 @@ const load = td.replace('../../src/util/load')
 td.when(load.api()).thenReturn()
 
 const upload = td.replace('../../src/util/upload-functions')
-td.when(upload(functions)).thenResolve(uploadedFuncs)
+td.when(upload(functions, env)).thenResolve(uploadedFuncs)
 
 test.before(() => {
   const shep = require('../../src/index')
