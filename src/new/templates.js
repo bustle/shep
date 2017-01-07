@@ -91,12 +91,12 @@ const minimatch = require('minimatch')
 
 const env = process.env.NODE_ENV || 'development'
 
-const shepConfig = path.resolve(\`config/$\{env\}.js\`)
+const shepConfig = path.resolve(\`config/$\{env}.js\`)
 
 try {
   fs.statSync(shepConfig)
 } catch (e) {
-  throw new Error(\`cannot read config file for environment "$\{env\}": $\{e.message\}\`)
+  throw new Error(\`cannot read config file for environment "$\{env}": $\{e.message}\`)
 }
 
 const pattern = process.env.PATTERN || '*'
@@ -104,7 +104,7 @@ const pattern = process.env.PATTERN || '*'
 const entry = fs.readdirSync('functions')
   .filter(minimatch.filter(pattern))
   .reduce((map, funcName) => {
-    map[funcName] = path.resolve(\`functions/\$\{funcName\}/index\`)
+    map[funcName] = path.resolve(\`functions/\${funcName}/index\`)
     return map
   }, {})
 
