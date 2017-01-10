@@ -12,6 +12,10 @@ export function getLogGroup ({ functionName }) {
   .then((groups) => groups.filter((logGroup) => logGroup.logGroupName === expetedName))
   .get(0)
   .get('logGroupName')
+  .catch((e) => {
+    return Promise.reject({ code: 'ResourceNotFoundException',
+      message: 'No log groups found for specified function' })
+  })
 }
 
 export function getLogStreams ({ logGroupName, functionVersion }) {

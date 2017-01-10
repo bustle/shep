@@ -15,14 +15,14 @@ export default function (opts) {
   AWS.config.update({ region })
 
   // Should gracefully handle if function doesn't exist
-  return Promise.all([getLogGroup({ functionName }), getAliasVersion({ functionName, aliasName })])
-  .spread((logGroupName, functionVersion) => getLogs({ logGroupName, functionVersion, stream }))
+  return Promise.join(getLogGroup({ functionName }), getAliasVersion({ functionName, aliasName }),
+    (logGroupName, functionVersion) => getLogs({ logGroupName, functionVersion, stream }))
   .then(printEventsLoop)
 }
 
 function printEventsLoop ({ events, nextLogCall }) {
-  const rate = 250 // note this can't go under 200 as we're limited to 5 requests/sec
-  // print logs
+  const rate = 500
+
   if (events !== undefined && events.length !== 0) {
     console.log(events.map(formatEvent).join(''))
   }
