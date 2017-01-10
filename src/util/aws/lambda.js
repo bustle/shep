@@ -18,6 +18,18 @@ export function putFunction (config, ZipFile) {
   })
 }
 
+export function getAliasVersion ({ functionName, aliasName }) {
+  const lambda = new AWS.Lambda()
+
+  const params = {
+    FunctionName: functionName,
+    Name: aliasName
+  }
+
+  return lambda.getAlias(params).promise()
+  .get('FunctionVersion')
+}
+
 export function setAlias ({ Version, FunctionName }, Name) {
   const lambda = new AWS.Lambda()
 
