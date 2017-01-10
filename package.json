@@ -72,7 +72,7 @@
         "env",
         {
           "targets": {
-            "node": "current"
+            "node": 4.3
           },
           "exclude": [
             "transform-regenerator"
