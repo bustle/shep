@@ -20,7 +20,7 @@ function tailCallGenerator ({ logGroupName, functionVersion, stream, lastTimesta
   if (stream) {
     return () => getLogs({ logGroupName, functionVersion, stream, start: lastTimestamp })
   }
-  return () => Promise.resolve()
+  return () => Promise.resolve({})
 }
 
 function maxTimestamp (latest, event) {

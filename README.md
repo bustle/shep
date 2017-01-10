@@ -42,6 +42,7 @@ Commands:
   build [env] [functions]   Builds functions and writes them to disk
   deploy [env] [functions]  Deploy both functions and APIs to AWS. Will create a new API if the ID is not specified
   generate                  Run `shep generate --help` for additional information
+  logs [stage] [name]       Streams logs from the specified version of a function
   new [path]                Create a new shep project
   pull                      Pulls a swagger JSON representation of an existing API and writes it to a local file
   push                      Create a new shep project
@@ -148,6 +149,22 @@ Examples:
   shep build beta              Build all functions with beta environment variables
   shep build beta create-user  Build only the create-user function
   shep build beta *-user       Build functions matching the pattern *-user
+```
+#### `shep logs`
+```
+shep logs [stage] [name]
+
+Options:
+  --version  Show version number                                                                               [boolean]
+  --help     Show help                                                                                         [boolean]
+  --stage    Name of stage to use
+  --name     Name of function to use
+  --region   Name of region to use, uses region in `package.json` if not given
+  --stream                                                                                     [boolean] [default: true]
+
+Examples:
+  shep logs                 Launch an interactive CLI
+  shep logs production foo  Shows logs for the `foo` function in the production environment
 ```
 #### `shep generate function`
 ```

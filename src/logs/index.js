@@ -14,7 +14,6 @@ export default function (opts) {
 
   AWS.config.update({ region })
 
-  // Should gracefully handle if function doesn't exist
   return Promise.join(getLogGroup({ functionName }), getAliasVersion({ functionName, aliasName }),
     (logGroupName, functionVersion) => getLogs({ logGroupName, functionVersion, stream }))
   .then(printEventsLoop)
