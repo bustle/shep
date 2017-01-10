@@ -18,7 +18,7 @@ test('No calls to AWS if no rolename', () => {
 
 test(createdDir, `${path}/functions`)
 test(createdDir, `${path}/functions`)
-test(createdDir, `${path}/config`)
+test(createdDir, `${path}/environments`)
 
 test(wroteFile, `${path}/lambda.json`)
 test(wroteFile, `${path}/api.json`)

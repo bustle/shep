@@ -2,7 +2,7 @@ import { readdirSync, readJSONSync } from './modules/fs'
 import minimatch from 'minimatch'
 
 export function envs () {
-  return readdirSync('config')
+  return readdirSync('environments')
   .map((file) => file.split('.').shift())
 }
 
@@ -45,4 +45,17 @@ export function api () {
   } catch (e) {
     return null
   }
+}
+
+export function envVars (env) {
+  const envConfig = readJSONSync(`environments/${env}.json`)
+
+  Object.keys(envConfig).forEach(key => {
+    let val = envConfig[key]
+    if (typeof val !== 'string') {
+      throw new Error(`Config value '${val}' from key '${key}' must be a string`)
+    }
+  })
+
+  return envConfig
 }

@@ -33,7 +33,7 @@ export default function (opts) {
     },
     {
       title: 'Upload Functions to AWS',
-      task: () => upload(functions).tap((funcs) => { uploadedFuncs = funcs })
+      task: () => upload(functions, env).tap((funcs) => { uploadedFuncs = funcs })
     }
   ], opts.quiet)
 
