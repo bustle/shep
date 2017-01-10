@@ -69,3 +69,11 @@ module.exports = function(name, env) {
   }
 }
 ```
+
+## Migrating from shep 2.X to shep 3.0
+
+- Shep 3.0 undoes changes in 2.X that added shep-config as a js module. In 3.0, your config should be
+json, and it should live inside the `/environments` directory
+- Environment vars are now stored on `process.env`, like `process.env.ENV`. 
+- Capitalize all config keys inside environment files
+- `shep run` accepts custom process.env key value pairs, e.g., `DB_TABLE=custom shep run ${functionName}`
