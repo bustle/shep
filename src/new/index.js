@@ -60,7 +60,7 @@ function setupIam (context) {
 function createSubDirs ({ path }) {
   return Promise.all([
     mkdirp(path + '/functions'),
-    mkdirp(path + '/config')
+    mkdirp(path + '/environments')
   ])
 }
 
@@ -69,9 +69,9 @@ function createFiles ({ path, arn, region }) {
 
   return Promise.all([
     writeFile(path + '/package.json', templates.pkg({ apiName: path, region, accountId })),
-    writeFile(path + '/config/development.js', templates.env('development')),
-    writeFile(path + '/config/beta.js', templates.env('beta')),
-    writeFile(path + '/config/production.js', templates.env('production')),
+    writeFile(path + '/environments/development.json', templates.env('development')),
+    writeFile(path + '/environments/beta.json', templates.env('beta')),
+    writeFile(path + '/environments/production.json', templates.env('production')),
     writeFile(path + '/.gitignore', templates.gitignore()),
     writeFile(path + '/README.md', templates.readme(path)),
     writeFile(path + '/lambda.json', templates.lambda(arn)),

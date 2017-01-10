@@ -134,6 +134,7 @@ Examples:
   shep run foo --no-build                Run the already built `foo` function in the dist folder
   shep run foo --event default           Runs the `foo` function for just the `default` event
   shep run foo --environment production  Runs the `foo` function with production environment
+  DB_TABLE=custom shep run foo           Runs the `foo` function with process.env.DB_TABLE assigned to custom (vars declared this way will overwrite vals in your environments/${env}.json file)
 ```
 #### `shep deploy`
 ```

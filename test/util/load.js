@@ -3,7 +3,7 @@ import * as load from '../../src/util/load'
 
 test.before(() => process.chdir('./test/fixtures'))
 
-test('Loads environemnts', (t) => {
+test('Loads environments', (t) => {
   t.deepEqual(load.envs().sort(), [ 'beta', 'prod' ])
 })
 
