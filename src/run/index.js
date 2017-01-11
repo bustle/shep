@@ -23,54 +23,67 @@ export default async function (opts) {
   }
 
   const verbose = opts.v
-  const performBuild = opts.build
-  const name = opts.name
-  const env = opts.environment || 'development'
-  const lambdaConfig = load.lambdaConfig(name)
-  const events = load.events(name, opts.event)
-  const [ fileName, handler ] = lambdaConfig.Handler.split('.')
-
-  mergeWith(process.env, load.envVars(env), function (objectValue, sourceValue) {
-    return objectValue
-  })
-
-  const context = {}
-
-  if (performBuild) {
-    await build(name, env)
-  }
-
-  const func = requireProject(`dist/${name}/${fileName}`)[handler]
-
-  const out = await Promise.map(events, (eventFilename) => {
-    const event = requireProject(`functions/${name}/events/${eventFilename}`)
-    return new Promise((resolve) => {
-      const output = { name: eventFilename }
-      output.start = new Date()
-      try {
-        func(event, context, (err, res) => {
-          output.end = new Date()
-          if (err) {
-            output.result = results.error
-            output.response = err
-          } else {
-            output.result = results.success
-            output.response = res
-          }
-          resolve(output)
-        })
-      } catch (e) {
-        output.end = new Date()
-        output.result = results.exception
-        output.response = e
-        resolve(output)
-      }
-    })
-  })
-
-  logOutput(out)
-  out.map((out) => formatOutput(out, verbose))
+  const funcRunner = runFunction(opts)
+  // would be easier if name was just a pattern string which would be passed to load.funcs()
+  const names = load.funcs(opts.name)
+  // generate array of names
+  // map runFunc names
+  const out = await Promise.map(names, funcRunner)
+  // end of function
+  out.map(logOutput)
+  out.map((funcOut) => funcOut.map((eventOut) => formatOutput(eventOut, verbose)))
   console.log(ui.toString())
+  // output # of failed functions
+  const failedFunctions = out.filter((o) => o.error)
+}
+
+function runFunction (opts) {
+  return async (name) => {
+    const env = opts.environment || 'development'
+    const performBuild = opts.build
+    const lambdaConfig = load.lambdaConfig(name)
+    const events = load.events(name, opts.event)
+    const [ fileName, handler ] = lambdaConfig.Handler.split('.')
+
+    mergeWith(process.env, load.envVars(env), function (objectValue, sourceValue) {
+      return objectValue
+    })
+
+    const context = {}
+
+    if (performBuild) {
+      await build(name, env)
+    }
+
+    const func = requireProject(`dist/${name}/${fileName}`)[handler]
+
+    return await Promise.map(events, (eventFilename) => {
+      const event = requireProject(`functions/${name}/events/${eventFilename}`)
+      return new Promise((resolve) => {
+        const output = { name: eventFilename }
+        output.start = new Date()
+        try {
+          func(event, context, (err, res) => {
+            output.end = new Date()
+            if (err) {
+              output.result = results.error
+              output.response = err
+            } else {
+              output.result = results.success
+              output.response = res
+            }
+            resolve(output)
+          })
+        } catch (e) {
+          output.error = true
+          output.end = new Date()
+          output.result = results.exception
+          output.response = e
+          resolve(output)
+        }
+      })
+    })
+  }
 }
 
 function logOutput (outputs) {

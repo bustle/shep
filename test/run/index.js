@@ -9,6 +9,7 @@ const lambdaFunc = td.object([handler])
 td.when(lambdaFunc[handler](td.matchers.isA(Object), td.matchers.isA(Object))).thenCallback(null, 'bar')
 
 const load = td.replace('../../src/util/load')
+td.when(load.funcs(funcName)).thenReturn(funcName)
 td.when(load.lambdaConfig(funcName)).thenReturn(config)
 td.when(load.events(funcName, td.matchers.anything())).thenReturn(events)
 

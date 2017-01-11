@@ -29,6 +29,7 @@ export function funcs (pattern = '*') {
 }
 
 export function lambdaConfig (name) {
+  console.log(process.cwd())
   const functionConfig = readJSONSync(`functions/${name}/lambda.json`)
   const projectConfig = readJSONSync(`lambda.json`)
 

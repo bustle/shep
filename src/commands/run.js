@@ -19,6 +19,7 @@ export function builder (yargs) {
   .example('shep run foo --no-build', 'Run the already built `foo` function in the dist folder')
   .example('shep run foo --event default', 'Runs the `foo` function for just the `default` event')
   .example('shep run foo --environment production', 'Runs the `foo` function with production environment')
+  .example('shep run foo-*', 'Runs all functions matching pattern `foo-*`')
 }
 
 export function handler (opts) {
