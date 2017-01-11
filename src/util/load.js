@@ -48,7 +48,12 @@ export function api () {
 }
 
 export function envVars (env) {
-  const envConfig = readJSONSync(`environments/${env}.json`)
+  let envConfig
+  try {
+    envConfig = readJSONSync(`environments/${env}.json`)
+  } catch (e) {
+    return {}
+  }
 
   Object.keys(envConfig).forEach(key => {
     let val = envConfig[key]
