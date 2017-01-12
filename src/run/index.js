@@ -22,19 +22,21 @@ export default async function (opts) {
     console.log(`Warning: Lambda currently runs node v${awsNodeVersion} but you are using v${processVersion}`)
   }
 
-  const verbose = opts.v
+  const loggingFunction = logFunction(opts.v)
   const funcRunner = runFunction(opts)
-  // would be easier if name was just a pattern string which would be passed to load.funcs()
-  const names = load.funcs(opts.name)
-  // generate array of names
-  // map runFunc names
+  const names = load.funcs(opts.pattern)
+
   const out = await Promise.map(names, funcRunner)
-  // end of function
-  out.map(logOutput)
-  out.map((funcOut) => funcOut.map((eventOut) => formatOutput(eventOut, verbose)))
+  out.map(loggingFunction)
   console.log(ui.toString())
-  // output # of failed functions
-  const failedFunctions = out.filter((o) => o.error)
+
+  const failedFunctions = out.reduce((count, eventResponse) => {
+    return count + eventResponse.filter((e) => e.error).length
+  }, 0)
+
+  if (failedFunctions > 0) {
+    process.exit(failedFunctions)
+  }
 }
 
 function runFunction (opts) {
@@ -60,7 +62,7 @@ function runFunction (opts) {
     return await Promise.map(events, (eventFilename) => {
       const event = requireProject(`functions/${name}/events/${eventFilename}`)
       return new Promise((resolve) => {
-        const output = { name: eventFilename }
+        const output = { name: eventFilename, funcName: name }
         output.start = new Date()
         try {
           func(event, context, (err, res) => {
@@ -86,9 +88,15 @@ function runFunction (opts) {
   }
 }
 
-function logOutput (outputs) {
-  if (outputs.length === 1) {
-    console.log(outputs[0].response)
+function logFunction (verbose) {
+  return (functionOutput) => {
+    ui.div(
+      {
+        text: functionOutput[0].funcName,
+        padding: [1, 0, 0, 0]
+      }
+    )
+    functionOutput.map((eventOut) => formatOutput(eventOut, verbose))
   }
 }
 

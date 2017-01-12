@@ -61,7 +61,7 @@ Commands:
   new [path]                Create a new shep project
   pull                      Pulls a swagger JSON representation of an existing API and writes it to a local file
   push                      Create a new shep project
-  run [name]                Run a function in your local environemnt
+  run [pattern]             Run a function in your local environemnt
 
 Options:
   --version  Show version number                                                                               [boolean]
@@ -91,8 +91,8 @@ Options:
   --version     Show version number                                                                            [boolean]
   --help        Show help                                                                                      [boolean]
   --region, -r  AWS region                                                                                    [required]
-  --stage, -s   AWS API Gateway stage. Read from the shep config in project.json if not provided              [required]
-  --api-id, -a  AWS API Gateway ID. Read from the shep config in project.json if not provided                 [required]
+  --stage, -s   AWS API Gateway stage. Read from the shep config in package.json if not provided              [required]
+  --api-id, -a  AWS API Gateway ID. Read from the shep config in package.json if not provided                 [required]
   --output, -o  Path of the file to output                                                         [default: "api.json"]
 
 Examples:
@@ -118,7 +118,7 @@ Examples:
 ```
 #### `shep run`
 ```
-shep run [name]
+shep run [pattern]
 
 Options:
   --version      Show version number                                                                           [boolean]
@@ -134,7 +134,10 @@ Examples:
   shep run foo --no-build                Run the already built `foo` function in the dist folder
   shep run foo --event default           Runs the `foo` function for just the `default` event
   shep run foo --environment production  Runs the `foo` function with production environment
-  DB_TABLE=custom shep run foo           Runs the `foo` function with process.env.DB_TABLE assigned to custom (vars declared this way will overwrite vals in your environments/${env}.json file)
+  DB_TABLE=custom shep run foo           Runs the `foo` function with process.env.DB_TABLE assigned to custom (vars
+                                         declared this way will overwrite vals in your environments/${env}.json file)
+  shep run '*'                           Runs all functions for all events
+  shep run 'foo-*'                       Runs all functions matching pattern `foo-*`
 ```
 #### `shep deploy`
 ```
