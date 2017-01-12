@@ -1,2 +1,3 @@
 import execa from 'execa'
-export default execa
+import Promise from 'bluebird'
+export default Promise.method(execa)
