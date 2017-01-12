@@ -34,6 +34,9 @@ export function builder (yargs) {
   .describe('skip-config', 'Skips configuring shep project')
   .describe('region', 'Region for new shep project')
   .describe('rolename', 'Name of IAM Role which will be used to execute Lambda functions')
+  .describe('quiet', 'Don\'t log anything')
+  .default('quiet', false)
+  .alias('q', 'quiet')
   .example('shep new', 'Launch an interactive CLI')
   .example('shep new my-api', 'Generates a project at `my-api`')
 }

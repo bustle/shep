@@ -11,10 +11,13 @@ export function builder (yargs) {
   .pkgConf('shep', process.cwd())
   .describe('method', 'HTTP Method')
   .choices('method', httpMethods)
+  .describe('quiet', 'Don\'t log anything')
+  .default('quiet', false)
+  .alias('q', 'quiet')
 }
 
 export function handler (opts) {
-  inquirer.prompt([
+  const questions = [
     {
       name: 'path',
       type: 'input',
@@ -28,7 +31,9 @@ export function handler (opts) {
       message: 'HTTP method',
       choices: httpMethods
     }
-  ])
+  ]
+
+  inquirer.prompt(questions.filter((q) => !opts[q.name]))
   .then((inputs) => merge({}, inputs, opts))
   .then(generateEndpoint)
 }
