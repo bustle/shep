@@ -3,7 +3,7 @@ import run from '../run'
 import * as load from '../util/load'
 import merge from 'lodash.merge'
 
-export const command = 'run [name]'
+export const command = 'run [pattern]'
 export const desc = 'Run a function in your local environemnt'
 export function builder (yargs) {
   return yargs
@@ -19,12 +19,15 @@ export function builder (yargs) {
   .example('shep run foo --no-build', 'Run the already built `foo` function in the dist folder')
   .example('shep run foo --event default', 'Runs the `foo` function for just the `default` event')
   .example('shep run foo --environment production', 'Runs the `foo` function with production environment')
+  .example('DB_TABLE=custom shep run foo', 'Runs the `foo` function with process.env.DB_TABLE assigned to custom (vars declared this way will overwrite vals in your environments/env.json file)')
+  .example('shep run \'*\'', 'Runs all functions for all events')
+  .example('shep run \'foo-*\'', 'Runs all functions matching pattern `foo-*`')
 }
 
 export function handler (opts) {
   const questions = [
     {
-      name: 'name',
+      name: 'pattern',
       message: 'Function',
       type: 'list',
       choices: () => load.funcs()

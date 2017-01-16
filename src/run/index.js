@@ -22,60 +22,81 @@ export default async function (opts) {
     console.log(`Warning: Lambda currently runs node v${awsNodeVersion} but you are using v${processVersion}`)
   }
 
-  const verbose = opts.v
-  const performBuild = opts.build
-  const name = opts.name
-  const env = opts.environment || 'development'
-  const lambdaConfig = load.lambdaConfig(name)
-  const events = load.events(name, opts.event)
-  const [ fileName, handler ] = lambdaConfig.Handler.split('.')
+  const loggingFunction = logFunction(opts.v)
+  const funcRunner = runFunction(opts)
+  const names = load.funcs(opts.pattern)
 
-  mergeWith(process.env, load.envVars(env), function (objectValue, sourceValue) {
-    return objectValue
-  })
-
-  const context = {}
-
-  if (performBuild) {
-    await build(name, env)
-  }
-
-  const func = requireProject(`dist/${name}/${fileName}`)[handler]
-
-  const out = await Promise.map(events, (eventFilename) => {
-    const event = requireProject(`functions/${name}/events/${eventFilename}`)
-    return new Promise((resolve) => {
-      const output = { name: eventFilename }
-      output.start = new Date()
-      try {
-        func(event, context, (err, res) => {
-          output.end = new Date()
-          if (err) {
-            output.result = results.error
-            output.response = err
-          } else {
-            output.result = results.success
-            output.response = res
-          }
-          resolve(output)
-        })
-      } catch (e) {
-        output.end = new Date()
-        output.result = results.exception
-        output.response = e
-        resolve(output)
-      }
-    })
-  })
-
-  logOutput(out)
-  out.map((out) => formatOutput(out, verbose))
+  const out = await Promise.map(names, funcRunner)
+  out.map(loggingFunction)
   console.log(ui.toString())
+
+  const failedFunctions = out.reduce((count, eventResponse) => {
+    return count + eventResponse.filter((e) => e.error).length
+  }, 0)
+
+  if (failedFunctions > 0) {
+    process.exit(failedFunctions)
+  }
 }
 
-function logOutput (outputs) {
-  if (outputs.length === 1) {
-    console.log(outputs[0].response)
+function runFunction (opts) {
+  return async (name) => {
+    const env = opts.environment || 'development'
+    const performBuild = opts.build
+    const lambdaConfig = load.lambdaConfig(name)
+    const events = load.events(name, opts.event)
+    const [ fileName, handler ] = lambdaConfig.Handler.split('.')
+
+    mergeWith(process.env, load.envVars(env), function (objectValue, sourceValue) {
+      return objectValue
+    })
+
+    const context = {}
+
+    if (performBuild) {
+      await build(name, env)
+    }
+
+    const func = requireProject(`dist/${name}/${fileName}`)[handler]
+
+    return await Promise.map(events, (eventFilename) => {
+      const event = requireProject(`functions/${name}/events/${eventFilename}`)
+      return new Promise((resolve) => {
+        const output = { name: eventFilename, funcName: name }
+        output.start = new Date()
+        try {
+          func(event, context, (err, res) => {
+            output.end = new Date()
+            if (err) {
+              output.result = results.error
+              output.response = err
+            } else {
+              output.result = results.success
+              output.response = res
+            }
+            resolve(output)
+          })
+        } catch (e) {
+          output.error = true
+          output.end = new Date()
+          output.result = results.exception
+          output.response = e
+          resolve(output)
+        }
+      })
+    })
+  }
+}
+
+function logFunction (verbose) {
+  return (functionOutput) => {
+    ui.div(
+      {
+        text: functionOutput[0].funcName,
+        padding: [1, 0, 0, 0]
+      }
+    )
+    functionOutput.map((eventOut) => formatOutput(eventOut, verbose))
   }
 }
 
