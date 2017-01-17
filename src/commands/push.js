@@ -7,6 +7,9 @@ export function builder (yargs) {
   .require('api-id')
   .describe('region', 'AWS region. Read from package.json if not provided')
   .require('region')
+  .describe('quiet', 'Don\'t log anything')
+  .default('quiet', false)
+  .alias('q', 'quiet')
   .example('shep push', 'Pushes the api.json swagger configuration to API Gateway. Does not deploy the API.')
   .example('shep push --api-id foo --region us-east-1')
 }
