@@ -68,7 +68,8 @@ export function pkg ({ apiName, accountId = '', region = '' }) {
     shep: {
       region: region,
       accountId: accountId,
-      apiId: ''
+      apiId: '',
+      buildCommand: ''
     }
   }
 
