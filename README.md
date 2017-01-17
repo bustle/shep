@@ -38,6 +38,18 @@ Add a few lines to your `package.json`. Your [account id](https://console.aws.am
 }
 ```
 
+### Custom Builds
+
+By default shep builds all your functions using webpack. If your project requires a different build process, then edit your `package.json`. Be aware that using your own build process will probably break pattern matching for `shep build`.
+
+```json
+{
+  "shep": {
+    "buildCommand": "custom-build --with-flag"
+  }
+}
+```
+
 ### Creating a new API
 
 _Coming soon!_
