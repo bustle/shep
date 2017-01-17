@@ -40,7 +40,7 @@ Add a few lines to your `package.json`. Your [account id](https://console.aws.am
 
 ### Custom Builds
 
-By default shep builds all your functions using webpack. If your project requires a different build process, then edit your `package.json`. Be aware that using your own build process will probably break pattern matching for `shep build`.
+By default shep builds all your functions using webpack. If your project requires a different build process, then edit your `package.json`. Before running your build command, shep populates the `PATTERN` environment variable which can be accessed as `process.env.PATTERN` in your build command. Be aware that using your own build process will break pattern matching for `shep build` unless your build command respects the `PATTERN` variable. 
 
 ```json
 {
