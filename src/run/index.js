@@ -5,6 +5,7 @@ import Promise from 'bluebird'
 import chalk from 'chalk'
 import AWS from 'aws-sdk'
 import mergeWith from 'lodash.mergewith'
+import requireUnbuilt from '../util/require-unbuilt'
 
 import cliui from 'cliui'
 const ui = cliui({ width: 80 })
@@ -57,7 +58,8 @@ function runFunction (opts) {
       await build(name, env)
     }
 
-    const func = requireProject(`dist/${name}/${fileName}`)[handler]
+    const funcPath = `${performBuild ? 'dist' : 'functions'}/${name}/${fileName}.js`
+    const func = (performBuild ? requireProject(funcPath) : await requireUnbuilt(funcPath))[handler]
 
     return await Promise.map(events, (eventFilename) => {
       const event = requireProject(`functions/${name}/events/${eventFilename}`)
