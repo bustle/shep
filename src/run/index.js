@@ -61,6 +61,10 @@ function runFunction (opts) {
     const funcPath = `${performBuild ? 'dist' : 'functions'}/${name}/${fileName}.js`
     const func = (performBuild ? requireProject(funcPath) : await requireUnbuilt(funcPath))[handler]
 
+    if (typeof func !== 'function') {
+      return Promise.reject(new Error(`Handler function provided is not a function. Please verify that there exists a handler function exported as ${handler} in dist/${name}/${fileName}.js`))
+    }
+
     return await Promise.map(events, (eventFilename) => {
       const event = requireProject(`functions/${name}/events/${eventFilename}`)
       return new Promise((resolve) => {
