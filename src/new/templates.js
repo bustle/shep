@@ -63,12 +63,23 @@ export function pkg ({ apiName, accountId = '', region = '' }) {
     devDependencies: {
       webpack: '2.1.0-beta.25',
       minimatch: '3.0.3',
+      'babel-core': '6.21.0',
+      'babel-preset-env': '1.1.8',
       shep: version
     },
     shep: {
       region: region,
       accountId: accountId,
       apiId: ''
+    },
+    babel: {
+      presets: [
+        ['env', {
+          targets: {
+            node: 4.3
+          }
+        }]
+      ]
     }
   }
 
