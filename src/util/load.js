@@ -64,3 +64,7 @@ export function envVars (env) {
 
   return envConfig
 }
+
+export function babelrc () {
+  return readJSONSync('.babelrc')
+}

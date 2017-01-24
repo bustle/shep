@@ -6,21 +6,27 @@ const handler = 'handler'
 const config = { Handler: `index.${handler}` }
 const events = [{}]
 const lambdaFunc = td.object([handler])
-td.when(lambdaFunc[handler](td.matchers.isA(Object), td.matchers.isA(Object))).thenCallback(null, 'bar')
+td.when(lambdaFunc[handler](td.matchers.anything(), td.matchers.isA(Object))).thenCallback(null, 'bar')
 
 const load = td.replace('../../src/util/load')
 td.when(load.funcs(funcName)).thenReturn([funcName])
 td.when(load.lambdaConfig(funcName)).thenReturn(config)
 td.when(load.events(funcName, td.matchers.anything())).thenReturn(events)
 
-const requireProject = td.replace('../../src/util/require-project')
-td.when(requireProject(td.matchers.contains(funcName))).thenReturn(lambdaFunc)
+const projectUtils = td.replace('../../src/util/require-project')
 
-test.before(() => {
-  return require('../../src/run/index')({ pattern: funcName, build: false })
+const requireUnbuilt = td.replace('../../src/util/require-unbuilt')
+td.when(requireUnbuilt(td.matchers.contains(funcName))).thenResolve(lambdaFunc)
+
+test.before(async () => {
+  return await require('../../src/run/index')({ pattern: funcName, build: false })
 })
 
 test('Calls the function', () => {
   td.verify(lambdaFunc[handler](), { ignoreExtraArgs: true })
+})
+
+test('Loads event', () => {
+  td.verify(projectUtils.requireProject(td.matchers.contains('events')))
 })
 

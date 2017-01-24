@@ -76,7 +76,8 @@ function createFiles ({ path, arn, region }) {
     writeFile(path + '/README.md', templates.readme(path)),
     writeFile(path + '/lambda.json', templates.lambda(arn)),
     writeFile(path + '/api.json', templates.api(path)),
-    writeFile(path + '/webpack.config.js', templates.webpack())
+    writeFile(path + '/webpack.config.js', templates.webpack()),
+    writeFile(path + '/.babelrc', templates.babelrc())
   ])
 }
 
