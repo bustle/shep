@@ -1,13 +1,12 @@
-import path from 'path'
-import requireProject from './require-project'
+import { requireProject, projectPath } from './require-project'
 import { readFile } from './modules/fs'
-import { pkg } from './load'
+import { babelrc } from './load'
 
 export default async function (functionPath) {
   const { transform } = requireProject('node_modules/babel-core')
-  const absPath = path.join(process.cwd(), functionPath)
+  const absPath = projectPath(functionPath)
   const code = await readFile(absPath)
-  const { code: transpiledCode } = transform(code, pkg().babel)
+  const { code: transpiledCode } = transform(code, babelrc())
   return requireString(transpiledCode)
 }
 

@@ -13,8 +13,8 @@ td.when(load.funcs('*')).thenReturn(funcNames)
 td.when(load.lambdaConfig(), { ignoreExtraArgs: true }).thenReturn(config)
 td.when(load.events(), { ignoreExtraArgs: true }).thenReturn(events)
 
-const requireProject = td.replace('../../src/util/require-project')
-td.when(requireProject(td.matchers.contains('events'))).thenReturn({})
+const projectUtils = td.replace('../../src/util/require-project')
+td.when(projectUtils.requireProject(td.matchers.contains('events'))).thenReturn({})
 
 const requireUnbuilt = td.replace('../../src/util/require-unbuilt')
 td.when(requireUnbuilt(td.matchers.anything())).thenResolve(lambdaFunc)

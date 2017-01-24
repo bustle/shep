@@ -13,7 +13,7 @@ td.when(load.funcs(funcName)).thenReturn([funcName])
 td.when(load.lambdaConfig(funcName)).thenReturn(config)
 td.when(load.events(funcName, td.matchers.anything())).thenReturn(events)
 
-const requireProject = td.replace('../../src/util/require-project')
+const projectUtils = td.replace('../../src/util/require-project')
 
 const requireUnbuilt = td.replace('../../src/util/require-unbuilt')
 td.when(requireUnbuilt(td.matchers.contains(funcName))).thenResolve(lambdaFunc)
@@ -27,6 +27,6 @@ test('Calls the function', () => {
 })
 
 test('Loads event', () => {
-  td.verify(requireProject(td.matchers.contains('events')))
+  td.verify(projectUtils.requireProject(td.matchers.contains('events')))
 })
 

@@ -61,10 +61,11 @@ export function pkg ({ apiName, accountId = '', region = '' }) {
     description: '',
     license: '',
     devDependencies: {
-      webpack: '2.1.0-beta.25',
+      webpack: '2.2.0',
       minimatch: '3.0.3',
       'babel-core': '6.21.0',
       'babel-preset-env': '1.1.8',
+      'babel-loader': '6.2.10',
       shep: version
     },
     shep: {
@@ -72,15 +73,6 @@ export function pkg ({ apiName, accountId = '', region = '' }) {
       accountId: accountId,
       apiId: '',
       buildCommand: ''
-    },
-    babel: {
-      presets: [
-        ['env', {
-          targets: {
-            node: 4.3
-          }
-        }]
-      ]
     }
   }
 
@@ -114,6 +106,16 @@ const entry = fs.readdirSync('functions')
 module.exports = {
   target: 'node',
   entry,
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        use: [
+          { loader: 'babel-loader' }
+        ]
+      }
+    ]
+  },
   output: {
     path: 'dist',
     filename: '[name]/index.js',
@@ -124,4 +126,18 @@ module.exports = {
   }
 }
 `
+}
+
+export function babelrc () {
+  const obj = {
+    presets: [
+      ['env', {
+        targets: {
+          node: 4.3
+        }
+      }]
+    ]
+  }
+
+  return JSON.stringify(obj, null, 2) + '\n'
 }

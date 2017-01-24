@@ -1,4 +1,4 @@
-import requireProject from '../util/require-project'
+import { requireProject } from '../util/require-project'
 import * as load from '../util/load'
 import build from '../util/build-functions'
 import Promise from 'bluebird'
