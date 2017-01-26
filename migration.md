@@ -1,3 +1,5 @@
+# Migrations for 0.X to 1.0 and 2.X to 3.0
+
 ## Migrating from shep 0.X to shep 1.0
 
 - Shep 1.0 only supports node 4.3. Make sure all functions are using the `callback` style instead of the old `context.done()` methods
