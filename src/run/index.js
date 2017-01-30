@@ -1,11 +1,10 @@
-import { requireProject } from '../util/require-project'
+import requireProject from '../util/require-project'
 import * as load from '../util/load'
 import build from '../util/build-functions'
 import Promise from 'bluebird'
 import chalk from 'chalk'
 import AWS from 'aws-sdk'
 import mergeWith from 'lodash.mergewith'
-import requireUnbuilt from '../util/require-unbuilt'
 
 import cliui from 'cliui'
 const ui = cliui({ width: 80 })
@@ -54,12 +53,11 @@ function runFunction (opts) {
 
     const context = {}
 
-    if (performBuild) {
-      await build(name, env)
-    }
+    performBuild ? await build(name, env) : require('babel-register')
 
     const funcPath = `${performBuild ? 'dist' : 'functions'}/${name}/${fileName}.js`
-    const func = (performBuild ? requireProject(funcPath) : await requireUnbuilt(funcPath))[handler]
+
+    const func = requireProject(funcPath)[handler]
 
     if (typeof func !== 'function') {
       return Promise.reject(new Error(`Handler function provided is not a function. Please verify that there exists a handler function exported as ${handler} in dist/${name}/${fileName}.js`))
