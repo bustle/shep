@@ -4,6 +4,7 @@ import * as templates from './templates'
 import Promise from 'bluebird'
 import exec from '../util/modules/exec'
 import listr from '../util/modules/listr'
+import commandExists from '../util/modules/command-exists'
 
 export default function run (opts) {
   const path = opts.path
@@ -29,7 +30,7 @@ export default function run (opts) {
     },
     {
       title: 'Install Depedencies',
-      task: npmInstall
+      task: depInstall
     }
   ]
 
@@ -81,7 +82,10 @@ function createFiles ({ path, arn, region }) {
   ])
 }
 
-function npmInstall ({ path }) {
-  return exec('npm install', { cwd: path })
+function depInstall ({ path }) {
+  return commandExists('yarn')
+  .then((exists) => {
+    const command = exists ? 'yarn' : 'npm install'
+    return exec(command, { cwd: path })
+  })
 }
-
