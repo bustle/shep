@@ -82,10 +82,8 @@ function createFiles ({ path, arn, region }) {
   ])
 }
 
-function depInstall ({ path }) {
-  return commandExists('yarn')
-  .then((exists) => {
-    const command = exists ? 'yarn' : 'npm install'
-    return exec(command, { cwd: path })
-  })
+async function depInstall ({ path }) {
+  const exists = await commandExists('yarn')
+  const command = exists ? 'yarn' : 'npm install'
+  return exec(command, { cwd: path })
 }
