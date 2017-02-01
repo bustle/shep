@@ -22,8 +22,8 @@ Shep will require your amazon credentials and will load them using the same meth
 ### Installation
 
 ```bash
-yarn install -g shep
-yarn install --save-dev shep // the global shep will run the local shep
+yarn global add shep
+yarn add shep --dev // the global shep will run the local shep
 ```
 
 Add a few lines to your `package.json`. Your [account id](https://console.aws.amazon.com/billing/home?#/account),
