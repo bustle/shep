@@ -22,8 +22,8 @@ Shep will require your amazon credentials and will load them using the same meth
 ### Installation
 
 ```bash
-npm install -g shep
-npm install --save-dev shep // the global shep will run the local shep
+yarn install -g shep
+yarn install --save-dev shep // the global shep will run the local shep
 ```
 
 Add a few lines to your `package.json`. Your [account id](https://console.aws.amazon.com/billing/home?#/account),
@@ -40,7 +40,7 @@ Add a few lines to your `package.json`. Your [account id](https://console.aws.am
 
 ### Custom Builds
 
-By default shep builds all your functions using webpack. If your project requires a different build process, then edit your `package.json`. Before running your build command, shep populates the `PATTERN` environment variable which can be accessed as `process.env.PATTERN` in your build command. Be aware that using your own build process will break pattern matching for `shep build` unless your build command respects the `PATTERN` variable. 
+By default shep builds all your functions using webpack. If your project requires a different build process, then edit your `package.json`. Before running your build command, shep populates the `PATTERN` environment variable which can be accessed as `process.env.PATTERN` in your build command. Be aware that using your own build process will break pattern matching for `shep build` unless your build command respects the `PATTERN` variable.
 
 ```json
 {
@@ -256,8 +256,8 @@ It was called 'shepherd' at first because it was helpful for dealing with *lamb*
 
 Pull requests welcome!
 
-Test: `npm test`
+Test: `yarn test`
 
-Rebuild on file change: `npm run compile -- -w`
+Rebuild on file change: `yarn compile -- -w`
 
-Publish: `npm run pub` "publish" is reserved by npm
+Publish: `yarn pub` "publish" is reserved by npm
