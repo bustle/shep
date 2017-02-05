@@ -1,9 +1,8 @@
-import test from 'ava'
-import td from '../helpers/testdouble'
+import td from 'testdouble'
 
 const lambda = td.replace('../../src/util/aws/lambda')
 
-let setPermissions
+const setPermissions = require('../../src/util/set-permissions')
 
 const apiId = 'api-id'
 const env = 'prod'
@@ -28,10 +27,9 @@ const api = {
   }
 }
 
-test.before(() => { setPermissions = require('../../src/util/set-permissions') })
-
-test('Calls setPermission', () => {
-  return setPermissions(api, apiId, env).then(() => {
+describe('util/set-permissions', () => {
+  it('Calls setPermission on lambda', async () => {
+    await setPermissions(api, apiId, env)
     td.verify(lambda.setPermission(td.matchers.contains({
       apiId,
       accountId,

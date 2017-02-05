@@ -1,12 +1,18 @@
-import test from 'ava'
-import { exec, didExec } from '../helpers/exec'
-import td from '../helpers/testdouble'
+import td from 'testdouble'
+import Promise from 'bluebird'
 
-td.when(exec('webpack --bail'), { ignoreExtraArgs: true }).thenReturn(Promise.resolve())
+describe('build', () => {
+  before(() => {
+    const exec = td.replace('../../src/util/modules/exec')
+    td.when(exec('webpack --bail'), { ignoreExtraArgs: true }).thenReturn(Promise.resolve())
+  })
 
-test.before(() => {
-  const shep = require('../../src')
-  return shep.build({ quiet: true })
+  after(() => {
+    td.reset()
+  })
+
+  it('calls webpack', () => {
+    const shep = require('../../src')
+    return shep.build({ quiet: true })
+  })
 })
-
-test(didExec, 'webpack --bail')

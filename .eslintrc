@@ -1,10 +1,14 @@
 {
   "env": {
-    "node": true
+    "node": true,
+    "mocha": true
   },
   "extends": [
     "standard",
     "plugin:import/errors",
     "plugin:import/warnings"
+  ],
+  "plugins": [
+    "mocha"
   ]
 }

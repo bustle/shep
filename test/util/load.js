@@ -1,32 +1,36 @@
-import test from 'ava'
+import { assert } from 'chai'
 import * as load from '../../src/util/load'
 
-test.before(() => process.chdir('./test/fixtures'))
+describe('util/load', () => {
+  const origWd = process.cwd()
+  before(() => process.chdir('./test/fixtures'))
+  after(() => process.chdir(origWd))
 
-test('Loads environments', (t) => {
-  t.deepEqual(load.envs().sort(), [ 'beta', 'prod' ])
-})
+  it('Loads environments', () => {
+    assert.deepEqual(load.envs().sort(), [ 'beta', 'prod' ])
+  })
 
-test('Loads functions', (t) => {
-  t.deepEqual(load.funcs().sort(), [ 'bar', 'foo' ])
-})
+  it('Loads functions', () => {
+    assert.deepEqual(load.funcs().sort(), [ 'bar', 'foo' ])
+  })
 
-test('Loads functions by pattern', (t) => {
-  t.deepEqual(load.funcs('f*'), [ 'foo' ])
-})
+  it('Loads functions by pattern', () => {
+    assert.deepEqual(load.funcs('f*'), [ 'foo' ])
+  })
 
-test('Loads function events', (t) => {
-  t.deepEqual(load.events('foo').sort(), [ 'custom.json', 'default.json' ])
-})
+  it('Loads function events', () => {
+    assert.deepEqual(load.events('foo').sort(), [ 'custom.json', 'default.json' ])
+  })
 
-test('Loads lambda config', (t) => {
-  const config = load.lambdaConfig('foo')
-  t.is(config.Name, 'foo')
-  t.is(config.Role, 'admin')
-  t.is(config.Memory, 5)
-})
+  it('Loads lambda config', () => {
+    const config = load.lambdaConfig('foo')
+    assert.strictEqual(config.Name, 'foo')
+    assert.strictEqual(config.Role, 'admin')
+    assert.strictEqual(config.Memory, 5)
+  })
 
-test('Is ok with no api config', (t) => {
-  const config = load.api()
-  t.is(config, null)
+  it('Is ok with no api config', () => {
+    const config = load.api()
+    assert.strictEqual(config, null)
+  })
 })
