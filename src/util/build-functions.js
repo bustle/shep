@@ -1,6 +1,5 @@
 import exec from './modules/exec'
 import { pkg } from './load'
-import td from 'testdouble'
 
 export default async function (PATTERN, NODE_ENV) {
   const { shep } = pkg()
