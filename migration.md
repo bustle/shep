@@ -79,3 +79,7 @@ json, and it should live inside the `/environments` directory
 - Environment vars are now stored on `process.env`, like `process.env.ENV`. 
 - Capitalize all config keys inside environment files
 - `shep run` accepts custom process.env key value pairs, e.g., `DB_TABLE=custom shep run ${functionName}`
+
+## Migrating from shep 3.X to shep 4.0
+
+- Shep 4.0 now handles environment variables in AWS. See the docs for `shep config` to add, remove, and list environment variables for your functions.

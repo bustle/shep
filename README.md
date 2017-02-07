@@ -196,6 +196,48 @@ Options:
 Examples:
   shep logs                 Launch an interactive CLI
   shep logs production foo  Shows logs for the `foo` function in the production environment
+
+```
+#### `shep config list`
+```
+shep config list [env] [functionName]
+
+Options:
+  --version  Show version number                                                                               [boolean]
+  --help     Show help                                                                                         [boolean]
+
+Examples:
+  shep config list            Launches an interactive CLI to choose env and functionName
+  shep config list beta foo   Lists the environment variables and values for foo with alias beta
+```
+
+```
+#### `shep config set`
+```
+shep config set [env] [vars...]
+
+Options:
+  --version  Show version number                                                                               [boolean]
+  --help     Show help                                                                                         [boolean]
+
+Examples:
+  shep config set beta FOO=BAR BAR=FOO Adds these environment variables and values to all functions and aliases them to beta
+```
+
+```
+#### `shep config remove`
+```
+shep config remove [env] [vars...]
+
+Options:
+  --version  Show version number                                                                               [boolean]
+  --help     Show help                                                                                         [boolean]
+
+Examples:
+  shep config remove beta FOO  Removes the environment variable FOO from beta aliased functions
+  shep config remove production FOO BAR Removes FOO and BAR environment variables from production functions
+```
+
 ```
 #### `shep generate function`
 ```
@@ -209,6 +251,7 @@ Options:
 Examples:
   shep generate function      Launch an interactive CLI
   shep generate function foo  Genereate a new functon called "foo"
+
 ```
 #### `shep generate endpoint`
 ```

@@ -3,8 +3,10 @@ import * as load from '../../src/util/load'
 
 test.before(() => process.chdir('./test/fixtures'))
 
-test('Loads environments', (t) => {
-  t.deepEqual(load.envs().sort(), [ 'beta', 'prod' ])
+test('Loads environments', async (t) => {
+  const envs = await load.envs()
+
+  t.deepEqual(envs, [ ])
 })
 
 test('Loads functions', (t) => {
