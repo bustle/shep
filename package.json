@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "compile": "babel -d lib/ src/",
-    "test": "mocha --recursive --bail --compilers js:babel-register --require test/initializer",
+    "test": "mocha --recursive --bail --compilers js:babel-register --require test/initializer --timeout 10000",
     "lint": "eslint ./",
     "prepublish": "yarn compile",
     "pub": "np"
