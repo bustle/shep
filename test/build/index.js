@@ -1,14 +1,10 @@
 import td from 'testdouble'
-import Promise from 'bluebird'
 
-describe('build', () => {
+describe('build works', () => {
   before(() => {
-    const exec = td.replace('../../src/util/modules/exec')
-    td.when(exec('webpack --bail'), { ignoreExtraArgs: true }).thenReturn(Promise.resolve())
-  })
-
-  after(() => {
     td.reset()
+    const exec = td.replace('../../src/util/modules/exec')
+    td.when(exec('webpack --bail'), { ignoreExtraArgs: true }).thenResolve({})
   })
 
   it('calls webpack', () => {

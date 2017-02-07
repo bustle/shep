@@ -4,15 +4,12 @@ import td from 'testdouble'
 let error = new Error()
 error.code = 'ENOENT'
 
-describe('build', () => {
+describe('build no webpack', () => {
   before(() => {
+    td.reset()
     const exec = td.replace('../../src/util/modules/exec')
     td.when(exec('webpack --bail'), { ignoreExtraArgs: true }).thenThrow(error)
     td.replace(console, 'warn')
-  })
-
-  after(() => {
-    td.reset()
   })
 
   it('Logs to console when no webpack found', async () => {

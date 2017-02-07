@@ -1,5 +1,6 @@
 import exec from './modules/exec'
 import { pkg } from './load'
+import td from 'testdouble'
 
 export default async function (PATTERN, NODE_ENV) {
   const { shep } = pkg()
@@ -7,7 +8,6 @@ export default async function (PATTERN, NODE_ENV) {
   try {
     return await exec(buildCommand, { env: { ...process.env, PATTERN, NODE_ENV } })
   } catch (e) {
-    console('BOOOOM')
     if (e.code === 'ENOENT') {
       console.warn('No locally installed webpack found. Verify that webpack is installed')
     }
