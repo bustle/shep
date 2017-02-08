@@ -51,10 +51,12 @@ function runFunction (opts) {
       AWS_LAMBDA_FUNCTION_NAME: name,
       AWS_LAMBDA_FUNCTION_VERSION: '$LATEST'
     }
-    const envVars = merge(load.envVars(env), defaultEnv)
+    const envVars = load.envVars(env)
 
-    mergeWith(process.env, envVars, function (objectValue, sourceValue) {
-      return objectValue
+    Object.assign(process.env, {
+      ...envVars,
+      ...defaultEnv,
+      ...process.env
     })
 
     const context = {}
