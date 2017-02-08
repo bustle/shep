@@ -4,8 +4,6 @@ import build from '../util/build-functions'
 import Promise from 'bluebird'
 import chalk from 'chalk'
 import AWS from 'aws-sdk'
-import mergeWith from 'lodash.mergewith'
-import merge from 'lodash.merge'
 
 import cliui from 'cliui'
 const ui = cliui({ width: 80 })
