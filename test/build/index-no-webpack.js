@@ -1,14 +1,11 @@
 import { assert } from 'chai'
 import td from 'testdouble'
-import clearRequire from 'clear-require'
 
 let error = new Error()
 error.code = 'ENOENT'
 
 describe('build no webpack', () => {
   beforeEach(() => {
-    clearRequire.all()
-    td.reset()
     const exec = td.replace('../../src/util/modules/exec')
     td.when(exec('webpack --bail'), { ignoreExtraArgs: true }).thenThrow(error)
     td.replace(console, 'warn')
