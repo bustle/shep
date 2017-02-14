@@ -1,6 +1,6 @@
 import push from '../util/push-api'
 import * as load from '../util/load'
-import listr from '../util/modules/listr'
+import listr from '../modules/listr'
 import AWS from 'aws-sdk'
 
 export default function (opts) {

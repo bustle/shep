@@ -1,4 +1,4 @@
-import _new from '../new'
+import { new as _new } from '../index'
 import inquirer from 'inquirer'
 import merge from 'lodash.merge'
 

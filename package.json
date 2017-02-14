@@ -38,6 +38,7 @@
   "dependencies": {
     "archiver": "^1.0.0",
     "aws-sdk": "^2.4.13",
+    "babel-plugin-module-resolver": "^2.5.0",
     "babel-register": "^6.22.0",
     "bluebird": "^3.4.7",
     "chai": "^3.5.0",
@@ -45,6 +46,7 @@
     "clear-require": "^2.0.0",
     "cliui": "^3.2.0",
     "command-exists": "^1.0.2",
+    "eslint-import-resolver-babel-module": "^3.0.0",
     "execa": "^0.6.0",
     "fs-extra-promise": "^0.4.1",
     "inquirer": "^2.0.0",
@@ -101,9 +103,14 @@
       ]
     ]
   },
-  "ava": {
-    "require": [
-      "babel-register"
+  "plugins": [
+    [
+      "module-resolver",
+      {
+        "alias": {
+          "shep": "./src/index"
+        }
+      }
     ]
-  }
+  ]
 }

@@ -6,7 +6,7 @@ error.code = 'ENOENT'
 
 describe('build no webpack', () => {
   beforeEach(() => {
-    const exec = td.replace('../../src/util/modules/exec')
+    const exec = td.replace('../../src/modules/exec')
     td.when(exec('webpack --bail'), { ignoreExtraArgs: true }).thenThrow(error)
     td.replace(console, 'warn')
   })

@@ -7,7 +7,7 @@ const stage = 'prod'
 const region = 'east'
 
 const apiGateway = td.replace('../../src/util/aws/api-gateway')
-const fs = td.replace('../../src/util/modules/fs')
+const fs = td.replace('../../src/modules/fs')
 const pkgConfig = td.replace('../../src/util/pkg-config')
 
 td.when(apiGateway.exportStage(apiId, stage)).thenResolve(response)

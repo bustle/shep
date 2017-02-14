@@ -1,14 +1,13 @@
+import { deploy } from '../modules/aws/api-gateway'
+
 import build from '../util/build-functions'
 import upload from '../util/upload-functions'
-import { deploy } from '../util/aws/api-gateway'
 import promoteAliases from '../util/promote-aliases'
 import setPermissions from '../util/set-permissions'
 import * as load from '../util/load'
 import push from '../util/push-api'
-import AWS from 'aws-sdk'
-import listr from '../util/modules/listr'
 
-export default function (opts) {
+export default function (aws, listr, fs, opts) {
   const functions = opts.functions || '*'
   const env = opts.env || 'development'
   const region = opts.region
@@ -19,7 +18,7 @@ export default function (opts) {
 
   if (opts.apiId) { apiId = opts.apiId }
 
-  AWS.config.update({region})
+  aws.updateRegion({region})
 
   const tasks = listr([
     {

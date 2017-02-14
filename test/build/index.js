@@ -3,7 +3,7 @@ import td from 'testdouble'
 describe('build works', () => {
   beforeEach(() => {
     td.reset()
-    const exec = td.replace('../../src/util/modules/exec')
+    const exec = td.replace('../../src/modules/exec')
     td.when(exec('webpack --bail'), { ignoreExtraArgs: true }).thenResolve({})
   })
 

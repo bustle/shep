@@ -1,8 +1,8 @@
 import generateFunction from '../generate-function'
-import { writeJSON } from '../util/modules/fs'
+import { writeJSON } from '../modules/fs'
 import { cors } from './templates'
 import genName from '../util/generate-name'
-import listr from '../util/modules/listr'
+import listr from '../modules/listr'
 import * as load from '../util/load'
 
 const integration = 'x-amazon-apigateway-integration'

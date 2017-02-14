@@ -1,18 +1,18 @@
 import Promise from 'bluebird'
-import AWS from '../util/aws'
-import { getLogGroup } from '../util/aws/cloudwatch-logs'
-import { getAliasVersion } from '../util/aws/lambda'
+import { updateRegion } from '../modules/aws'
+import { getLogGroup } from '../modules/aws/cloudwatch-logs'
+import { getAliasVersion } from '../modules/aws/lambda'
 import getLogs from '../util/get-logs'
 import { pkg } from '../util/load'
 import genName from '../util/generate-name'
 
 export default function (opts) {
+  updateRegion({ region })
+
   const functionName = genName(opts.name).fullName
   const aliasName = opts.stage
   const stream = opts.stream
   const region = opts.region || pkg().shep.region
-
-  AWS.config.update({ region })
 
   return Promise.join(getLogGroup({ functionName }), getAliasVersion({ functionName, aliasName }),
     (logGroupName, functionVersion) => getLogs({ logGroupName, functionVersion, stream }))

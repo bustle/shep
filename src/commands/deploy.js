@@ -1,5 +1,5 @@
 import inquirer from 'inquirer'
-import deploy from '../deploy'
+import { deploy } from '../index'
 import * as load from '../util/load'
 import merge from 'lodash.merge'
 

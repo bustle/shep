@@ -14,4 +14,4 @@ export function builder (yargs) {
   .example('shep push --api-id foo --region us-east-1')
 }
 
-export { default as handler } from '../push'
+export { push as handler } from '../index'

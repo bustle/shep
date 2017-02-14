@@ -1,4 +1,4 @@
-import { setPermission } from './aws/lambda'
+import { setPermission } from '../modules/aws/lambda'
 import Promise from 'bluebird'
 
 export default function (api, id, env) {

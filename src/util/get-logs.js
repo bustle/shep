@@ -1,4 +1,4 @@
-import { getLogStreams, getLogEvents } from './aws/cloudwatch-logs'
+import { getLogStreams, getLogEvents } from '../modules/aws/cloudwatch-logs'
 
 export default function getLogs ({ logGroupName, functionVersion, stream, start = Date.now() }) {
   let recievedEvents

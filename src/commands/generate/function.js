@@ -1,5 +1,5 @@
 import inquirer from 'inquirer'
-import generateFunction from '../../generate-function'
+import { generateFunction } from '../../index'
 import merge from 'lodash.merge'
 
 const questions = [

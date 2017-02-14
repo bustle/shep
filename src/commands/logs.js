@@ -1,5 +1,5 @@
 import inquirer from 'inquirer'
-import logs from '../logs'
+import { logs } from '../index'
 import * as load from '../util/load'
 import merge from 'lodash.merge'
 

@@ -1,4 +1,4 @@
-import exec from './modules/exec'
+import exec from '../modules/exec'
 import { pkg } from './load'
 
 export default async function (PATTERN, NODE_ENV) {

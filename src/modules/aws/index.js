@@ -3,4 +3,8 @@ import Promise from 'bluebird'
 
 AWS.config.setPromisesDependency(Promise)
 
-export default AWS
+export { AWS }
+
+export function updateRegion (region) {
+  AWS.config.update({region})
+}

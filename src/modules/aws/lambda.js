@@ -1,4 +1,4 @@
-import AWS from './'
+import { AWS } from './index'
 import merge from 'lodash.merge'
 
 export function putFunction (config, ZipFile, envVars) {

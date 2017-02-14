@@ -1,4 +1,4 @@
-import { readdirSync, readJSONSync } from './modules/fs'
+import { readdirSync, readJSONSync } from '../modules/fs'
 import minimatch from 'minimatch'
 
 export function envs () {

@@ -1,4 +1,4 @@
-import generateWebpack from '../../generate-webpack'
+import { generateWebpack } from '../../index'
 
 export const command = 'webpack'
 export const desc = 'Generates a webpack.config.js with default template'
@@ -12,4 +12,3 @@ export function builder (yargs) {
 }
 
 export const handler = generateWebpack
-

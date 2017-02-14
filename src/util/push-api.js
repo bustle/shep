@@ -1,4 +1,4 @@
-import { pushApi } from './aws/api-gateway'
+import { pushApi } from '../modules/aws/api-gateway'
 import { update } from './pkg-config'
 
 export default function (api, apiId, region) {

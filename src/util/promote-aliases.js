@@ -1,4 +1,4 @@
-import { setAlias } from './aws/lambda'
+import { setAlias } from '../modules/aws/lambda'
 import Promise from 'bluebird'
 
 export default function (funcs, env) {

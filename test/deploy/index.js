@@ -1,4 +1,7 @@
 import td from 'testdouble'
+import * as aws from '../../src/modules/aws'
+
+console.log(aws)
 
 const functions = 'foo-*'
 const uploadedFuncs = ['foo', 'bar']

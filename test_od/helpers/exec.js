@@ -1,6 +1,6 @@
 import td from 'testdouble'
 
-const exec = td.replace('../../src/util/modules/exec')
+const exec = td.replace('../../src/modules/exec')
 
 function didExec (t, cmd, options = {}) {
   td.verify(exec(cmd, td.matchers.contains(options)))

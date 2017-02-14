@@ -1,6 +1,6 @@
 import td from 'testdouble'
 
-const fs = td.replace('../../src/util/modules/fs')
+const fs = td.replace('../../src/modules/fs')
 
 function createdDir (t, dirName) {
   td.verify(fs.mkdirp(td.matchers.contains(dirName)))

@@ -1,4 +1,4 @@
-import { writeJSON } from './modules/fs'
+import { writeJSON } from '../modules/fs'
 import * as load from './load'
 
 export function update (obj) {

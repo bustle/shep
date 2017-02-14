@@ -1,7 +1,7 @@
-import listr from '../util/modules/listr'
+import listr from '../modules/listr'
 import build from '../util/build-functions'
 
-export default function (opts) {
+export default function (modules, opts) {
   const functions = opts.functions || '*'
   const env = opts.env || 'development'
 

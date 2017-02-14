@@ -1,6 +1,6 @@
 import Promise from 'bluebird'
 import zipDir from './zip-dir'
-import { putFunction } from './aws/lambda'
+import { putFunction } from '../modules/aws/lambda'
 import { lambdaConfig, funcs, envVars } from './load'
 
 export default function (pattern, env) {

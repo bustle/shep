@@ -1,4 +1,4 @@
-import AWS from './'
+import { AWS } from './index'
 
 export function getLogGroup ({ functionName }) {
   const cwLogs = new AWS.CloudWatchLogs()

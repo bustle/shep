@@ -1,8 +1,8 @@
-import { writeFile } from '../util/modules/fs'
+import { writeFile } from '../modules/fs'
 import { exportStage } from '../util/aws/api-gateway'
 import { update } from '../util/pkg-config'
 import AWS from 'aws-sdk'
-import listr from '../util/modules/listr'
+import listr from '../modules/listr'
 
 export default function (opts) {
   const apiId = opts.apiId

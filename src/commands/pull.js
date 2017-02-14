@@ -24,4 +24,4 @@ export function builder (yargs) {
   .example('shep pull --output other-path.json', 'Writes the JSON swagger file to `other-path.json`')
 }
 
-export { default as handler } from '../pull'
+export { pull as handler } from '../index'

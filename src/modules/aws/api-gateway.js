@@ -1,4 +1,4 @@
-import AWS from './'
+import { AWS } from './index'
 
 export function exportStage (restApiId, stageName) {
   const apiGateway = new AWS.APIGateway()

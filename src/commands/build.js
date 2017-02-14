@@ -1,4 +1,4 @@
-import build from '../build'
+import { build } from '../index'
 
 export const command = 'build [functions]'
 export const desc = 'Builds functions and writes them to disk'

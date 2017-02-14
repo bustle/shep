@@ -1,7 +1,7 @@
-import { mkdirp, writeFile } from '../util/modules/fs'
+import { mkdirp, writeFile } from '../modules/fs'
 import genName from '../util/generate-name'
 import * as templates from './templates'
-import listr from '../util/modules/listr'
+import listr from '../modules/listr'
 import Promise from 'bluebird'
 
 export default function (opts) {

@@ -1,4 +1,4 @@
-import AWS from './'
+import { AWS } from './index'
 import { lambdaRole } from '../../new/templates'
 
 export function createRole (name) {
