@@ -31,7 +31,7 @@ export async function handler (opts) {
       }
     ]
   } else {
-    console.log("no API found, cannot load available aliases")
+    console.log('no API found, cannot load available aliases')
     questions = [
       {
         name: 'function',
