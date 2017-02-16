@@ -11,10 +11,14 @@ export default function (opts) {
 
   getEnvironment(env, name)
   .then((vars) => {
-    const envObj = vars[0]
-    Object.keys(envObj).forEach((key) => {
-      console.log(key, '=', envObj[key])
-    })
-    console.log('')
+    if (vars && vars.length > 0) {
+      const envObj = vars[0]
+      Object.keys(envObj).forEach((key) => {
+        console.log(key, '=', envObj[key])
+      })
+      console.log('')
+    } else {
+      console.log(`No environment vars on AWS for ${name}`)
+    }
   })
 }

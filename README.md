@@ -208,7 +208,7 @@ Options:
 
 Examples:
   shep config list            Launches an interactive CLI to choose env and functionName
-  shep config list beta foo   Lists the environment variables and values for foo with alias beta
+  shep config list beta functionName   Lists the environment variables and values for foo with alias beta
 ```
 
 ```

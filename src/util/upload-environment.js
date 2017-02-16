@@ -4,14 +4,9 @@ import { lambdaConfig, funcs } from './load'
 
 const pattern = '*'
 
-export default function (env, vars) {
-  return Promise.resolve(funcs(pattern))
-  .map((func) => {
-    return Promise.join(
-      env,
-      lambdaConfig(func),
-      vars,
-      putEnvironment
-    )
-  })
+export default async function (env, vars) {
+  const fns = await funcs(pattern)
+  return Promise.all(fns.map(async (func) => {
+    return await putEnvironment(env, lambdaConfig(func), vars)
+  }))
 }

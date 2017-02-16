@@ -9,12 +9,14 @@ test('Loads environments', async (t) => {
   t.deepEqual(envs, [ ])
 })
 
-test('Loads functions', (t) => {
-  t.deepEqual(load.funcs().sort(), [ 'bar', 'foo' ])
+test('Loads functions', async (t) => {
+  const funcs = await load.funcs()
+  t.deepEqual(funcs.sort(), [ 'bar', 'foo' ])
 })
 
-test('Loads functions by pattern', (t) => {
-  t.deepEqual(load.funcs('f*'), [ 'foo' ])
+test('Loads functions by pattern', async (t) => {
+  const funcs = await load.funcs('f*')
+  t.deepEqual(funcs, [ 'foo' ])
 })
 
 test('Loads function events', (t) => {

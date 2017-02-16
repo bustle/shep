@@ -15,7 +15,7 @@ export async function handler (opts) {
   const envs = await load.envs()
   let questions
 
-  if (envs) {
+  if (envs && envs.length > 0) {
     questions = [
       {
         name: 'env',
@@ -31,7 +31,7 @@ export async function handler (opts) {
       }
     ]
   } else {
-    console.log('no API found, cannot load available aliases')
+    if (!opts.env) { console.log('no API found, cannot load available aliases') }
     questions = [
       {
         name: 'function',

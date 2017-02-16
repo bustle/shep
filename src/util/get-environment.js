@@ -1,14 +1,9 @@
-import Promise from 'bluebird'
 import { getEnvironment } from './aws/lambda'
 import { lambdaConfig, funcs } from './load'
 
-export default function (env, name) {
-  return Promise.resolve(funcs(name))
-  .map((func) => {
-    return Promise.join(
-      env,
-      lambdaConfig(func),
-      getEnvironment
-    )
-  })
+export default async function (env, name) {
+  const fns = await funcs(name)
+  return Promise.all(fns.map(async (func) => {
+    return await getEnvironment(env, lambdaConfig(func))
+  }))
 }
