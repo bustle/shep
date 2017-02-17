@@ -11,17 +11,25 @@ export function builder (yargs) {
   .example('shep config remove beta NEW_VARIABLE', 'Removes NEW_VARIABLE from all functions with beta alias')
 }
 
-export function handler (opts) {
-  const questions = [
-    {
-      name: 'env',
-      message: 'Environment',
-      type: 'list',
-      choices: () => load.envs()
-    }
-  ]
+export async function handler (opts) {
+  const envs = await load.envs()
 
-  inquirer.prompt(questions.filter((q) => !opts[q.name]))
-  .then((inputs) => merge({}, inputs, opts))
-  .then(configRemove)
+  if (envs && envs.length > 0) {
+    const questions = [
+      {
+        name: 'env',
+        message: 'Environment',
+        type: 'list',
+        choices: () => envs
+      }
+    ]
+
+    inquirer.prompt(questions.filter((q) => !opts[q.name]))
+    .then((inputs) => merge({}, inputs, opts))
+    .then(configRemove)
+  } else {
+    if (!opts.env) { console.log('no API found, cannot load available aliases') }
+
+    configRemove(opts)
+  }
 }

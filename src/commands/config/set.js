@@ -11,7 +11,7 @@ export function builder (yargs) {
   .example('shep config set beta FOO=bar', 'Set environment variable FOO with value BAR for alias beta')
 }
 
-export function handler (opts) {
+export async function handler (opts) {
   let envVars = {}
   opts.vars.forEach((varPair) => {
     const split = varPair.split('=')
@@ -19,16 +19,24 @@ export function handler (opts) {
   })
   opts.vars = envVars
 
-  const questions = [
-    {
-      name: 'env',
-      message: 'Environment',
-      type: 'list',
-      choices: () => load.envs()
-    }
-  ]
+  const envs = await load.envs()
 
-  inquirer.prompt(questions.filter((q) => !opts[q.name]))
-  .then((inputs) => merge({}, inputs, opts))
-  .then(configSet)
+  if (envs && envs.length > 0) {
+    const questions = [
+      {
+        name: 'env',
+        message: 'Environment',
+        type: 'list',
+        choices: () => envs
+      }
+    ]
+
+    inquirer.prompt(questions.filter((q) => !opts[q.name]))
+    .then((inputs) => merge({}, inputs, opts))
+    .then(configSet)
+  } else {
+    if (!opts.env) { console.log('no API found, cannot load available aliases') }
+
+    configSet(opts)
+  }
 }

@@ -17,21 +17,37 @@ export function builder (yargs) {
   .example('shep logs production foo', 'Shows logs for the `foo` function in the production environment')
 }
 
-export function handler (opts) {
-  const questions = [
-    {
-      name: 'stage',
-      message: 'Stage',
-      type: 'list',
-      choices: () => load.envs()
-    },
-    {
-      name: 'name',
-      message: 'Function',
-      type: 'list',
-      choices: () => load.funcs()
-    }
-  ]
+export async function handler (opts) {
+  const envs = await load.envs()
+  let questions
+
+  if (envs && envs.length > 0) {
+    questions = [
+      {
+        name: 'stage',
+        message: 'Stage',
+        type: 'list',
+        choices: () => envs
+      },
+      {
+        name: 'name',
+        message: 'Function',
+        type: 'list',
+        choices: () => load.funcs()
+      }
+    ]
+  } else {
+    if (!opts.env) { console.log('no API found, cannot load available aliases') }
+
+    questions = [
+      {
+        name: 'name',
+        message: 'Function',
+        type: 'list',
+        choices: () => load.funcs()
+      }
+    ]
+  }
 
   inquirer.prompt(questions.filter((q) => !opts[q.name]))
   .then((inputs) => merge({}, inputs, opts))
