@@ -1,11 +1,15 @@
-# Shep
-
-A framework for building JavaScript APIs with AWS API Gateway and Lambda
+<div align="center">
+  <a href="https://github.com/bustlelabs/shep">
+    <img src="https://typeset-beta.imgix.net/2017/2/21/471fd5d2-edd8-4e65-bce4-e93e79015bbb.png?w=400" />
+  </a>
+  <div>A framework for building JavaScript APIs with AWS API Gateway and Lambda</div>
+</div>
 
 [![Build Status](https://travis-ci.org/bustlelabs/shep.svg?branch=master)](https://travis-ci.org/bustlelabs/shep)
 [![Code Climate](https://codeclimate.com/github/bustlelabs/shep/badges/gpa.svg)](https://codeclimate.com/github/bustlelabs/shep)
 
-## Why do you need this?
+
+## Make "Serverless" Simple
 
 Amazon Web Services [API gateway](https://aws.amazon.com/api-gateway/) and [Lambda](https://aws.amazon.com/lambda/) are great tools for building and deploying ["serverless"](http://cloudacademy.com/blog/aws-lambda-serverless-cloud/) applications. But using them to deploy more than a couple functions/endpoints involves an excessive amount of manual work such as zipping files, uploading via the web UI, configuring paths and function names, etc. Shep is built to automate as many of these tasks as possible, giving you the ability to deploy an entire API and suite of lambda functions with one CLI command.
 
@@ -23,10 +27,14 @@ Shep will require your amazon credentials and will load them using the same meth
 
 ```bash
 npm install -g shep
-npm install --save-dev shep // the global shep will run the local shep
+
+```
+```bash
+// Optionally install shep in your project. The global shep will run the project's shep
+npm install --save-dev shep
 ```
 
-Add a few lines to your `package.json`. Your [account id](https://console.aws.amazon.com/billing/home?#/account),
+Add a few lines to your `package.json`. Your [account id](https://console.aws.amazon.com/billing/home?#/account) can be found on the billing page of your aws account.
 
 ```json
 {
@@ -38,9 +46,9 @@ Add a few lines to your `package.json`. Your [account id](https://console.aws.am
 }
 ```
 
-### Custom Builds
+### Custom Builds Commands
 
-By default shep builds all your functions using webpack. If your project requires a different build process, then edit your `package.json`. Before running your build command, shep populates the `PATTERN` environment variable which can be accessed as `process.env.PATTERN` in your build command. Be aware that using your own build process will break pattern matching for `shep build` unless your build command respects the `PATTERN` variable. 
+By default shep builds all your functions using webpack. If your project requires a different build process, then edit your `package.json`. Before running your build command, shep populates the `PATTERN` environment variable which can be accessed as `process.env.PATTERN` in your build command. Be aware that using your own build process will break pattern matching for `shep build` unless your build command respects the `PATTERN` variable.
 
 ```json
 {
@@ -52,12 +60,7 @@ By default shep builds all your functions using webpack. If your project require
 
 ### Creating a new API
 
-_Coming soon!_
-
-### Using an existing API Gateway project
-
-_Coming soon!_
-
+_Coming soon! See [`shep new`](#shep-new)_
 
 ## CLI Documentation
 
@@ -277,7 +280,7 @@ Examples:
 
 ## Lambda Execution Role
 
-More details to come, but check out the AWS docs about setting up the proper IAM role for lambda: http://docs.aws.amazon.com/lambda/latest/dg/intro-permission-model.html http://docs.aws.amazon.com/lambda/latest/dg/with-s3-example-create-iam-role.html
+Check out the AWS docs about setting up the proper IAM role for lambda: http://docs.aws.amazon.com/lambda/latest/dg/intro-permission-model.html http://docs.aws.amazon.com/lambda/latest/dg/with-s3-example-create-iam-role.html
 
 ## Upgrading
 
