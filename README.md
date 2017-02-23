@@ -2,10 +2,10 @@
 [![Code Climate](https://codeclimate.com/github/bustlelabs/shep/badges/gpa.svg)](https://codeclimate.com/github/bustlelabs/shep)
 
 <div align="center">
-  <a href="https://github.com/bustlelabs/shep">
-    <img src="https://typeset-beta.imgix.net/2017/2/21/471fd5d2-edd8-4e65-bce4-e93e79015bbb.png?w=400" />
-  </a>
-  <div>A framework for building JavaScript APIs with AWS API Gateway and Lambda</div>
+<a href="https://github.com/bustlelabs/shep">
+<img src="https://typeset-beta.imgix.net/2017/2/21/471fd5d2-edd8-4e65-bce4-e93e79015bbb.png?w=400" />
+</a>
+<div>A framework for building JavaScript APIs with AWS API Gateway and Lambda</div>
 </div>
 
 
@@ -39,10 +39,10 @@ Add a few lines to your `package.json`. Your [account id](https://console.aws.am
 ```json
 {
   "name": "my-great-package",
-  "shep": {
-    "accountId": "XXXXX",
-    "region": "us-east-1"
-  }
+    "shep": {
+      "accountId": "XXXXX",
+      "region": "us-east-1"
+    }
 }
 ```
 
@@ -69,136 +69,136 @@ _Coming soon! See [`shep new`](#shep-new)_
 Usage: shep <command> [options]
 
 Commands:
-  build [env] [functions]   Builds functions and writes them to disk
-  deploy [env] [functions]  Deploy both functions and APIs to AWS. Will create a new API if the ID is not specified
-  generate                  Run `shep generate --help` for additional information
-  logs [stage] [name]       Streams logs from the specified version of a function
-  new [path]                Create a new shep project
-  pull                      Pulls a swagger JSON representation of an existing API and writes it to a local file
-  push                      Create a new shep project
-  run [pattern]             Run a function in your local environemnt
+build [env] [functions]   Builds functions and writes them to disk
+deploy [env] [functions]  Deploy both functions and APIs to AWS. Will create a new API if the ID is not specified
+generate                  Run `shep generate --help` for additional information
+logs [stage] [name]       Streams logs from the specified version of a function
+new [path]                Create a new shep project
+pull                      Pulls a swagger JSON representation of an existing API and writes it to a local file
+push                      Create a new shep project
+run [pattern]             Run a function in your local environemnt
 
 Options:
-  --version  Show version number                                                                               [boolean]
-  --help     Show help                                                                                         [boolean]
+--version  Show version number                                                                               [boolean]
+--help     Show help                                                                                         [boolean]
 ```
 #### `shep new`
 ```
 shep new [path]
 
 Options:
-  --version      Show version number                                                                           [boolean]
-  --help         Show help                                                                                     [boolean]
-  --path         Location to create the new shep project
-  --skip-config  Skips configuring shep project                                                                [boolean]
-  --region       Region for new shep project
-  --rolename     Name of IAM Role which will be used to execute Lambda functions
+--version      Show version number                                                                           [boolean]
+--help         Show help                                                                                     [boolean]
+--path         Location to create the new shep project
+--skip-config  Skips configuring shep project                                                                [boolean]
+--region       Region for new shep project
+--rolename     Name of IAM Role which will be used to execute Lambda functions
 
 Examples:
-  shep new         Launch an interactive CLI
-  shep new my-api  Generates a project at `my-api`
+shep new         Launch an interactive CLI
+shep new my-api  Generates a project at `my-api`
 ```
 #### `shep pull`
 ```
 shep pull
 
 Options:
-  --version     Show version number                                                                            [boolean]
-  --help        Show help                                                                                      [boolean]
-  --region, -r  AWS region                                                                                    [required]
-  --stage, -s   AWS API Gateway stage. Read from the shep config in package.json if not provided              [required]
-  --api-id, -a  AWS API Gateway ID. Read from the shep config in package.json if not provided                 [required]
-  --output, -o  Path of the file to output                                                         [default: "api.json"]
+--version     Show version number                                                                            [boolean]
+--help        Show help                                                                                      [boolean]
+--region, -r  AWS region                                                                                    [required]
+--stage, -s   AWS API Gateway stage. Read from the shep config in package.json if not provided              [required]
+--api-id, -a  AWS API Gateway ID. Read from the shep config in package.json if not provided                 [required]
+--output, -o  Path of the file to output                                                         [default: "api.json"]
 
 Examples:
-  shep pull                           Download a JSON swagger file for `apiId` in package.json and prompts for stage via
-                                      interactive CLI
-  shep pull --api-id foo --stage bar  Downloads a JSON swagger file for stage `bar` of API id `foo`
-  shep pull --output other-path.json  Writes the JSON swagger file to `other-path.json`
+shep pull                           Download a JSON swagger file for `apiId` in package.json and prompts for stage via
+interactive CLI
+shep pull --api-id foo --stage bar  Downloads a JSON swagger file for stage `bar` of API id `foo`
+shep pull --output other-path.json  Writes the JSON swagger file to `other-path.json`
 ```
 #### `shep push`
 ```
 shep push
 
 Options:
-  --version  Show version number                                                                               [boolean]
-  --help     Show help                                                                                         [boolean]
-  --api-id   API Gateway resource id. Read from package.json if not provided                                  [required]
-  --region   AWS region. Read from package.json if not provided                                               [required]
+--version  Show version number                                                                               [boolean]
+--help     Show help                                                                                         [boolean]
+--api-id   API Gateway resource id. Read from package.json if not provided                                  [required]
+--region   AWS region. Read from package.json if not provided                                               [required]
 
 Examples:
-  shep push                                  Pushes the api.json swagger configuration to API Gateway. Does not deploy
-                                             the API.
-  shep push --api-id foo --region us-east-1
+shep push                                  Pushes the api.json swagger configuration to API Gateway. Does not deploy
+the API.
+shep push --api-id foo --region us-east-1
 ```
 #### `shep run`
 ```
 shep run [pattern]
 
 Options:
-  --version      Show version number                                                                           [boolean]
-  --help         Show help                                                                                     [boolean]
-  --environment  Environment variables to use                                                   [default: "development"]
-  --event        Event to use
-  -v             Responses from functions aren't truncated
-  --build        Build functions before running. Use --no-build to skip this step                        [default: true]
+--version      Show version number                                                                           [boolean]
+--help         Show help                                                                                     [boolean]
+--environment  Environment variables to use                                                   [default: "development"]
+--event        Event to use
+-v             Responses from functions aren't truncated
+--build        Build functions before running. Use --no-build to skip this step                        [default: true]
 
 Examples:
-  shep run                               Launch an interactive CLI
-  shep run foo                           Runs the `foo` function for all events
-  shep run foo --no-build                Run the already built `foo` function in the dist folder
-  shep run foo --event default           Runs the `foo` function for just the `default` event
-  shep run foo --environment production  Runs the `foo` function with production environment
-  DB_TABLE=custom shep run foo           Runs the `foo` function with process.env.DB_TABLE assigned to custom (vars
-                                         declared this way will overwrite vals in your environments/${env}.json file)
-  shep run '*'                           Runs all functions for all events
-  shep run 'foo-*'                       Runs all functions matching pattern `foo-*`
+shep run                               Launch an interactive CLI
+shep run foo                           Runs the `foo` function for all events
+shep run foo --no-build                Run the already built `foo` function in the dist folder
+shep run foo --event default           Runs the `foo` function for just the `default` event
+shep run foo --environment production  Runs the `foo` function with production environment
+DB_TABLE=custom shep run foo           Runs the `foo` function with process.env.DB_TABLE assigned to custom (vars
+    declared this way will overwrite vals in your environments/${env}.json file)
+shep run '*'                           Runs all functions for all events
+shep run 'foo-*'                       Runs all functions matching pattern `foo-*`
 ```
 #### `shep deploy`
 ```
 shep deploy [env] [functions]
 
 Options:
-  --version  Show version number                                                                               [boolean]
-  --help     Show help                                                                                         [boolean]
-  --build    Build functions before deployment. Use --no-build to skip this step                         [default: true]
+--version  Show version number                                                                               [boolean]
+--help     Show help                                                                                         [boolean]
+--build    Build functions before deployment. Use --no-build to skip this step                         [default: true]
 
 Examples:
-  shep deploy                         Launch an interactive CLI
-  shep deploy production              Deploy all functions with production env variables
-  shep deploy beta --no-build         Deploy all functions as currently built in the dist folder
-  shep deploy production create-user  Deploy only the create-user function
-  shep deploy beta *-user             Deploy only functions matching the pattern *-user
+shep deploy                         Launch an interactive CLI
+shep deploy production              Deploy all functions with production env variables
+shep deploy beta --no-build         Deploy all functions as currently built in the dist folder
+shep deploy production create-user  Deploy only the create-user function
+shep deploy beta *-user             Deploy only functions matching the pattern *-user
 ```
 #### `shep build`
 ```
 shep build [env] [functions]
 
 Options:
-  --version  Show version number                                                                               [boolean]
-  --help     Show help                                                                                         [boolean]
+--version  Show version number                                                                               [boolean]
+--help     Show help                                                                                         [boolean]
 
 Examples:
-  shep build                   Launch an interactive CLI
-  shep build beta              Build all functions with beta environment variables
-  shep build beta create-user  Build only the create-user function
-  shep build beta *-user       Build functions matching the pattern *-user
+shep build                   Launch an interactive CLI
+shep build beta              Build all functions with beta environment variables
+shep build beta create-user  Build only the create-user function
+shep build beta *-user       Build functions matching the pattern *-user
 ```
 #### `shep logs`
 ```
 shep logs [stage] [name]
 
 Options:
-  --version  Show version number                                                                               [boolean]
-  --help     Show help                                                                                         [boolean]
-  --stage    Name of stage to use
-  --name     Name of function to use
-  --region   Name of region to use, uses region in `package.json` if not given
-  --stream                                                                                     [boolean] [default: true]
+--version  Show version number                                                                               [boolean]
+--help     Show help                                                                                         [boolean]
+--stage    Name of stage to use
+--name     Name of function to use
+--region   Name of region to use, uses region in `package.json` if not given
+--stream                                                                                     [boolean] [default: true]
 
 Examples:
-  shep logs                 Launch an interactive CLI
-  shep logs production foo  Shows logs for the `foo` function in the production environment
+shep logs                 Launch an interactive CLI
+shep logs production foo  Shows logs for the `foo` function in the production environment
 
 ```
 #### `shep config list`
@@ -206,12 +206,12 @@ Examples:
 shep config list [env] [functionName]
 
 Options:
-  --version  Show version number                                                                               [boolean]
-  --help     Show help                                                                                         [boolean]
+--version  Show version number                                                                               [boolean]
+--help     Show help                                                                                         [boolean]
 
 Examples:
-  shep config list            Launches an interactive CLI to choose env and functionName
-  shep config list beta functionName   Lists the environment variables and values for foo with alias beta
+shep config list            Launches an interactive CLI to choose env and functionName
+shep config list beta functionName   Lists the environment variables and values for foo with alias beta
 ```
 
 ```
@@ -220,11 +220,11 @@ Examples:
 shep config set [env] [vars...]
 
 Options:
-  --version  Show version number                                                                               [boolean]
-  --help     Show help                                                                                         [boolean]
+--version  Show version number                                                                               [boolean]
+--help     Show help                                                                                         [boolean]
 
 Examples:
-  shep config set beta FOO=BAR BAR=FOO Adds these environment variables and values to all functions and aliases them to beta
+shep config set beta FOO=BAR BAR=FOO Adds these environment variables and values to all functions and aliases them to beta
 ```
 
 ```
@@ -233,12 +233,12 @@ Examples:
 shep config remove [env] [vars...]
 
 Options:
-  --version  Show version number                                                                               [boolean]
-  --help     Show help                                                                                         [boolean]
+--version  Show version number                                                                               [boolean]
+--help     Show help                                                                                         [boolean]
 
 Examples:
-  shep config remove beta FOO  Removes the environment variable FOO from beta aliased functions
-  shep config remove production FOO BAR Removes FOO and BAR environment variables from production functions
+shep config remove beta FOO  Removes the environment variable FOO from beta aliased functions
+shep config remove production FOO BAR Removes FOO and BAR environment variables from production functions
 ```
 
 ```
@@ -247,13 +247,13 @@ Examples:
 shep generate function [name]
 
 Options:
-  --version  Show version number                                                                               [boolean]
-  --help     Show help                                                                                         [boolean]
-  --name     Function name
+--version  Show version number                                                                               [boolean]
+--help     Show help                                                                                         [boolean]
+--name     Function name
 
 Examples:
-  shep generate function      Launch an interactive CLI
-  shep generate function foo  Genereate a new functon called "foo"
+shep generate function      Launch an interactive CLI
+shep generate function foo  Genereate a new functon called "foo"
 
 ```
 #### `shep generate endpoint`
@@ -261,26 +261,80 @@ Examples:
 shep generate endpoint [path]
 
 Options:
-  --version  Show version number                                                                               [boolean]
-  --help     Show help                                                                                         [boolean]
-  --method   HTTP Method                                     [choices: "get", "post", "put", "delete", "options", "any"]
+--version  Show version number                                                                               [boolean]
+--help     Show help                                                                                         [boolean]
+--method   HTTP Method                                     [choices: "get", "post", "put", "delete", "options", "any"]
 ```
 #### `shep generate webpack`
 ```
 shep generate webpack
 
 Options:
-  --version     Show version number                                                                            [boolean]
-  --help        Show help                                                                                      [boolean]
-  --output, -o  Output file                                                               [default: "webpack.config.js"]
+--version     Show version number                                                                            [boolean]
+--help        Show help                                                                                      [boolean]
+--output, -o  Output file                                                               [default: "webpack.config.js"]
 
 Examples:
-  shep generate webpack -o foo.js  Writes default webpack configuration to foo.js
+shep generate webpack -o foo.js  Writes default webpack configuration to foo.js
 ```
 
 ## Lambda Execution Role
 
-Check out the AWS docs about setting up the proper IAM role for lambda: http://docs.aws.amazon.com/lambda/latest/dg/intro-permission-model.html http://docs.aws.amazon.com/lambda/latest/dg/with-s3-example-create-iam-role.html
+Here is the minimum policy to allow shep to modify functions and APIs in Lambda and API Gateway
+Note: change the values of the variables at the top with the actual values of your project in the body of the policy
+
+// account id: 12345678
+// project name: coolproject
+// api gateway apiId: abcdefghi
+{
+  "Version": "2012-10-17",
+    "Statement": [
+    {
+      "Sid": "Stmt12345000",
+      "Effect": "Allow",
+      "Action": [
+        "lambda:*",
+      "lambda:GetFunction"
+      ],
+      "Resource": [
+        "arn:aws:lambda:us-east-1:12345678:function:coolproject-*"
+      ]
+    },
+    {
+      "Sid": "Stmt12345001",
+      "Effect": "Allow",
+      "Action": [
+        "apigateway:*"
+      ],
+      "Resource": [
+        "arn:aws:apigateway:us-east-1::/restapis/abcdefghi",
+      "arn:aws:apigateway:us-east-1::/restapis/abcdefghi/*"
+      ]
+    },
+    {
+      "Sid": "Stmt12345002",
+      "Effect": "Allow",
+      "Action": [
+        "iam:PassRole"
+      ],
+      "Resource": [
+        "arn:aws:iam::12345678:role/shepRole"
+      ]
+    },
+    // Probably only needed if you use vpcs
+    {
+      "Sid": "Stmt12345003",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DescribeSecurityGroups",
+      "ec2:DescribeSubnets",
+      "ec2:DescribeVpcs"
+      ],
+      "Resource":
+        "*"
+    }
+  ]
+}
 
 ## Upgrading
 
