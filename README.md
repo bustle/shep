@@ -199,7 +199,6 @@ Options:
 Examples:
 shep logs                 Launch an interactive CLI
 shep logs production foo  Shows logs for the `foo` function in the production environment
-
 ```
 #### `shep config list`
 ```
@@ -213,8 +212,6 @@ Examples:
 shep config list            Launches an interactive CLI to choose env and functionName
 shep config list beta functionName   Lists the environment variables and values for foo with alias beta
 ```
-
-```
 #### `shep config set`
 ```
 shep config set [env] [vars...]
@@ -225,8 +222,6 @@ Options:
 
 Examples:
 shep config set beta FOO=BAR BAR=FOO Adds these environment variables and values to all functions and aliases them to beta
-```
-
 ```
 #### `shep config remove`
 ```
@@ -240,8 +235,6 @@ Examples:
 shep config remove beta FOO  Removes the environment variable FOO from beta aliased functions
 shep config remove production FOO BAR Removes FOO and BAR environment variables from production functions
 ```
-
-```
 #### `shep generate function`
 ```
 shep generate function [name]
@@ -254,7 +247,6 @@ Options:
 Examples:
 shep generate function      Launch an interactive CLI
 shep generate function foo  Genereate a new functon called "foo"
-
 ```
 #### `shep generate endpoint`
 ```
@@ -281,8 +273,9 @@ shep generate webpack -o foo.js  Writes default webpack configuration to foo.js
 ## Lambda Execution Role
 
 Here is the minimum policy to allow shep to modify functions and APIs in Lambda and API Gateway
-Note: change the values of the variables at the top with the actual values of your project in the body of the policy
+Note: change the values of the variables at the top with the actual values of your project in the body of the policy, and note the comment about vpcs
 
+```
 // account id: 12345678
 // project name: coolproject
 // api gateway apiId: abcdefghi
@@ -335,6 +328,7 @@ Note: change the values of the variables at the top with the actual values of yo
     }
   ]
 }
+```
 
 ## Upgrading
 
