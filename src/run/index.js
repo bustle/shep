@@ -4,6 +4,7 @@ import build from '../util/build-functions'
 import Promise from 'bluebird'
 import chalk from 'chalk'
 import AWS from 'aws-sdk'
+import context from 'aws-lambda-mock-context'
 
 require('dotenv').config()
 
@@ -48,7 +49,7 @@ function runFunction (opts) {
     const events = load.events(name, opts.event)
     const [ fileName, handler ] = lambdaConfig.Handler.split('.')
 
-    const context = {}
+    const ctx = context()
 
     performBuild ? await build(name, env) : require('babel-register')
 
@@ -66,7 +67,7 @@ function runFunction (opts) {
         const output = { name: eventFilename, funcName: name }
         output.start = new Date()
         try {
-          func(event, context, (err, res) => {
+          func(event, ctx, (err, res) => {
             output.end = new Date()
             if (err) {
               output.result = results.error
