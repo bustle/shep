@@ -33,7 +33,7 @@ export default function (opts) {
     },
     {
       title: 'Upload Functions to AWS',
-      task: () => upload(functions).tap((funcs) => { uploadedFuncs = funcs })
+      task: () => upload(functions, env).tap((funcs) => { uploadedFuncs = funcs })
     }
   ], opts.quiet)
 
@@ -68,6 +68,6 @@ export default function (opts) {
 
   return tasks.run()
   .then(() => {
-    console.log(`API URL: https://${apiId}.execute-api.${region}.amazonaws.com/${env}`)
+    if (apiId) { console.log(`API URL: https://${apiId}.execute-api.${region}.amazonaws.com/${env}`) }
   })
 }
