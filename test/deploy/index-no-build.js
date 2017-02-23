@@ -19,7 +19,7 @@ const push = td.replace('../../src/util/push-api')
 td.when(push(api), { ignoreExtraArgs: true }).thenResolve(apiId)
 
 const upload = td.replace('../../src/util/upload-functions')
-td.when(upload(functions)).thenResolve(uploadedFuncs)
+td.when(upload(functions, env)).thenResolve(uploadedFuncs)
 
 test.before(() => {
   const shep = require('../../src/index')

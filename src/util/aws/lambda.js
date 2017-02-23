@@ -1,7 +1,7 @@
 import AWS from './'
 import merge from 'lodash.merge'
 
-export function putFunction (config, ZipFile) {
+export function putFunction (env, config, ZipFile) {
   const lambda = new AWS.Lambda()
 
   validateConfig(config)
@@ -10,7 +10,7 @@ export function putFunction (config, ZipFile) {
   const Publish = true
 
   return lambda.getFunction({ FunctionName }).promise()
-  .then(putEnvironment(config))
+  .then(putEnvironment(env, config))
   .then(() => lambda.updateFunctionCode({ ZipFile, FunctionName, Publish }).promise())
   .catch({ code: 'ResourceNotFoundException' }, () => {
     const params = merge(config, { Publish, Code: { ZipFile } })
