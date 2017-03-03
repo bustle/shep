@@ -10,6 +10,10 @@ const apiId = 'test-id'
 
 const build = td.replace('../../src/util/build-functions')
 const apiGateway = td.replace('../../src/util/aws/api-gateway')
+
+const promoteAliases = td.replace('../../src/util/promote-aliases')
+td.when(promoteAliases(functions, env)).thenResolve(uploadedFuncs)
+
 const setPermissions = td.replace('../../src/util/set-permissions')
 
 const load = td.replace('../../src/util/load')
