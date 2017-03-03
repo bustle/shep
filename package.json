@@ -46,7 +46,6 @@
     "dotenv": "^4.0.0",
     "execa": "^0.6.0",
     "fs-extra-promise": "^0.4.1",
-    "hash-files": "^1.1.1",
     "inquirer": "^3.0.2",
     "listr": "^0.10.0",
     "lodash.kebabcase": "^4.1.1",
