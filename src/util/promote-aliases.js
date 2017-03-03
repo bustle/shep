@@ -1,7 +1,10 @@
-import { setAlias } from './aws/lambda'
+import { publishFunction } from './aws/lambda'
 import Promise from 'bluebird'
+import { lambdaConfig, funcs } from './load'
 
-export default function (funcs, env) {
-  return Promise.resolve(funcs)
-  .map((func) => setAlias(func, env))
+export default async function (pattern, env) {
+  const fns = await funcs(pattern)
+  return Promise.all(fns.map(async (func) => {
+    return await publishFunction(lambdaConfig(func), env)
+  }))
 }

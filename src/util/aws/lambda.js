@@ -1,6 +1,15 @@
 import AWS from './'
 import merge from 'lodash.merge'
 
+export function getFunction (params) {
+  const lambda = new AWS.Lambda()
+
+  return lambda.getFunction(params).promise()
+  .catch({ code: 'ResourceNotFoundException' }, () => {
+    throw new Error(`No function found with name ${params.FunctionName}`)
+  })
+}
+
 export function putFunction (env, config, ZipFile) {
   const lambda = new AWS.Lambda()
 
@@ -9,7 +18,7 @@ export function putFunction (env, config, ZipFile) {
   const FunctionName = config.FunctionName
   const Publish = true
 
-  return lambda.getFunction({ FunctionName }).promise()
+  return getFunction({ FunctionName })
   .then(putEnvironment(env, config))
   .then(() => lambda.updateFunctionCode({ ZipFile, FunctionName, Publish }).promise())
   .catch({ code: 'ResourceNotFoundException' }, () => {
@@ -28,7 +37,7 @@ export function putEnvironment (env, config, envVars) {
     Qualifier: env
   }
 
-  return lambda.getFunction(params).promise()
+  return getFunction(params)
   .then((awsFunction) => {
     const envMap = mergeExistingEnv(awsFunction, envVars)
     const lambdaConfig = merge(config, { Environment: { Variables: envMap } })
@@ -55,7 +64,7 @@ export function removeEnvVars (env, config, envVars) {
     Qualifier: env
   }
 
-  return lambda.getFunction(params).promise()
+  return getFunction(params)
   .then((awsFunction) => {
     const envMap = deleteEnvVars(awsFunction, envVars)
     const lambdaConfig = merge(config, { Environment: { Variables: envMap } })
@@ -73,14 +82,12 @@ export function removeEnvVars (env, config, envVars) {
 }
 
 export function getEnvironment (env, { FunctionName }) {
-  const lambda = new AWS.Lambda()
-
   const params = {
     FunctionName,
     Qualifier: env
   }
 
-  return lambda.getFunction(params).promise()
+  return getFunction(params)
   .get('Configuration')
   .get('Environment')
   .get('Variables')
@@ -101,7 +108,19 @@ export function getAliasVersion ({ functionName, aliasName }) {
   .get('FunctionVersion')
 }
 
-export function setAlias ({ Version, FunctionName }, Name) {
+export function publishFunction ({ FunctionName }, env) {
+  const lambda = new AWS.Lambda()
+
+  return lambda.publishVersion({ FunctionName }).promise()
+  .then((func) => {
+    setAlias(func, env)
+  })
+  .catch((e) => {
+    throw new Error(e)
+  })
+}
+
+export async function setAlias ({ Version, FunctionName }, Name) {
   const lambda = new AWS.Lambda()
 
   let params = {
