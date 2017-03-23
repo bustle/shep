@@ -1,0 +1,6 @@
+export { default as missingConfig } from './missing-config'
+export { default as unreferencedFunction } from './unreferenced-function'
+export { default as duplicateCacheNamespaces } from './duplicate-cachenamespaces'
+export { default as missingApiDescription } from './missing-api-description'
+export { default as unaliasedUri } from './unaliased-uri'
+export { default as shepVersionMismatch } from './shep-version-mismatch'
