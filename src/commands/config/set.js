@@ -13,9 +13,9 @@ export function builder (yargs) {
 
 export async function handler (opts) {
   let envVars = {}
-  opts.vars.forEach((varPair) => {
-    const split = varPair.split('=')
-    envVars[split[0]] = split[1]
+  opts.vars.forEach(function (varPair) {
+    const [key, value] = varPair.match(/(.*?)=(.*)/).slice(1)
+    envVars[key] = value
   })
   opts.vars = envVars
 
