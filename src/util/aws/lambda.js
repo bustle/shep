@@ -5,9 +5,11 @@ export function getFunction (params) {
   const lambda = new AWS.Lambda()
 
   return lambda.getFunction(params).promise()
-  .catch({ code: 'ResourceNotFoundException' }, () => {
-    throw new Error(`No function found with name ${params.FunctionName}`)
-  })
+}
+
+function throwResourceError ({ message }) {
+  const funcName = message.split(':').slice(-2, -1)[0]
+  throw new Error(`No function found with name ${funcName}`)
 }
 
 export function putFunction (env, config, ZipFile) {
@@ -49,6 +51,7 @@ export function putEnvironment (env, config, envVars) {
   .then((func) => {
     setAlias(func, env)
   })
+  .catch({ code: 'ResourceNotFoundException' }, throwResourceError)
   .catch((e) => {
     throw new Error(e)
   })
@@ -76,6 +79,7 @@ export function removeEnvVars (env, config, envVars) {
   .then((func) => {
     setAlias(func, env)
   })
+  .catch({ code: 'ResourceNotFoundException' }, throwResourceError)
   .catch((e) => {
     throw new Error(e)
   })
@@ -91,6 +95,7 @@ export function getEnvironment (env, { FunctionName }) {
   .get('Configuration')
   .get('Environment')
   .get('Variables')
+  .catch({ code: 'ResourceNotFoundException' }, throwResourceError)
   .catch((e) => {
     throw new Error(`No environment variables exist for ${FunctionName}`)
   })

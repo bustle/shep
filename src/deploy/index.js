@@ -35,6 +35,7 @@ export default function (opts) {
       }
     },
     {
+      // this should only be ran if bucket is present
       title: `Upload Builds to S3`,
       task: () => uploadBuilds(functions, bucket).tap((funcs) => {
         // delete null keys from fns without s3 builds, then set other fns to be uploaded
@@ -43,7 +44,14 @@ export default function (opts) {
 
         if (Object.keys(funcs).length === 0) { shouldUpload = false }
         uploadFuncs = funcs
-      })
+      }),
+      skip: async () => {
+        if (!bucket) {
+          // need to set uploaded funcs
+          uploadFuncs = await load.funcs(functions)
+          return 'Skipping uploading builds, no S3 bucket provided'
+        }
+      }
     },
     {
       title: 'Upload Functions to AWS',

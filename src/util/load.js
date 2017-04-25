@@ -1,11 +1,14 @@
 import { readdirSync, readJSONSync } from './modules/fs'
 import minimatch from 'minimatch'
+import AWS from './aws'
 import { aliases } from './aws/api-gateway'
 
 export async function envs () {
-  const api = this.api()
-  if (api && api.id) {
-    return aliases(api.id)
+  const pkg = this.pkg()
+
+  if (pkg && pkg.shep && pkg.shep.apiId) {
+    AWS.config.update({ region: pkg.shep.region })
+    return aliases(pkg.shep.apiId)
   } else {
     return []
   }
