@@ -7,8 +7,8 @@ export function getFunction (params) {
   return lambda.getFunction(params).promise()
 }
 
-function throwResourceError ({ message }) {
-  const funcName = message.split(':').slice(-2, -1)[0]
+function throwResourceError (err) {
+  const funcName = err.message.split(':').slice(-2, -1)[0]
   throw new Error(`No function found with name ${funcName}`)
 }
 
@@ -39,11 +39,16 @@ export function putEnvironment (env, config, envVars) {
     Qualifier: env
   }
 
+  // should make sure that alias is already made
   return getFunction(params)
   .then((awsFunction) => {
     const envMap = mergeExistingEnv(awsFunction, envVars)
     const lambdaConfig = merge(config, { Environment: { Variables: envMap } })
     return lambda.updateFunctionConfiguration(lambdaConfig).promise()
+  })
+  .catch({ code: 'ResourceNotFoundException' }, () => {
+    // Swallow errors related to alias not existing
+    return getFunction({ FunctionName: params.FunctionName }).get('Configuration')
   })
   .then(({ FunctionName }) => {
     return lambda.publishVersion({ FunctionName }).promise()
@@ -51,7 +56,6 @@ export function putEnvironment (env, config, envVars) {
   .then((func) => {
     setAlias(func, env)
   })
-  .catch({ code: 'ResourceNotFoundException' }, throwResourceError)
   .catch((e) => {
     throw new Error(e)
   })
