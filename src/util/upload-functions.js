@@ -1,16 +1,11 @@
 import Promise from 'bluebird'
 import zipDir from './zip-dir'
 import { putFunction } from './aws/lambda'
-import { lambdaConfig, funcs } from './load'
+import { lambdaConfig } from './load'
 
-export default function (pattern, env) {
-  return Promise.resolve(funcs(pattern))
-  .map((func) => {
-    return Promise.join(
-      env,
-      lambdaConfig(func),
-      zipDir(`dist/${func}`),
-      putFunction
-    )
-  })
+export default async function (fns, env) {
+  return Promise.all(fns.map(async (func) => {
+    const zip = await zipDir(`dist/${func}`)
+    return await putFunction(env, lambdaConfig(func), zip)
+  }))
 }

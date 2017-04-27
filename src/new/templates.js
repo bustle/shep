@@ -72,7 +72,8 @@ export function pkg ({ apiName, accountId = '', region = '' }) {
       region: region,
       accountId: accountId,
       apiId: '',
-      buildCommand: ''
+      buildCommand: '',
+      bucket: ''
     }
   }
 

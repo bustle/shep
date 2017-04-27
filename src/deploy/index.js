@@ -1,5 +1,6 @@
 import build from '../util/build-functions'
 import upload from '../util/upload-functions'
+import uploadBuilds from '../util/upload-builds'
 import { deploy } from '../util/aws/api-gateway'
 import promoteAliases from '../util/promote-aliases'
 import setPermissions from '../util/set-permissions'
@@ -12,14 +13,16 @@ export default function (opts) {
   const functions = opts.functions || '*'
   const env = opts.env || 'development'
   const region = opts.region
+  const bucket = opts.bucket
   const performBuild = opts.build
   const api = load.api()
 
-  let apiId, uploadedFuncs
+  let apiId, uploadFuncs
+  let shouldUpload = true
 
   if (opts.apiId) { apiId = opts.apiId }
 
-  AWS.config.update({region})
+  AWS.config.update({ region })
 
   const tasks = listr([
     {
@@ -32,8 +35,32 @@ export default function (opts) {
       }
     },
     {
+      // this should only be ran if bucket is present
+      title: `Upload Builds to S3`,
+      task: () => uploadBuilds(functions, bucket).tap((funcs) => {
+        // delete null keys from fns without s3 builds, then set other fns to be uploaded
+
+        Object.keys(funcs).forEach((key) => (funcs[key] == null) && delete funcs[key])
+
+        if (Object.keys(funcs).length === 0) { shouldUpload = false }
+        uploadFuncs = funcs
+      }),
+      skip: async () => {
+        if (!bucket) {
+          // need to set uploaded funcs
+          uploadFuncs = await load.funcs(functions)
+          return 'Skipping uploading builds, no S3 bucket provided'
+        }
+      }
+    },
+    {
       title: 'Upload Functions to AWS',
-      task: () => upload(functions, env).tap((funcs) => { uploadedFuncs = funcs })
+      task: () => upload(uploadFuncs, env),
+      skip: () => {
+        if (!shouldUpload) {
+          return 'Skipping upload, function unchanged since last deploy'
+        }
+      }
     }
   ], opts.quiet)
 
@@ -49,7 +76,7 @@ export default function (opts) {
   tasks.add([
     {
       title: 'Promote Function Aliases',
-      task: () => promoteAliases(uploadedFuncs, env)
+      task: () => promoteAliases(functions, env)
     }
   ])
 

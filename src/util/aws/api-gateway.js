@@ -45,5 +45,5 @@ export function aliases (id) {
     restApiId: id
   }
 
-  return apiGateway.getStages(params).promise()
+  return apiGateway.getStages(params).promise().get('item').map((x) => x.stageName)
 }

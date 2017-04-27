@@ -4,6 +4,7 @@ import td from '../helpers/testdouble'
 const functions = 'foo-*'
 const uploadedFuncs = ['foo', 'bar']
 const env = 'beta'
+const bucket = 's3_bucket'
 
 const build = td.replace('../../src/util/build-functions')
 const apiGateway = td.replace('../../src/util/aws/api-gateway')
@@ -14,12 +15,15 @@ const push = td.replace('../../src/util/push-api')
 const load = td.replace('../../src/util/load')
 td.when(load.api()).thenReturn()
 
+const uploadBuilds = td.replace('../../src/util/upload-builds')
+td.when(uploadBuilds(functions, bucket)).thenResolve(uploadedFuncs)
+
 const upload = td.replace('../../src/util/upload-functions')
-td.when(upload(functions, env)).thenResolve(uploadedFuncs)
+td.when(upload(uploadedFuncs, env)).thenResolve(uploadedFuncs)
 
 test.before(() => {
   const shep = require('../../src/index')
-  return shep.deploy({ env, functions, quiet: true })
+  return shep.deploy({ env, functions, bucket, quiet: true })
 })
 
 test('Builds functions', () => {
@@ -35,7 +39,7 @@ test('Does not push API defenitin', () => {
 })
 
 test('Does promote function aliases', () => {
-  td.verify(promoteAliases(uploadedFuncs, env))
+  td.verify(promoteAliases(functions, env))
 })
 
 test('Does not setup function permissions', () => {

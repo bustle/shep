@@ -4,6 +4,7 @@ import td from '../helpers/testdouble'
 const functions = 'foo-*'
 const uploadedFuncs = ['foo', 'bar']
 const env = 'beta'
+const bucket = 's3_bucket'
 const api = { paths: {} }
 const apiId = 'test-id'
 
@@ -18,12 +19,15 @@ td.when(load.api()).thenReturn(api)
 const push = td.replace('../../src/util/push-api')
 td.when(push(api), { ignoreExtraArgs: true }).thenResolve(apiId)
 
+const uploadBuilds = td.replace('../../src/util/upload-builds')
+td.when(uploadBuilds(functions, bucket)).thenResolve(uploadedFuncs)
+
 const upload = td.replace('../../src/util/upload-functions')
-td.when(upload(functions, env)).thenResolve(uploadedFuncs)
+td.when(upload(uploadedFuncs, env)).thenResolve(uploadedFuncs)
 
 test.before(() => {
   const shep = require('../../src/index')
-  return shep.deploy({ env, functions, quiet: true })
+  return shep.deploy({ env, functions, bucket, quiet: true })
 })
 
 test('Builds functions', () => {
@@ -35,7 +39,7 @@ test('Deploys API', () => {
 })
 
 test('Promote function aliases', () => {
-  td.verify(promoteAliases(uploadedFuncs, env))
+  td.verify(promoteAliases(functions, env))
 })
 
 test('Setup function permissions', () => {
