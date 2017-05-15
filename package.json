@@ -38,7 +38,7 @@
   "dependencies": {
     "archiver": "^1.0.0",
     "aws-lambda-mock-context": "^3.0.1",
-    "aws-sdk": "^2.4.13",
+    "aws-sdk": "^2.51.0",
     "babel-register": "^6.22.0",
     "bluebird": "^3.4.7",
     "chalk": "^1.1.3",
