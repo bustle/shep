@@ -15,7 +15,7 @@ td.when(load.lambdaConfig()).thenReturn(pkg)
 const removeEnvironment = td.replace('../../src/util/remove-environment')
 
 test.before(async () => {
-  return await require('../../src/config-remove/index')({ env: environment, vars: envVars })
+  return require('../../src/config-remove/index')({ env: environment, vars: envVars })
 })
 
 test('Calls removeEnvironment', () => {

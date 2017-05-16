@@ -20,7 +20,7 @@ const requireProject = td.replace('../../src/util/require-project')
 td.when(requireProject(td.matchers.contains(`dist/${funcName}`))).thenReturn(lambdaFunc)
 
 test.before(async () => {
-  return await require('../../src/run/index')({ pattern: funcName, build: true })
+  return require('../../src/run/index')({ pattern: funcName, build: true })
 })
 
 test('Calls the function', () => {

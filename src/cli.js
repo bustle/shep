@@ -4,6 +4,7 @@ import yargs from 'yargs'
 export default function cli () {
   loudRejection()
 
+  /* eslint-disable no-unused-expressions */
   yargs
     .wrap(120)
     .usage('Usage: $0 <command> [options]')
@@ -13,4 +14,5 @@ export default function cli () {
     .help()
     .strict()
     .argv
+  /* eslint-enable no-unused-expressions */
 }

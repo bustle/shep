@@ -1,6 +1,5 @@
 import test from 'ava'
 import td from '../helpers/testdouble'
-import { isArray } from 'util'
 
 test.afterEach(() => {
   td.reset()
@@ -14,7 +13,7 @@ test('Returns flat array of warnings', (t) => {
   td.when(rules.bar(), { ignoreExtraArgs: true }).thenReturn([barWarn])
 
   const warnings = require('../../src/doctor')({ quiet: true })
-  t.truthy(isArray(warnings))
+  t.truthy(Array.isArray(warnings))
   t.not(warnings.indexOf(fooWarn), -1)
   t.not(warnings.indexOf(barWarn), -1)
 })

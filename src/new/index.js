@@ -53,7 +53,7 @@ function setupIam (context) {
   })
   .then(() => { if (newRole) return attachPolicy(rolename) })
   .catch({ code: 'LimitExceeded' }, () => {
-    return Promise.reject('Current AWS User does not have sufficient permissions to do this')
+    return Promise.reject(new Error('Current AWS User does not have sufficient permissions to do this'))
   })
 }
 
@@ -81,4 +81,3 @@ function createFiles ({ path, arn, region }) {
 function npmInstall ({ path }) {
   return exec('npm install', { cwd: path })
 }
-

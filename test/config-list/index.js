@@ -20,7 +20,7 @@ const getEnvironment = td.replace('../../src/util/get-environment')
 td.when(getEnvironment(environment, functionName)).thenReturn(Promise.resolve(getEnvironmentResponse))
 
 test.before(async () => {
-  return await require('../../src/config-list/index')({ env: environment, function: functionName })
+  return require('../../src/config-list/index')({ env: environment, function: functionName })
 })
 
 test('Gets environment', () => {

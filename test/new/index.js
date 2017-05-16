@@ -28,4 +28,3 @@ test(wroteFile, `${path}/webpack.config.js`)
 test(wroteFile, `${path}/.env`)
 
 test(didExec, 'npm install')
-

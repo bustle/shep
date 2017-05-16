@@ -18,7 +18,7 @@ td.when(load.lambdaConfig()).thenReturn(pkg)
 const uploadEnvironment = td.replace('../../src/util/upload-environment')
 
 test.before(async () => {
-  return await require('../../src/config-set/index')({ env: environment, vars: envVars })
+  return require('../../src/config-set/index')({ env: environment, vars: envVars })
 })
 
 test('Calls uploadEnvironment', () => {

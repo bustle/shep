@@ -12,4 +12,3 @@ export function builder (yargs) {
 }
 
 export const handler = generateWebpack
-

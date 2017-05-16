@@ -1,6 +1,5 @@
 import test from 'ava'
 import td from '../../helpers/testdouble'
-import { isArray } from 'util'
 
 const mockApi = {
   paths: {
@@ -25,7 +24,7 @@ const duplicateCacheNamespaces = require('../../../src/doctor/rules/duplicate-ca
 
 test('No warnings when no api.json', (t) => {
   const warnings = duplicateCacheNamespaces({})
-  t.true(isArray(warnings))
+  t.true(Array.isArray(warnings))
   t.is(warnings.length, 0)
 })
 
