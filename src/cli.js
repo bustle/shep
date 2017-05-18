@@ -12,7 +12,6 @@ export default function cli () {
     .commandDir('./commands')
     .version()
     .help()
-    .strict()
     .argv
   /* eslint-enable no-unused-expressions */
 }

@@ -4,5 +4,4 @@ export function builder (yargs) {
   return yargs
   .commandDir('./config')
   .demand(1)
-  .strict()
 }
