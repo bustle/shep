@@ -22,9 +22,10 @@ export function exportStage (restApiId, stageName) {
 export function deploy (id, env, attempts = 1) {
   const apiGateway = new AWS.APIGateway()
   return apiGateway.createDeployment({restApiId: id, stageName: env, variables: { functionAlias: env }}).promise()
-  .catch({ code: 'TooManyRequestsException' }, ({ retryable, retryDelay }) => {
-    if (!retryable && attempts > DEPLOY_ATTEMPT_MAX) throw new Error('Amazon limit hit')
-    return Promise.delay(Math.ceil(retryDelay * 1000)).then(() => deploy(id, env, attempts++))
+  .catch({ code: 'TooManyRequestsException' }, async ({ retryable, retryDelay }) => {
+    if (!retryable && attempts > DEPLOY_ATTEMPT_MAX) { throw new Error('Amazon limit hit') }
+    await Promise.delay(retryDelay * 1000)
+    return deploy(id, env, attempts++)
   })
 }
 
