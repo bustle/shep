@@ -4,5 +4,4 @@ export function builder (yargs) {
   return yargs
   .commandDir('./generate')
   .demand(1)
-  .strict()
 }

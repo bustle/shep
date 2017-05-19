@@ -8,6 +8,6 @@ export default async function (pattern, bucket) {
   return Promise.all(fns.map(async (func) => {
     const path = `dist/${func}`
     const hash = await hashBuild(path)
-    return await putBuild(hash, path, bucket, func)
+    return putBuild(hash, path, bucket, func)
   }))
 }

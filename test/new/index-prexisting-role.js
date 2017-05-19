@@ -29,4 +29,3 @@ test('Wrote configured templates', () => {
   td.verify(templates.pkg({ apiName: path, region, accountId }))
   td.verify(templates.lambda(roleArn))
 })
-

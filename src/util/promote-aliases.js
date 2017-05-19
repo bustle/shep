@@ -5,6 +5,6 @@ import { lambdaConfig, funcs } from './load'
 export default async function (pattern, env) {
   const fns = await funcs(pattern)
   return Promise.all(fns.map(async (func) => {
-    return await publishFunction(lambdaConfig(func), env)
+    return publishFunction(lambdaConfig(func), env)
   }))
 }

@@ -17,7 +17,7 @@ const requireProject = td.replace('../../src/util/require-project')
 td.when(requireProject(td.matchers.contains(`functions/${funcName}`))).thenReturn(lambdaFunc)
 
 test.before(async () => {
-  return await require('../../src/run/index')({ pattern: funcName, build: false })
+  return require('../../src/run/index')({ pattern: funcName, build: false })
 })
 
 test('Calls the function', () => {

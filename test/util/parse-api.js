@@ -1,6 +1,5 @@
 import test from 'ava'
 import parseApi from '../../src/util/parse-api'
-import { isArray } from 'util'
 
 const mockApi = {
   paths: {
@@ -22,8 +21,8 @@ const mockApi = {
 }
 
 test('Should return array', (t) => {
-  t.true(isArray(parseApi()))
-  t.true(isArray(parseApi(mockApi)))
+  t.true(Array.isArray(parseApi()))
+  t.true(Array.isArray(parseApi(mockApi)))
 })
 
 test('Should handle multiple http methods correctly', (t) => {

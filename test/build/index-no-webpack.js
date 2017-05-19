@@ -14,4 +14,3 @@ test('Logs to console when no webpack found', async (t) => {
   t.is(error.code, 'ENOENT')
   td.verify(console.warn(), { ignoreExtraArgs: true })
 })
-

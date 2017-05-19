@@ -13,8 +13,7 @@ export function getLogGroup ({ functionName }) {
   .get(0)
   .get('logGroupName')
   .catch((e) => {
-    return Promise.reject({ code: 'ResourceNotFoundException',
-      message: 'No log groups found for specified function' })
+    return Promise.reject(new Error('No log groups found for specified function'))
   })
 }
 

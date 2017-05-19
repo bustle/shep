@@ -37,4 +37,3 @@ test('Gets alias version', () => {
 test('Gets log group', () => {
   td.verify(cloudwatchLogs.getLogGroup(td.matchers.anything()))
 })
-

@@ -9,4 +9,3 @@ test.before(() => {
 })
 
 test(wroteFile, output)
-

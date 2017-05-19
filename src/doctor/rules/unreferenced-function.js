@@ -27,4 +27,3 @@ function generateWarning (funcName) {
     message: `Function ${funcName} isn't referenced by api.json`
   }
 }
-

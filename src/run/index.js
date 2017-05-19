@@ -5,10 +5,10 @@ import Promise from 'bluebird'
 import chalk from 'chalk'
 import AWS from 'aws-sdk'
 import context from 'aws-lambda-mock-context'
+import cliui from 'cliui'
 
 require('dotenv').config()
 
-import cliui from 'cliui'
 const ui = cliui({ width: 80 })
 
 const results = { success: 'SUCCESS', error: 'ERROR', exception: 'EXCEPTION' }
@@ -61,7 +61,7 @@ function runFunction (opts) {
       return Promise.reject(new Error(`Handler function provided is not a function. Please verify that there exists a handler function exported as ${handler} in dist/${name}/${fileName}.js`))
     }
 
-    return await Promise.map(events, (eventFilename) => {
+    return Promise.map(events, (eventFilename) => {
       const event = requireProject(`functions/${name}/events/${eventFilename}`)
       return new Promise((resolve) => {
         const output = { name: eventFilename, funcName: name }
