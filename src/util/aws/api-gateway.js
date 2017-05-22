@@ -1,4 +1,7 @@
 import AWS from './'
+import Promise from 'bluebird'
+
+export const DEPLOY_ATTEMPT_MAX = 2
 
 export function exportStage (restApiId, stageName) {
   const apiGateway = new AWS.APIGateway()
@@ -16,9 +19,14 @@ export function exportStage (restApiId, stageName) {
   .get('body')
 }
 
-export function deploy (id, env) {
+export function deploy (id, env, attempts = 1) {
   const apiGateway = new AWS.APIGateway()
   return apiGateway.createDeployment({restApiId: id, stageName: env, variables: { functionAlias: env }}).promise()
+  .catch({ code: 'TooManyRequestsException' }, async ({ retryable, retryDelay }) => {
+    if (!retryable && attempts > DEPLOY_ATTEMPT_MAX) { throw new Error('Amazon limit hit') }
+    await Promise.delay(retryDelay * 1000)
+    return deploy(id, env, attempts++)
+  })
 }
 
 export function pushApi (api, id) {
