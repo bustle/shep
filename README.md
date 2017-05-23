@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/bustlelabs/shep.svg?branch=master)](https://travis-ci.org/bustlelabs/shep)
+[![Build Status](https://travis-ci.org/bustle/shep.svg?branch=master)](https://travis-ci.org/bustle/shep)
 [![Code Climate](https://codeclimate.com/github/bustlelabs/shep/badges/gpa.svg)](https://codeclimate.com/github/bustlelabs/shep)
 
 <div align="center">
@@ -87,7 +87,7 @@ CLI documentation can be found in [DOCS.md](DOCS.md)
 
 ## Upgrading
 
-Read the [migration docs](https://github.com/bustlelabs/shep/blob/master/migration.md) for information on upgrading major version changes
+Read the [migration docs](migration.md) for information on upgrading major version changes
 
 ## Why the name 'shep'?
 
