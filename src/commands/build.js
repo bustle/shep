@@ -10,7 +10,7 @@ export function builder (yargs) {
   .example('shep build', 'Launch an interactive CLI')
   .example('shep build beta', 'Build all functions with beta environment variables')
   .example('shep build beta create-user', 'Build only the create-user function')
-  .example('shep build beta *-user', 'Build functions matching the pattern *-user')
+  .example('shep build beta \'*-user\'', 'Build functions matching the pattern *-user')
 }
 
 export const handler = build

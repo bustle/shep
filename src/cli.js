@@ -8,7 +8,7 @@ export default function cli () {
   yargs
     .wrap(120)
     .usage('Usage: $0 <command> [options]')
-    .demand(1)
+    .demandCommand(1)
     .commandDir('./commands')
     .version()
     .help()

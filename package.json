@@ -7,8 +7,8 @@
     "compile": "babel -d lib/ src/",
     "test": "ava",
     "lint": "eslint ./",
-    "prepublish": "npm run compile",
-    "pub": "np"
+    "prepublish": "rm -r lib; npm run compile && babel-node docs.js > DOCS.md",
+    "pub": "npm run prepublish && np"
   },
   "engines": {
     "node": ">=4.0.0"
