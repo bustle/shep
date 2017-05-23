@@ -7,11 +7,13 @@ console.log(execSync(`./cli.js --help`).toString().replace(/cli\.js/, 'shep').tr
 console.log('```')
 
 for (var cmd in shep) {
-  let help = execSync(`./cli.js ${camelCaseToSpace(cmd)} --help`).toString().replace(/cli\.js/, 'shep').trim()
-  console.log(`#### \`shep ${camelCaseToSpace(cmd)}\``)
-  console.log('```')
-  console.log(help)
-  console.log('```')
+  if (cmd !== 'version') {
+    let help = execSync(`./cli.js ${camelCaseToSpace(cmd)} --help`).toString().replace(/cli\.js/, 'shep').trim()
+    console.log(`#### \`shep ${camelCaseToSpace(cmd)}\``)
+    console.log('```')
+    console.log(help)
+    console.log('```')
+  }
 }
 
 function camelCaseToSpace (str) {
