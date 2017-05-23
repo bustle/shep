@@ -5,6 +5,8 @@ import Promise from 'bluebird'
 import exec from '../util/modules/exec'
 import listr from '../util/modules/listr'
 
+let conflictingFiles = false
+
 export default function run (opts) {
   const path = opts.path
   const rolename = opts.rolename
@@ -36,7 +38,10 @@ export default function run (opts) {
   if (!rolename) tasks = tasks.splice(1)
 
   return listr(tasks, opts.quiet)
-    .run({ path, rolename, region })
+  .run({ path, rolename, region })
+  .then(() => {
+    if (conflictingFiles) { console.log('Conflicting files were found in provided path. New files were written with .shep-tmp appended to the filename') }
+  })
 }
 
 function setupIam (context) {
@@ -84,6 +89,7 @@ function createFiles ({ path, arn, region }) {
 
 async function tempifyFile ({ path, contents }) {
   if (await exists(path)) {
+    conflictingFiles = true
     return { path: `${path}.shep-tmp`, contents }
   }
   return { path, contents }
