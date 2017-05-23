@@ -21,7 +21,7 @@ It will be helpful to have some existing experience with API gateway and Lambda.
 
 ### AWS credentials
 
-Shep will require your amazon credentials and will load them using the same methods as the AWS CLI tool. Consult [Amazon's CLI documentation](http://docs.aws.amazon.com/cli/latest/topic/config-vars.html) for instructions.
+Shep will require your amazon credentials and will load them using the same methods as the AWS CLI tool meaning you must have setup the AWS CLI tool before using shep. Consult [Amazon's CLI documentation](http://docs.aws.amazon.com/cli/latest/topic/config-vars.html) for instructions.
 
 ### AWS S3 Build Artifacts
 
