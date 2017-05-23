@@ -1,5 +1,4 @@
 import test from 'ava'
-import Promise from 'bluebird'
 import { fs } from '../helpers/fs'
 import { exec } from '../helpers/exec'
 import td from '../helpers/testdouble'
@@ -11,7 +10,8 @@ const accountId = '123412341234'
 const roleArn = `arn:aws:iam:${accountId}:role/${rolename}`
 const templates = td.replace('../../src/new/templates')
 const iam = td.replace('../../src/util/aws/iam')
-td.when(iam.getRole(rolename)).thenReturn(Promise.resolve(roleArn))
+td.when(iam.getRole(rolename)).thenResolve(roleArn)
+td.when(fs.exists(td.matchers.isA(String))).thenResolve(false)
 
 test.before(() => {
   const shep = require('../../src/index')

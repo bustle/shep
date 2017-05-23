@@ -8,3 +8,4 @@ export const readJSON = fs.readJSONAsync
 export const readJSONSync = fs.readJSONSync
 export const readdirSync = fs.readdirSync
 export const readdir = fs.readdirAsync
+export const exists = fs.existsAsync

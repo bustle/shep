@@ -1,10 +1,12 @@
 import test from 'ava'
 import td from '../helpers/testdouble'
-import { createdDir, wroteFile } from '../helpers/fs'
+import { fs, createdDir, wroteFile } from '../helpers/fs'
 import { didExec } from '../helpers/exec'
 
 const path = 'foo-api'
 const iam = td.replace('../../src/util/aws/iam')
+
+td.when(fs.exists(td.matchers.isA(String))).thenResolve(false)
 
 test.before(() => {
   const shep = require('../../src/index')
