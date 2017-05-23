@@ -64,7 +64,7 @@
     "babel-plugin-add-module-exports": "^0.2.1",
     "babel-plugin-transform-async-to-module-method": "^6.16.0",
     "babel-plugin-transform-object-rest-spread": "^6.20.2",
-    "babel-preset-env": "^1.1.8",
+    "babel-preset-env": "^1.5.1",
     "babel-register": "^6.18.0",
     "eslint": "^3.14.1",
     "eslint-config-standard": "^10.2.1",
@@ -81,7 +81,7 @@
         "env",
         {
           "targets": {
-            "node": 4.3
+            "node": "4.3.2"
           },
           "exclude": [
             "transform-regenerator"
