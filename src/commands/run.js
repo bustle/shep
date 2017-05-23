@@ -25,12 +25,13 @@ export function builder (yargs) {
 }
 
 export function handler (opts) {
+  const funcs = load.funcs()
   const questions = [
     {
       name: 'pattern',
       message: 'Function',
       type: 'list',
-      choices: () => load.funcs()
+      choices: () => funcs
     }
   ]
 

@@ -27,7 +27,7 @@ export function events (func, eventName) {
   return events
 }
 
-export async function funcs (pattern = '*') {
+export function funcs (pattern = '*') {
   const funcs = readdirSync('functions').filter(minimatch.filter(pattern))
   if (funcs.length === 0) {
     throw new Error(`No functions found matching patterns: ${JSON.stringify(funcs)}`)
