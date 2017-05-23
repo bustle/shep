@@ -1,5 +1,4 @@
 import test from 'ava'
-import Promise from 'bluebird'
 import { fs } from '../helpers/fs'
 import { exec } from '../helpers/exec'
 import td from '../helpers/testdouble'
@@ -12,9 +11,10 @@ const roleArn = `arn:aws:iam:${accountId}:role/${rolename}`
 const templates = td.replace('../../src/new/templates')
 const iam = td.replace('../../src/util/aws/iam')
 /* eslint-disable prefer-promise-reject-errors */
-td.when(iam.getRole(rolename)).thenReturn(Promise.reject({ code: 'NoSuchEntity' }))
+td.when(iam.getRole(rolename)).thenReject({ code: 'NoSuchEntity' })
 /* eslint-enable prefer-promise-reject-errors */
-td.when(iam.createRole(rolename)).thenReturn(Promise.resolve(roleArn))
+td.when(iam.createRole(rolename)).thenResolve(roleArn)
+td.when(fs.exists(td.matchers.isA(String))).thenResolve(true)
 
 test.before(() => {
   const shep = require('../../src/index')

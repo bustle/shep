@@ -1,4 +1,4 @@
-import { mkdirp, writeFile } from '../util/modules/fs'
+import { mkdirp, writeFile, exists } from '../util/modules/fs'
 import { getRole, createRole, attachPolicy } from '../util/aws/iam'
 import * as templates from './templates'
 import Promise from 'bluebird'
@@ -65,17 +65,28 @@ function createSubDirs ({ path }) {
 
 function createFiles ({ path, arn, region }) {
   const accountId = (/[0-9]{12}(?=:)/.exec(arn) || [ '' ])[0]
+  const files = [
+    { path: `${path}/package.json`, contents: templates.pkg({ apiName: path, region, accountId }) },
+    { path: `${path}/.gitignore`, contents: templates.gitignore() },
+    { path: `${path}/.env`, contents: templates.dotEnv() },
+    { path: `${path}/README.md`, contents: templates.readme(path) },
+    { path: `${path}/lambda.json`, contents: templates.lambda(arn) },
+    { path: `${path}/api.json`, contents: templates.api(path) },
+    { path: `${path}/webpack.config.js`, contents: templates.webpack() },
+    { path: `${path}/.babelrc`, contents: templates.babelrc() }
+  ]
 
-  return Promise.all([
-    writeFile(path + '/package.json', templates.pkg({ apiName: path, region, accountId })),
-    writeFile(path + '/.gitignore', templates.gitignore()),
-    writeFile(path + '/.env', templates.dotEnv()),
-    writeFile(path + '/README.md', templates.readme(path)),
-    writeFile(path + '/lambda.json', templates.lambda(arn)),
-    writeFile(path + '/api.json', templates.api(path)),
-    writeFile(path + '/webpack.config.js', templates.webpack()),
-    writeFile(path + '/.babelrc', templates.babelrc())
-  ])
+  return Promise.map(files, tempifyFile)
+  .map(({ path, contents }) => {
+    return writeFile(path, contents)
+  })
+}
+
+async function tempifyFile ({ path, contents }) {
+  if (await exists(path)) {
+    return { path: `${path}.shep-tmp`, contents }
+  }
+  return { path, contents }
 }
 
 function npmInstall ({ path }) {
