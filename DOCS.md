@@ -109,7 +109,7 @@ Examples:
   shep deploy production              Deploy all functions with production env variables
   shep deploy beta --no-build         Deploy all functions as currently built in the dist folder
   shep deploy production create-user  Deploy only the create-user function
-  shep deploy beta *-user             Deploy only functions matching the pattern *-user
+  shep deploy beta '*-user'           Deploy only functions matching the pattern *-user
 ```
 #### `shep build`
 ```
@@ -124,7 +124,7 @@ Examples:
   shep build                   Launch an interactive CLI
   shep build beta              Build all functions with beta environment variables
   shep build beta create-user  Build only the create-user function
-  shep build beta *-user       Build functions matching the pattern *-user
+  shep build beta '*-user'     Build functions matching the pattern *-user
 ```
 #### `shep logs`
 ```
