@@ -8,7 +8,7 @@ export const desc = 'Prints all environmental variables as a JSON object'
 export function builder (yargs) {
   return yargs
   .pkgConf('shep', process.cwd())
-  .example('shep config dump beta', 'List environment variables for function "foo" beta alias')
+  .example('shep config dump beta', 'Print to console all environment variables of environment `beta` in JSON format')
 }
 
 export async function handler (opts) {

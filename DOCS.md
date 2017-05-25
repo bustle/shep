@@ -109,7 +109,7 @@ Examples:
   shep deploy production              Deploy all functions with production env variables
   shep deploy beta --no-build         Deploy all functions as currently built in the dist folder
   shep deploy production create-user  Deploy only the create-user function
-  shep deploy beta *-user             Deploy only functions matching the pattern *-user
+  shep deploy beta '*-user'           Deploy only functions matching the pattern *-user
 ```
 #### `shep build`
 ```
@@ -124,7 +124,7 @@ Examples:
   shep build                   Launch an interactive CLI
   shep build beta              Build all functions with beta environment variables
   shep build beta create-user  Build only the create-user function
-  shep build beta *-user       Build functions matching the pattern *-user
+  shep build beta '*-user'     Build functions matching the pattern *-user
 ```
 #### `shep logs`
 ```
@@ -190,4 +190,48 @@ Options:
 
 Examples:
   shep generate webpack -o foo.js  Writes default webpack configuration to foo.js
+```
+#### `shep config set`
+```
+shep config set <env> <vars...>
+
+Options:
+  --version  Show version number                                                                               [boolean]
+  --help     Show help                                                                                         [boolean]
+
+Examples:
+  shep config set beta FOO=bar  Set environment variable FOO with value BAR for alias beta
+```
+#### `shep config remove`
+```
+shep config remove <env> <vars...>
+
+Options:
+  --version  Show version number                                                                               [boolean]
+  --help     Show help                                                                                         [boolean]
+
+Examples:
+  shep config remove beta NEW_VARIABLE  Removes NEW_VARIABLE from all functions with beta alias
+```
+#### `shep config list`
+```
+shep config list [env] [function]
+
+Options:
+  --version  Show version number                                                                               [boolean]
+  --help     Show help                                                                                         [boolean]
+
+Examples:
+  shep config beta foo  List environment variables for function "foo" beta alias
+```
+#### `shep config dump`
+```
+shep config dump [env]
+
+Options:
+  --version  Show version number                                                                               [boolean]
+  --help     Show help                                                                                         [boolean]
+
+Examples:
+  shep config dump beta  Print to console all environment variables of environment `beta` in JSON format
 ```
