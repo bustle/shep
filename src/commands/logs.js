@@ -20,6 +20,7 @@ export function builder (yargs) {
 
 export async function handler (opts) {
   const envs = await load.envs()
+  const fns = await load.funcs()
   let questions
 
   if (envs && envs.length > 0) {
@@ -34,20 +35,11 @@ export async function handler (opts) {
         name: 'name',
         message: 'Function',
         type: 'list',
-        choices: () => load.funcs()
+        choices: () => fns
       }
     ]
   } else {
-    if (!opts.env) { console.log('no API found, cannot load available aliases') }
-
-    questions = [
-      {
-        name: 'name',
-        message: 'Function',
-        type: 'list',
-        choices: () => load.funcs()
-      }
-    ]
+    throw new Error('no API found, cannot load available aliases')
   }
 
   inquirer.prompt(questions.filter((q) => !opts[q.name]))

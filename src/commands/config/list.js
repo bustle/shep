@@ -13,6 +13,7 @@ export function builder (yargs) {
 
 export async function handler (opts) {
   const envs = await load.envs()
+  const fns = await load.funcs()
   let questions
 
   if (envs && envs.length > 0) {
@@ -27,7 +28,7 @@ export async function handler (opts) {
         name: 'function',
         message: 'Function',
         type: 'list',
-        choices: () => load.funcs()
+        choices: () => fns
       }
     ]
   } else {
@@ -37,7 +38,7 @@ export async function handler (opts) {
         name: 'function',
         message: 'Function',
         type: 'list',
-        choices: () => load.funcs()
+        choices: () => fns
       }
     ]
   }

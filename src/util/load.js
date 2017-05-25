@@ -1,4 +1,4 @@
-import { readdirSync, readJSONSync } from './modules/fs'
+import { readdir, readdirSync, readJSONSync } from './modules/fs'
 import minimatch from 'minimatch'
 import AWS from './aws'
 import { aliases } from './aws/api-gateway'
@@ -28,7 +28,7 @@ export function events (func, eventName) {
 }
 
 export async function funcs (pattern = '*') {
-  const funcs = readdirSync('functions').filter(minimatch.filter(pattern))
+  const funcs = await readdir('functions').filter(minimatch.filter(pattern))
   if (funcs.length === 0) {
     throw new Error(`No functions found matching patterns: ${JSON.stringify(funcs)}`)
   } else {
