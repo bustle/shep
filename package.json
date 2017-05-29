@@ -57,7 +57,7 @@
     "minimatch": "^3.0.3",
     "resolve": "^1.1.7",
     "stream-buffers": "^3.0.0",
-    "yargs": "^8.0.1"
+    "yargs": "^6.0.1"
   },
   "devDependencies": {
     "ava": "^0.18.1",
