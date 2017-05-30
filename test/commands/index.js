@@ -5,6 +5,10 @@ import { allFlags, noFlags } from '../helpers/yargs'
 
 const load = td.replace('../../src/util/load')
 td.when(load.envs()).thenResolve(['development'])
+td.when(load.funcs()).thenResolve(['myfunction'])
+
+const inquirer = td.replace('inquirer')
+td.when(inquirer.prompt(), { ignoreExtraArgs: true }).thenResolve({})
 
 const newMock = td.replace('../../src/new')
 const newParser = yargs.command(require('../../src/commands/new'))
@@ -14,14 +18,6 @@ const newArgs = {
   region: 'mordor',
   rolename: 'shepRole'
 }
-
-/*
-test('Parses when all commands are given', async (t) => {
-  const command = `new ${args.path} --rolename ${args.rolename} --region ${args.region}`
-  parser.parse(command)
-  td.verify(_new())
-})
- */
 
 test([allFlags, noFlags], 'new', newParser, newArgs)
 
@@ -74,6 +70,26 @@ const pullArgs = {
 
 test([allFlags], 'pull', pullParser, pullArgs)
 
+const push = td.replace('../../src/push')
+const pushParser = yargs.command(require('../../src/commands/push'))
+const pushArgs = {
+  'api-id': 12345,
+  region: 'mordor'
+}
+
+test([allFlags], 'push', pushParser, pushArgs)
+
+const run = td.replace('../../src/run')
+const runParser = yargs.command(require('../../src/commands/run'))
+const runArgs = {
+  pattern: '\'*\'',
+  environment: 'development',
+  event: 'default.json',
+  build: 'true'
+}
+
+test([allFlags, noFlags], 'run', runParser, runArgs)
+
 const endpoint = td.replace('../../src/generate-endpoint')
 const endpointParser = yargs.command(require('../../src/commands/generate/endpoint'))
 const endpointArgs = {
@@ -83,11 +99,67 @@ const endpointArgs = {
 
 test([allFlags, noFlags], 'endpoint', endpointParser, endpointArgs)
 
+const functionMock = td.replace('../../src/generate-function')
+const functionParser = yargs.command(require('../../src/commands/generate/function'))
+const functionArgs = {
+  name: 'myfunction'
+}
+
+test([allFlags, noFlags], 'function', functionParser, endpointArgs)
+
+const webpack = td.replace('../../src/generate-webpack')
+const webpackParser = yargs.command(require('../../src/commands/generate/webpack'))
+const webpackArgs = {
+  output: 'dumb.js'
+}
+
+test([allFlags, noFlags], 'webpack', webpackParser, webpackArgs)
+
+const list = td.replace('../../src/config-list')
+const listParser = yargs.command(require('../../src/commands/config/list'))
+const listArgs = {
+  env: 'development',
+  function: 'myfunction'
+}
+
+test([allFlags, noFlags], 'list', listParser, listArgs)
+
+const remove = td.replace('../../src/config-remove')
+const removeParser = yargs.command(require('../../src/commands/config/remove'))
+const removeArgs = {
+  env: 'development',
+  vars: 'FOO'
+}
+
+test('config remove command', (t) => {
+  removeParser.parse('remove development MY_KEY OTHER_KEY', (err, argv, output) => {
+    err ? t.fail(err) : t.pass()
+  })
+})
+
+const set = td.replace('../../src/config-set')
+const setParser = yargs.command(require('../../src/commands/config/set'))
+const setArgs = {
+  env: 'development',
+  vars: 'FOO=bar'
+}
+
+test('config set command', (t) => {
+  setParser.parse('set development FOO=bar', (err, argv, output) => {
+    err ? t.fail(err) : t.pass()
+  })
+})
+
 test('verification of function calls', (t) => {
   // the new testdouble acts weird, possibly caused by issue with td itself
   // td.verify(newMock())
   td.verify(build(td.matchers.contains(buildArgs)))
-  // td.verify(endpoint(td.matchers.contains(endpointArgs)))
-  // td.veirfy(deploy(td.matchers.contains(deployArgs)))
+  // td.verify(deploy(td.matchers.contains(deployArgs)))
   td.verify(doctor(td.matchers.contains(doctorArgs)))
+  td.verify(pull(td.matchers.contains(pullArgs)))
+  td.verify(push(td.matchers.contains(pushArgs)))
+  // td.verify(run(td.matchers.contains(runArgs)))
+  // td.verify(endpoint(td.matchers.contains(endpointArgs)))
+  // td.verify(functionMock(td.matchers.contains(functionArgs)))
+  td.verify(webpack(td.matchers.contains(webpackArgs)))
 })
