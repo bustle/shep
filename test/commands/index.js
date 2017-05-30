@@ -10,7 +10,7 @@ td.when(load.funcs()).thenResolve(['myfunction'])
 const inquirer = td.replace('inquirer')
 td.when(inquirer.prompt(), { ignoreExtraArgs: true }).thenResolve({})
 
-const newMock = td.replace('../../src/new')
+td.replace('../../src/new')
 const newParser = yargs.command(require('../../src/commands/new'))
 
 const newArgs = {
@@ -30,7 +30,7 @@ const buildArgs = {
 
 test([allFlags, noFlags], 'build', buildParser, buildArgs)
 
-const deploy = td.replace('../../src/deploy')
+td.replace('../../src/deploy')
 const deployParser = yargs.command(require('../../src/commands/deploy'))
 const deployArgs = {
   env: 'development',
@@ -48,7 +48,7 @@ const doctorArgs = {
 
 test([allFlags, noFlags], 'doctor', doctorParser, doctorArgs)
 
-const logs = td.replace('../../src/logs')
+td.replace('../../src/logs')
 const logsParser = yargs.command(require('../../src/commands/logs'))
 const logsArgs = {
   stage: 'development',
@@ -79,7 +79,7 @@ const pushArgs = {
 
 test([allFlags], 'push', pushParser, pushArgs)
 
-const run = td.replace('../../src/run')
+td.replace('../../src/run')
 const runParser = yargs.command(require('../../src/commands/run'))
 const runArgs = {
   pattern: '\'*\'',
@@ -90,7 +90,7 @@ const runArgs = {
 
 test([allFlags, noFlags], 'run', runParser, runArgs)
 
-const endpoint = td.replace('../../src/generate-endpoint')
+td.replace('../../src/generate-endpoint')
 const endpointParser = yargs.command(require('../../src/commands/generate/endpoint'))
 const endpointArgs = {
   method: 'get',
@@ -99,13 +99,13 @@ const endpointArgs = {
 
 test([allFlags, noFlags], 'endpoint', endpointParser, endpointArgs)
 
-const functionMock = td.replace('../../src/generate-function')
+td.replace('../../src/generate-function')
 const functionParser = yargs.command(require('../../src/commands/generate/function'))
 const functionArgs = {
   name: 'myfunction'
 }
 
-test([allFlags, noFlags], 'function', functionParser, endpointArgs)
+test([allFlags, noFlags], 'function', functionParser, functionArgs)
 
 const webpack = td.replace('../../src/generate-webpack')
 const webpackParser = yargs.command(require('../../src/commands/generate/webpack'))
@@ -115,7 +115,7 @@ const webpackArgs = {
 
 test([allFlags, noFlags], 'webpack', webpackParser, webpackArgs)
 
-const list = td.replace('../../src/config-list')
+td.replace('../../src/config-list')
 const listParser = yargs.command(require('../../src/commands/config/list'))
 const listArgs = {
   env: 'development',
@@ -124,12 +124,8 @@ const listArgs = {
 
 test([allFlags, noFlags], 'list', listParser, listArgs)
 
-const remove = td.replace('../../src/config-remove')
+td.replace('../../src/config-remove')
 const removeParser = yargs.command(require('../../src/commands/config/remove'))
-const removeArgs = {
-  env: 'development',
-  vars: 'FOO'
-}
 
 test('config remove command', (t) => {
   removeParser.parse('remove development MY_KEY OTHER_KEY', (err, argv, output) => {
@@ -137,12 +133,8 @@ test('config remove command', (t) => {
   })
 })
 
-const set = td.replace('../../src/config-set')
+td.replace('../../src/config-set')
 const setParser = yargs.command(require('../../src/commands/config/set'))
-const setArgs = {
-  env: 'development',
-  vars: 'FOO=bar'
-}
 
 test('config set command', (t) => {
   setParser.parse('set development FOO=bar', (err, argv, output) => {
@@ -151,7 +143,8 @@ test('config set command', (t) => {
 })
 
 test('verification of function calls', (t) => {
-  // the new testdouble acts weird, possibly caused by issue with td itself
+  // If the verify call is commented out there were issues with the test double
+
   // td.verify(newMock())
   td.verify(build(td.matchers.contains(buildArgs)))
   // td.verify(deploy(td.matchers.contains(deployArgs)))
@@ -162,4 +155,7 @@ test('verification of function calls', (t) => {
   // td.verify(endpoint(td.matchers.contains(endpointArgs)))
   // td.verify(functionMock(td.matchers.contains(functionArgs)))
   td.verify(webpack(td.matchers.contains(webpackArgs)))
+  // td.verify(list(td.matchers.contains(listArgs)))
+  // td.verify(remove(), { ignoreExtraArgs: true })
+  // td.verify(set(), { ignoreExtraArgs: true })
 })
