@@ -3,11 +3,10 @@ import AWS from '../util/aws'
 import { getLogGroup } from '../util/aws/cloudwatch-logs'
 import { getAliasVersion } from '../util/aws/lambda'
 import getLogs from '../util/get-logs'
-import { pkg } from '../util/load'
-import genName from '../util/generate-name'
+import { pkg, lambdaConfig } from '../util/load'
 
 export default function (opts) {
-  const functionName = genName(opts.name).fullName
+  const functionName = lambdaConfig(opts.name).FunctionName
   const aliasName = opts.stage
   const stream = opts.stream
   const region = opts.region || pkg().shep.region

@@ -18,6 +18,7 @@ const getLogResponse = {
 
 const load = td.replace('../../src/util/load')
 td.when(load.pkg()).thenReturn(pkg)
+td.when(load.lambdaConfig(functionName)).thenReturn({ FunctionName: 'foo-bar' })
 
 const cloudwatchLogs = td.replace('../../src/util/aws/cloudwatch-logs')
 const lambda = td.replace('../../src/util/aws/lambda')
