@@ -1,10 +1,11 @@
 import * as load from '../util/load'
+import Promise from 'bluebird'
 import { getEnvironment } from '../util/aws/lambda'
 import { environmentCheck, values } from '../util/environment-check'
 
 export default async function (opts) {
   const fns = await load.funcs()
-  const envs = await fns.reduce(async (acc, funcName) => {
+  const envs = await Promise.reduce(fns, async (acc, funcName) => {
     const fullName = load.lambdaConfig(funcName).FunctionName
     const env = await getEnvironment(opts.env, { FunctionName: fullName })
     acc[funcName] = env
