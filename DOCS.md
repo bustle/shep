@@ -231,6 +231,7 @@ shep config dump [env]
 Options:
   --version  Show version number                                                                               [boolean]
   --help     Show help                                                                                         [boolean]
+  --json     Formats output as JSON                                                                            [boolean]
 
 Examples:
   shep config dump beta  Print to console all environment variables of environment `beta` in JSON format

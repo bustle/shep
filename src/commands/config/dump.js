@@ -8,6 +8,7 @@ export const desc = 'Prints all common environmental variables and differences'
 export function builder (yargs) {
   return yargs
   .pkgConf('shep', process.cwd())
+  .boolean('json')
   .describe('json', 'Formats output as JSON')
   .example('shep config dump beta', 'Print to console all environment variables of environment `beta` in JSON format')
 }
