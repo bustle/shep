@@ -4,10 +4,11 @@ import * as load from '../../util/load'
 import merge from 'lodash.merge'
 
 export const command = 'dump [env]'
-export const desc = 'Prints all environmental variables as a JSON object'
+export const desc = 'Prints all common environmental variables and differences'
 export function builder (yargs) {
   return yargs
   .pkgConf('shep', process.cwd())
+  .describe('json', 'Formats output as JSON')
   .example('shep config dump beta', 'Print to console all environment variables of environment `beta` in JSON format')
 }
 
