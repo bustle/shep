@@ -37,7 +37,6 @@
     "shep": "cli.js"
   },
   "dependencies": {
-    "archiver": "^1.0.0",
     "aws-lambda-mock-context": "^3.0.1",
     "aws-sdk": "^2.4.13",
     "babel-register": "^6.22.0",
@@ -57,7 +56,8 @@
     "minimatch": "^3.0.3",
     "resolve": "^1.1.7",
     "stream-buffers": "^3.0.0",
-    "yargs": "^6.0.1"
+    "yargs": "^6.0.1",
+    "zipit": "^1.0.2"
   },
   "devDependencies": {
     "ava": "^0.18.1",
