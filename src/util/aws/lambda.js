@@ -167,6 +167,16 @@ export function setPermission ({ name, region, env, apiId, accountId }) {
   })
 }
 
+export function listAliases (functionName) {
+  const lambda = new AWS.Lambda()
+
+  const params = {
+    FunctionName: functionName
+  }
+
+  return lambda.listAliases(params).promise().get('Aliases')
+}
+
 function validateConfig (config) {
   if (!config.Role) {
     throw new Error('You need to specify a valid Role for your lambda functions. See the shep README for details.')

@@ -1,17 +1,37 @@
 import { readdirSync, readJSONSync } from './modules/fs'
 import minimatch from 'minimatch'
 import AWS from './aws'
-import { aliases } from './aws/api-gateway'
+import { listAliases } from './aws/lambda'
+import Promise from 'bluebird'
 
 export async function envs () {
   const pkg = this.pkg()
+  const fns = await this.funcs()
+  const fullFuncNames = fns.map(this.lambdaConfig).map(({ FunctionName }) => FunctionName)
 
-  if (pkg && pkg.shep && pkg.shep.apiId) {
-    AWS.config.update({ region: pkg.shep.region })
-    return aliases(pkg.shep.apiId)
-  } else {
+  if (!pkg || !pkg.shep) {
     return []
   }
+
+  AWS.config.update({ region: pkg.shep.region })
+  const allAliases = await Promise.map(fullFuncNames, async (name) => {
+    const aliases = await listAliases(name)
+    return { name, aliases: aliases.map(({ Name }) => Name) }
+  })
+
+  const aliases = Promise.reduce(allAliases, async (acc, aliasObj) => {
+    const aliasSet = aliasObj.aliases
+    const missingAliases = aliasSet.filter((alias) => acc.indexOf(alias) === -1)
+    .concat(acc.filter((alias) => aliasSet.indexOf(alias) === -1))
+
+    if (missingAliases.length !== 0) {
+      throw new Error('Mismatched aliases found, please run `shep config sync` to ensure all functions have the same environment')
+    }
+
+    return acc
+  }, allAliases.pop().aliases)
+
+  return aliases
 }
 
 export function events (func, eventName) {
