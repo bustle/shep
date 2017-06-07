@@ -16,6 +16,7 @@ test('Loads environments', async (t) => {
     { Name: 'beta' },
     { Name: 'development' }
   ]
+  td.when(lambda.isFunctionDeployed(td.matchers.isA(String))).thenResolve(true)
   td.when(lambda.listAliases('foo')).thenResolve(aliases, fooAliases)
   td.when(lambda.listAliases('bar')).thenResolve(aliases)
 

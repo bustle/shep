@@ -3,16 +3,16 @@
 Usage: shep <command> [options]
 
 Commands:
-  build [functions]         Builds functions and writes them to disk
-  config                    Run `shep config --help` for additional information
-  deploy [env] [functions]  Deploy both functions and APIs to AWS. Will create a new API if the ID is not specified
-  doctor                    Checks your projects against best standards
-  generate                  Run `shep generate --help` for additional information
-  logs [stage] [name]       Streams logs from the specified version of a function
-  new [path]                Create a new shep project
-  pull                      Pulls a swagger JSON representation of an existing API and writes it to a local file
-  push                      Create a new shep project
-  run [pattern]             Run a function in your local environemnt
+  build [functions]    Builds functions and writes them to disk
+  config               Run `shep config --help` for additional information
+  deploy [functions]   Deploy both functions and APIs to AWS. Will create a new API if the ID is not specified
+  doctor               Checks your projects against best standards
+  generate             Run `shep generate --help` for additional information
+  logs [stage] [name]  Streams logs from the specified version of a function
+  new [path]           Create a new shep project
+  pull                 Pulls a swagger JSON representation of an existing API and writes it to a local file
+  push                 Create a new shep project
+  run [pattern]        Run a function in your local environemnt
 
 Options:
   --version  Show version number                                                                               [boolean]
@@ -96,20 +96,21 @@ Examples:
 ```
 #### `shep deploy`
 ```
-shep deploy [env] [functions]
+shep deploy [functions]
 
 Options:
   --version    Show version number                                                                             [boolean]
   --help       Show help                                                                                       [boolean]
   --build      Build functions before deployment. Use --no-build to skip this step                       [default: true]
   -q, --quiet  Don't log anything                                                                       [default: false]
+  -e, --env    Environment you want to deploy to, if it doesn't exist it will be created
 
 Examples:
-  shep deploy                         Launch an interactive CLI
-  shep deploy production              Deploy all functions with production env variables
-  shep deploy beta --no-build         Deploy all functions as currently built in the dist folder
-  shep deploy production create-user  Deploy only the create-user function
-  shep deploy beta '*-user'           Deploy only functions matching the pattern *-user
+  shep deploy                               Launch an interactive CLI
+  shep deploy --env production              Deploy all functions with production env variables
+  shep deploy --env beta --no-build         Deploy all functions as currently built in the dist folder
+  shep deploy --env production create-user  Deploy only the create-user function
+  shep deploy --env beta '*-user'           Deploy only functions matching the pattern *-user
 ```
 #### `shep build`
 ```

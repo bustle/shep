@@ -48,6 +48,7 @@ function undefinedOrSame (masterKey, masterValue) {
 }
 
 export function values (obj) {
+  if (obj === undefined) { return [] }
   return Object.keys(obj).map((key) => {
     return { key, value: obj[key] }
   })

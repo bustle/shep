@@ -7,6 +7,16 @@ export function getFunction (params) {
   return lambda.getFunction(params).promise()
 }
 
+export async function isFunctionDeployed (FunctionName) {
+  try {
+    await getFunction({ FunctionName })
+    return true
+  } catch (e) {
+    if (e.code !== 'ResourceNotFoundException') { throw new Error(e) }
+    return false
+  }
+}
+
 function throwResourceError (err) {
   const funcName = err.message.split(':').slice(-2, -1)[0]
   throw new Error(`No function found with name ${funcName}`)
@@ -174,6 +184,7 @@ export function listAliases (functionName) {
     FunctionName: functionName
   }
 
+  // should catch the issue of a func not existing
   return lambda.listAliases(params).promise().get('Aliases')
 }
 

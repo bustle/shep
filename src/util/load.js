@@ -1,37 +1,33 @@
 import { readdirSync, readJSONSync } from './modules/fs'
 import minimatch from 'minimatch'
 import AWS from './aws'
-import { listAliases } from './aws/lambda'
+import { listAliases, isFunctionDeployed } from './aws/lambda'
 import Promise from 'bluebird'
 
 export async function envs () {
   const pkg = this.pkg()
   const fns = await this.funcs()
   const fullFuncNames = fns.map(this.lambdaConfig).map(({ FunctionName }) => FunctionName)
+  AWS.config.update({ region: pkg.shep.region })
 
   if (!pkg || !pkg.shep) {
     return []
   }
 
-  AWS.config.update({ region: pkg.shep.region })
-  const allAliases = await Promise.map(fullFuncNames, async (name) => {
-    const aliases = await listAliases(name)
-    return { name, aliases: aliases.map(({ Name }) => Name) }
-  })
+  // For some reason you actually need to wrap isFunctionDeployed in a function
+  const deployedFunctions = await Promise.filter(fullFuncNames, (f) => isFunctionDeployed(f))
+  const allAliases = await Promise.map(deployedFunctions, (name) => listAliases(name).map(({ Name }) => Name))
 
-  const aliases = Promise.reduce(allAliases, async (acc, aliasObj) => {
-    const aliasSet = aliasObj.aliases
+  return Promise.reduce(allAliases, async (acc, aliasSet) => {
     const missingAliases = aliasSet.filter((alias) => acc.indexOf(alias) === -1)
-    .concat(acc.filter((alias) => aliasSet.indexOf(alias) === -1))
+          .concat(acc.filter((alias) => aliasSet.indexOf(alias) === -1))
 
     if (missingAliases.length !== 0) {
       throw new Error('Mismatched aliases found, please run `shep config sync` to ensure all functions have the same environment')
     }
 
     return acc
-  }, allAliases.pop().aliases)
-
-  return aliases
+  }, allAliases.pop())
 }
 
 export function events (func, eventName) {
