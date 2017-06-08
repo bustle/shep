@@ -9,12 +9,11 @@ export default async function (specifiedAlias) {
   const pkg = load.pkg()
   AWS.config.update({ region: pkg.shep.region })
 
-  const funcNames = await load.funcs()
+  const funcConfigs = await load.funcs()
   .map(load.lambdaConfig)
-  .map(({ FunctionName }) => FunctionName)
 
-  const deployedFuncs = await Promise.filter(funcNames, (f) => isFunctionDeployed(f))
-  const allFuncAliases = await Promise.map(deployedFuncs, listAliases)
+  const deployedFuncs = await Promise.filter(funcConfigs, ({ FunctionName }) => isFunctionDeployed(FunctionName))
+  const allFuncAliases = await Promise.map(deployedFuncs.map(({ FunctionName }) => FunctionName), listAliases)
 
   // don't let me merge this without killing this statement
   const aliases = specifiedAlias === undefined
@@ -26,8 +25,8 @@ export default async function (specifiedAlias) {
 
   // suppose we have arr of all envs that need to be created
   return Promise.each(aliases, async (alias) => {
-    const environments = await Promise.reduce(deployedFuncs, async (acc, fullName) => {
-      // could throw something?
+    const environments = await Promise.reduce(deployedFuncs, async (acc, config) => {
+      const fullName = config.FunctionName
       try {
         const env = await getEnvironment(alias, { FunctionName: fullName })
         acc[fullName] = env
@@ -40,8 +39,6 @@ export default async function (specifiedAlias) {
     // run env check on for each alias
     const { common, differences, conflicts } = environmentCheck(environments)
     if (Object.keys(conflicts).length !== 0) {
-      // throw some error, w/ conflict vars and request user to run `shep config set alias CONFLICT=val`
-      // conflicts is obj of envVars keys and objects of conflicts as values
       const conflictVars = Object.keys(conflicts)
       const errMessage = `${conflictVars.join(', ')} have conflicting values. Fix this by using 'shep config set ${alias}'`
       throw new Error(errMessage)
@@ -54,7 +51,9 @@ export default async function (specifiedAlias) {
     }, {})
     const combinedEnvironment = merge(common, combinedDiffs)
     // for each deployed function want to putEnvironment for each alias, this will create the alias as well
-    return Promise.map(deployedFuncs, (FunctionName) => putEnvironment(alias, { FunctionName }, combinedEnvironment))
+    // need to get and load the correct lambda config for each function
+    return Promise.map(deployedFuncs, (config) => putEnvironment(alias, config, combinedEnvironment))
     // fin
   })
+  // should log something when done
 }
