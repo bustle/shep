@@ -1,6 +1,5 @@
 import test from 'ava'
 import td from '../helpers/testdouble'
-import merge from 'lodash.merge'
 
 const pkg = { shep: { region: 'mordor' } }
 const fns = ['foo', 'bar']
@@ -43,17 +42,13 @@ fns.forEach((fnName) => {
   td.when(lambda.getEnvironment(td.matchers.argThat(notValidAlias), { FunctionName: fnName })).thenReject(new Error('Env does not exist'))
 })
 
-test.before(() => require('../../src/config-sync')())
+const uploadEnvironment = td.replace('../../src/util/upload-environment')
+td.when(uploadEnvironment(), { ignoreExtraArgs: true }).thenResolve()
 
-test('Should put combined env to all functions', (t) => {
-  const combinedEnv = merge({}, fnEnvs.foo, fnEnvs.bar)
-  td.verify(lambda.putEnvironment(td.matchers.isA(String),
-                                  td.matchers.isA(Object),
-                                  combinedEnv))
-})
-
-test('Should create all aliases for all functions', (t) => {
-  ['beta', 'development', 'production'].forEach((alias) => {
-    td.verify(lambda.putEnvironment(alias), { ignoreExtraArgs: true })
+test('Should create all aliases for all functions', async (t) => {
+  await require('../../src/config-sync')()
+  const aliases = ['beta', 'development', 'production']
+  aliases.forEach((alias) => {
+    td.verify(uploadEnvironment(alias, td.matchers.contains({ varOne: 1 })))
   })
 })

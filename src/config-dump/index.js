@@ -1,21 +1,12 @@
 import * as load from '../util/load'
 import Promise from 'bluebird'
-import { getEnvironment } from '../util/aws/lambda'
+import { isFunctionDeployed } from '../util/aws/lambda'
+import getFunctionEnvs from '../util/get-function-envs'
 import { environmentCheck, values } from '../util/environment-check'
 
 export default async function (opts) {
-  const fns = await load.funcs()
-  const envs = await Promise.reduce(fns, async (acc, funcName) => {
-    const fullName = load.lambdaConfig(funcName).FunctionName
-    try {
-      const env = await getEnvironment(opts.env, { FunctionName: fullName })
-      acc[funcName] = env
-    } catch (e) {
-      acc[funcName] = {}
-    }
-    return acc
-  }, {})
-
+  const fnConfigs = await Promise.filter(load.funcs().map(load.lambdaConfig), ({ FunctionName }) => isFunctionDeployed(FunctionName))
+  const envs = await getFunctionEnvs(opts.env, fnConfigs)
   const { common, differences, conflicts } = environmentCheck(envs)
 
   if (opts.json) {

@@ -12,6 +12,5 @@ export function builder (yargs) {
 }
 
 export async function handler (opts) {
-  // if no env specified should just sync everything
   return sync(opts.env)
 }

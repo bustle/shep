@@ -39,7 +39,7 @@ export function putFunction (env, config, ZipFile) {
   })
 }
 
-export function putEnvironment (env, config, envVars) {
+export async function putEnvironment (env, config, envVars) {
   const lambda = new AWS.Lambda()
 
   validateConfig(config)
@@ -49,26 +49,21 @@ export function putEnvironment (env, config, envVars) {
     Qualifier: env
   }
 
-  // should make sure that alias is already made
-  return getFunction(params)
-  .then((awsFunction) => {
-    const envMap = mergeExistingEnv(awsFunction, envVars)
-    const lambdaConfig = merge(config, { Environment: { Variables: envMap } })
-    return lambda.updateFunctionConfiguration(lambdaConfig).promise()
-  })
-  .catch({ code: 'ResourceNotFoundException' }, () => {
-    // Swallow errors related to alias not existing
-    return getFunction({ FunctionName: params.FunctionName }).get('Configuration')
-  })
-  .then(({ FunctionName }) => {
-    return lambda.publishVersion({ FunctionName }).promise()
-  })
-  .then((func) => {
-    setAlias(func, env)
-  })
-  .catch((e) => {
-    throw new Error(e)
-  })
+  // if exists should update config, pub version, set alias to version
+  let awsFunction
+  try {
+    awsFunction = await getFunction(params)
+  } catch (e) {
+    // if doesn't exist should grab existing config, update config,  pub version, set alias to version
+    if (e.code !== 'ResourceNotFoundException') { throw e }
+    awsFunction = await getFunction({ FunctionName: params.FunctionName })
+  }
+
+  const envMap = mergeExistingEnv(awsFunction, envVars)
+  const lambdaConfig = merge(config, { Environment: { Variables: envMap } })
+  const { FunctionName } = await lambda.updateFunctionConfiguration(lambdaConfig).promise()
+  const func = await lambda.publishVersion({ FunctionName }).promise()
+  return setAlias(func, env)
 }
 
 export function removeEnvVars (env, config, envVars) {

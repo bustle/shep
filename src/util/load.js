@@ -6,16 +6,13 @@ import Promise from 'bluebird'
 
 export async function envs () {
   const pkg = this.pkg()
+  if (!pkg || !pkg.shep) { return [] }
+
   const fns = await this.funcs()
   const fullFuncNames = fns.map(this.lambdaConfig).map(({ FunctionName }) => FunctionName)
   AWS.config.update({ region: pkg.shep.region })
 
-  if (!pkg || !pkg.shep) {
-    return []
-  }
-
-  // For some reason you actually need to wrap isFunctionDeployed in a function
-  const deployedFunctions = await Promise.filter(fullFuncNames, (f) => isFunctionDeployed(f))
+  const deployedFunctions = await Promise.filter(fullFuncNames, isFunctionDeployed)
   const allAliases = await Promise.map(deployedFunctions, (name) => listAliases(name).map(({ Name }) => Name))
 
   return Promise.reduce(allAliases, async (acc, aliasSet) => {

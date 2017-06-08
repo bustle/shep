@@ -12,12 +12,18 @@ const environment = 'development'
 const functionName = 'bar'
 const load = td.replace('../../src/util/load')
 td.when(load.funcs()).thenResolve([functionName])
-td.when(load.lambdaConfig(functionName)).thenReturn({ FunctionName: functionName })
+td.when(load.lambdaConfig(functionName), { ignoreExtraArgs: true }).thenReturn({ FunctionName: functionName })
 td.when(load.pkg()).thenReturn(pkg)
 
 const lambda = td.replace('../../src/util/aws/lambda')
+td.when(lambda.isFunctionDeployed(td.matchers.isA(String)), { ignoreExtraArgs: true }).thenResolve(true)
+
+const getFunctionEnvs = td.replace('../../src/util/get-function-envs')
+td.when(getFunctionEnvs(td.matchers.isA(String), td.matchers.isA(Object))).thenResolve({})
+
+const envCheck = td.replace('../../src/util/environment-check')
 
 test('Gets environment', async (t) => {
-  await require('../../src/config-dump')({ env: environment, json: true })
-  td.verify(lambda.getEnvironment(environment, td.matchers.isA(Object)))
+  await t.throws(require('../../src/config-dump')({ env: environment, json: true }))
+  td.verify(envCheck.environmentCheck({}))
 })
