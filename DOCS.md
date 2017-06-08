@@ -76,23 +76,21 @@ Examples:
 shep run [pattern]
 
 Options:
-  --version      Show version number                                                                           [boolean]
-  --help         Show help                                                                                     [boolean]
-  --environment  Environment variables to use                                                   [default: "development"]
-  --event        Event to use
-  -v             Responses from functions aren't truncated
-  --build        Build functions before running. If omitted functions are transpiled by babel on the fly[default: false]
+  --version  Show version number                                                                               [boolean]
+  --help     Show help                                                                                         [boolean]
+  --event    Event to use
+  -v         Responses from functions aren't truncated
+  --build    Build functions before running. If omitted functions are transpiled by babel on the fly    [default: false]
 
 Examples:
-  shep run                               Launch an interactive CLI
-  shep run foo                           Runs the `foo` function for all events
-  shep run foo --build                   Builds the `foo` function and then runs it
-  shep run foo --event default           Runs the `foo` function for just the `default` event
-  shep run foo --environment production  Runs the `foo` function with production environment
-  DB_TABLE=custom shep run foo           Runs the `foo` function with process.env.DB_TABLE assigned to custom (vars
-                                         declared this way will overwrite vals in your .env file)
-  shep run '*'                           Runs all functions for all events
-  shep run 'foo-*'                       Runs all functions matching pattern `foo-*`
+  shep run                      Launch an interactive CLI
+  shep run foo                  Runs the `foo` function for all events
+  shep run foo --build          Builds the `foo` function and then runs it
+  shep run foo --event default  Runs the `foo` function for just the `default` event
+  DB_TABLE=custom shep run foo  Runs the `foo` function with process.env.DB_TABLE assigned to custom (vars declared this
+                                way will overwrite vals in your .env file)
+  shep run '*'                  Runs all functions for all events
+  shep run 'foo-*'              Runs all functions matching pattern `foo-*`
 ```
 #### `shep deploy`
 ```
@@ -236,4 +234,17 @@ Options:
 
 Examples:
   shep config dump beta  Print to console all environment variables of environment `beta` in JSON format
+```
+#### `shep config sync`
+```
+shep config sync
+
+Options:
+  --version  Show version number                                                                               [boolean]
+  --help     Show help                                                                                         [boolean]
+  -e, --env  Environment to sync
+
+Examples:
+  shep config sync             Syncs all environments
+  shep config sync --env beta  Syncs `beta` environment
 ```
