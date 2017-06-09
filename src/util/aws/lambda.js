@@ -39,17 +39,7 @@ export async function putFunction (env, config, ZipFile) {
   }
 
   await putEnvironment(env, config)
-  await lambda.updateFunctionCode({ ZipFile, FunctionName, Publish }).promise()
-
-  /*
-  return getFunction({ FunctionName })
-  .then(() => putEnvironment(env, config))
-  .then(() => lambda.updateFunctionCode({ ZipFile, FunctionName, Publish }).promise())
-  .catch({ code: 'ResourceNotFoundException' }, () => {
-    const params = merge(config, { Publish, Code: { ZipFile } })
-    return lambda.createFunction(params).promise()
-  })
-  */
+  return lambda.updateFunctionCode({ ZipFile, FunctionName, Publish }).promise()
 }
 
 export async function putEnvironment (env, config, envVars) {
@@ -62,12 +52,10 @@ export async function putEnvironment (env, config, envVars) {
     Qualifier: env
   }
 
-  // if exists should update config, pub version, set alias to version
   let awsFunction
   try {
     awsFunction = await getFunction(params)
   } catch (e) {
-    // if doesn't exist should grab existing config, update config,  pub version, set alias to version
     if (e.code !== 'ResourceNotFoundException') { throw e }
     awsFunction = await getFunction({ FunctionName: params.FunctionName })
   }

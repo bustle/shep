@@ -27,7 +27,7 @@ export async function handler (opts) {
       }
     ]
   } else {
-    if (!opts.env) { throw new Error('No API found, cannot load available aliases') }
+    if (!opts.env) { throw new Error('Cannot load available aliases, to create an alias use `shep deploy --env beta`') }
   }
 
   inquirer.prompt(questions.filter((q) => !opts[q.name]))

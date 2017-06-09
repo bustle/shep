@@ -19,19 +19,21 @@ export async function handler (opts) {
   })
   opts.vars = envVars
 
-  if (opts.env) { configSet(opts) }
+  if (opts.env) {
+    configSet(opts)
+  } else {
+    const envs = await load.envs()
+    const questions = [
+      {
+        name: 'env',
+        message: 'Environment',
+        type: 'list',
+        choices: () => envs
+      }
+    ]
 
-  const envs = await load.envs()
-  const questions = [
-    {
-      name: 'env',
-      message: 'Environment',
-      type: 'list',
-      choices: () => envs
-    }
-  ]
-
-  inquirer.prompt(questions)
-  .then((inputs) => merge({}, inputs, opts))
-  .then(configSet)
+    inquirer.prompt(questions)
+      .then((inputs) => merge({}, inputs, opts))
+      .then(configSet)
+  }
 }
