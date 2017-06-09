@@ -1,6 +1,6 @@
 import AWS from './'
 
-export function getLogGroup ({ functionName }) {
+export async function getLogGroup ({ functionName }) {
   const cwLogs = new AWS.CloudWatchLogs()
   const expetedName = `/aws/lambda/${functionName}`
 
@@ -8,16 +8,16 @@ export function getLogGroup ({ functionName }) {
     logGroupNamePrefix: expetedName
   }
 
-  return cwLogs.describeLogGroups(params).promise().get('logGroups')
-  .then((groups) => groups.filter((logGroup) => logGroup.logGroupName === expetedName))
-  .get(0)
-  .get('logGroupName')
-  .catch((e) => {
-    return Promise.reject(new Error('No log groups found for specified function'))
-  })
+  try {
+    const groups = await cwLogs.describeLogGroups(params).promise().get('logGroups')
+    const matchedGroups = groups.filter((logGroup) => logGroup.logGroupName === expetedName)
+    return matchedGroups.get(0).get('logGroupName')
+  } catch (e) {
+    throw new Error('No log groups found for specified function')
+  }
 }
 
-export function getLogStreams ({ logGroupName, functionVersion }) {
+export async function getLogStreams ({ logGroupName, functionVersion }) {
   const cwLogs = new AWS.CloudWatchLogs()
   const versionRegExp = new RegExp(`\\[${functionVersion}\\]`)
 
@@ -28,10 +28,9 @@ export function getLogStreams ({ logGroupName, functionVersion }) {
     descending: true
   }
 
-  return cwLogs.describeLogStreams(params).promise()
-  .get('logStreams')
-  .filter((stream) => versionRegExp.test(stream.logStreamName))
-  .map((x) => x.logStreamName)
+  const logStreams = await cwLogs.describeLogStreams(params).promise().get('logStreams')
+  const matchedStreams = logStreams.filter((stream) => versionRegExp.test(stream.logStreamName))
+  return matchedStreams.map((x) => x.logStreamName)
 }
 
 export function getLogEvents ({ logGroupName, logStreamNames, start, end }) {
