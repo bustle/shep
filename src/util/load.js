@@ -15,7 +15,7 @@ export async function envs () {
   const deployedFunctions = await Promise.filter(fullFuncNames, isFunctionDeployed)
   const allAliases = await Promise.map(deployedFunctions, (name) => listAliases(name).map(({ Name }) => Name))
 
-  return Promise.reduce(allAliases, async (acc, aliasSet) => {
+  return allAliases.reduce((acc, aliasSet) => {
     const missingAliases = aliasSet.filter((alias) => acc.indexOf(alias) === -1)
           .concat(acc.filter((alias) => aliasSet.indexOf(alias) === -1))
 

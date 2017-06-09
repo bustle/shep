@@ -2,14 +2,19 @@ import Promise from 'bluebird'
 import { getEnvironment } from './aws/lambda'
 
 export default function (alias, configs) {
-  return Promise.reduce(configs, async (acc, config) => {
+  return Promise.map(configs, async (config) => {
     const fullName = config.FunctionName
+
+    let env
     try {
-      const env = await getEnvironment(alias, { FunctionName: fullName })
-      acc[fullName] = env
+      env = await getEnvironment(alias, { FunctionName: fullName })
     } catch (e) {
-      acc[fullName] = {}
+      env = {}
     }
+    return { fullName, env }
+  })
+  .reduce((acc, { fullName, env }) => {
+    acc[fullName] = env
     return acc
   }, {})
 }

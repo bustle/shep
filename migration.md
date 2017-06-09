@@ -82,4 +82,4 @@ json, and it should live inside the `/environments` directory
 
 ## Migrating from shep 3.X to shep 4.0
 
-- Shep 4.0 now handles environment variables in AWS. See the docs for `shep config` to add, remove, and list environment variables for your functions.
+- Shep 4.0 now handles environment variables in AWS. See the docs for `shep config` to add, remove, list, and sync environment variables for your functions.

@@ -37,7 +37,7 @@ fns.forEach((fnName) => {
     td.when(lambda.getEnvironment(Name, { FunctionName: fnName })).thenResolve(fnEnvs[fnName])
   })
   const notValidAlias = (alias) => fnAliases[fnName].map(({ Name }) => Name).indexOf(alias) === -1
-  td.when(lambda.getEnvironment(td.matchers.argThat(notValidAlias), { FunctionName: fnName })).thenReject(new Error('Env does not exist'))
+  td.when(lambda.getEnvironment(td.matchers.argThat(notValidAlias), { FunctionName: fnName })).thenReject(new Error('No environment variables exist for '))
 })
 
 const uploadEnvironment = td.replace('../../src/util/upload-environment')

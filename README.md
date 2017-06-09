@@ -50,6 +50,10 @@ Add a few lines to your `package.json`. Your [account id](https://console.aws.am
 }
 ```
 
+### Environments
+
+Environments for a shep project are defined by the aliases on the functions associated with a project. Environments are created through `shep deploy --env new_env` and managed by using the `shep config` commands. Shep takes a strong stance against having different environments for different functions. If shep detects that some of your functions have different aliases, it will immediately error until you remedy the issue. Most issues can be automatically fixed by using `shep config sync`, the only issues this can't solve are conflicting environment variable values. Conflicting value issues can be solved by using `shep config set my_env CONFLICT_VARIABLE=value`.
+
 ### Custom Builds Commands
 
 By default shep builds all your functions using webpack. If your project requires a different build process, then edit your `package.json`. Before running your build command, shep populates the `PATTERN` environment variable which can be accessed as `process.env.PATTERN` in your build command. Be aware that using your own build process will break pattern matching for `shep build` unless your build command respects the `PATTERN` variable.
@@ -73,7 +77,7 @@ By default shep builds all your functions using webpack. If your project require
    Run `shep generate endpoint /hello` and follow the prompts.  
    This creates a new endpoint as well as a new function for that endpoint. Specifically, it adds a path to `api.json` that is configured to trigger the newly created function.
 ##### 4. Deploy
-   Run `shep deploy development`  
+   Run `shep deploy --env development`  
    This command does a couple things in order to deploy your project:  
   * Uses webpack to build your functions. This is equivalent to running `shep build`.
   * Creates or updates the Lambda functions associated with your project. This includes creating a new version of the function as well as updating the alias such that `development` will point to the version you just created. For more on versioning please consult Amazon's own [documentation](http://docs.aws.amazon.com/lambda/latest/dg/versioning-aliases.html).
