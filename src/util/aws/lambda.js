@@ -22,7 +22,7 @@ function throwResourceError (err) {
   throw new Error(`No function found with name ${funcName}`)
 }
 
-export function putFunction (env, config, ZipFile) {
+export async function putFunction (env, config, ZipFile) {
   const lambda = new AWS.Lambda()
 
   validateConfig(config)
@@ -30,6 +30,18 @@ export function putFunction (env, config, ZipFile) {
   const FunctionName = config.FunctionName
   const Publish = true
 
+  try {
+    await getFunction({ FunctionName })
+  } catch (e) {
+    if (e.code !== 'ResourceNotFoundException') { throw e }
+    const params = merge(config, { Publish, Code: { ZipFile } })
+    await lambda.createFunction(params).promise()
+  }
+
+  await putEnvironment(env, config)
+  await lambda.updateFunctionCode({ ZipFile, FunctionName, Publish }).promise()
+
+  /*
   return getFunction({ FunctionName })
   .then(() => putEnvironment(env, config))
   .then(() => lambda.updateFunctionCode({ ZipFile, FunctionName, Publish }).promise())
@@ -37,6 +49,7 @@ export function putFunction (env, config, ZipFile) {
     const params = merge(config, { Publish, Code: { ZipFile } })
     return lambda.createFunction(params).promise()
   })
+  */
 }
 
 export async function putEnvironment (env, config, envVars) {
@@ -168,7 +181,7 @@ export function setPermission ({ name, region, env, apiId, accountId }) {
   return lambda.addPermission(params).promise()
   .catch((err) => {
     // Swallow errors if permission already exists
-    if (err.code !== 'ResourceConflictException') { throw err }
+    if (err.code !== 'ResourceConflictException' && err.code !== 'ResourceNotFoundException') { throw err }
   })
 }
 
