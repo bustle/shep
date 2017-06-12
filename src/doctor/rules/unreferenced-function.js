@@ -17,7 +17,6 @@ export default async function () {
 }
 
 function isFuncInUri (funcName, uri) {
-  console.log(funcName, uri)
   if (uri === undefined) { return false }
   const funcRegExp = new RegExp(`:${funcName}:`)
   return funcRegExp.test(uri)

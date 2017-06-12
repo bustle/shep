@@ -1,8 +1,8 @@
 import AWS from './'
 
-export async function getLogGroup ({ functionName }) {
+export async function getLogGroup ({ FunctionName }) {
   const cwLogs = new AWS.CloudWatchLogs()
-  const expetedName = `/aws/lambda/${functionName}`
+  const expetedName = `/aws/lambda/${FunctionName}`
 
   const params = {
     logGroupNamePrefix: expetedName
@@ -11,7 +11,7 @@ export async function getLogGroup ({ functionName }) {
   try {
     const groups = await cwLogs.describeLogGroups(params).promise().get('logGroups')
     const matchedGroups = groups.filter((logGroup) => logGroup.logGroupName === expetedName)
-    return matchedGroups.get(0).get('logGroupName')
+    return matchedGroups.pop().logGroupName
   } catch (e) {
     throw new Error('No log groups found for specified function')
   }

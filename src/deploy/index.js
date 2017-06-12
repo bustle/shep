@@ -37,14 +37,15 @@ export default async function (opts) {
     {
       // this should only be ran if bucket is present
       title: `Upload Builds to S3`,
-      task: () => uploadBuilds(functions, bucket).tap((funcs) => {
+      task: async () => {
+        const funcs = await uploadBuilds(functions, bucket)
         // delete null keys from fns without s3 builds, then set other fns to be uploaded
 
         Object.keys(funcs).forEach((key) => (funcs[key] == null) && delete funcs[key])
 
         if (Object.keys(funcs).length === 0) { shouldUpload = false }
         uploadFuncs = funcs
-      }),
+      },
       skip: async () => {
         if (!bucket) {
           // need to set uploaded funcs
@@ -68,7 +69,9 @@ export default async function (opts) {
     tasks.add([
       {
         title: 'Upload API.json',
-        task: () => push(api, apiId, region).tap((id) => { apiId = id })
+        task: async () => {
+          apiId = await push(api, apiId, region)
+        }
       }
     ])
   }
@@ -93,8 +96,6 @@ export default async function (opts) {
     ])
   }
 
-  return tasks.run()
-  .then(() => {
-    if (apiId) { console.log(`API URL: https://${apiId}.execute-api.${region}.amazonaws.com/${env}`) }
-  })
+  await tasks.run()
+  if (apiId) { console.log(`API URL: https://${apiId}.execute-api.${region}.amazonaws.com/${env}`) }
 }

@@ -7,7 +7,7 @@ import listr from '../util/modules/listr'
 
 let conflictingFiles = false
 
-export default function run (opts) {
+export default async function run (opts) {
   const path = opts.path
   const rolename = opts.rolename
   const region = opts.region
@@ -37,29 +37,21 @@ export default function run (opts) {
 
   if (!rolename) tasks = tasks.splice(1)
 
-  return listr(tasks, opts.quiet)
-  .run({ path, rolename, region })
-  .then(() => {
-    if (conflictingFiles) { console.log('Conflicting files were found in provided path. New files were written with .shep-tmp appended to the filename') }
-  })
+  await listr(tasks, opts.quiet).run({ path, rolename, region })
+  if (conflictingFiles) { console.log('Conflicting files were found in provided path. New files were written with .shep-tmp appended to the filename') }
 }
 
-function setupIam (context) {
+async function setupIam (context) {
   const rolename = context.rolename
-  let newRole = false
 
-  return getRole(rolename)
-  .catch({ code: 'NoSuchEntity' }, () => {
-    newRole = true
-    return createRole(rolename)
-  })
-  .tap(arn => {
-    context.arn = arn
-  })
-  .then(() => { if (newRole) return attachPolicy(rolename) })
-  .catch({ code: 'LimitExceeded' }, () => {
-    return Promise.reject(new Error('Current AWS User does not have sufficient permissions to do this'))
-  })
+  try {
+    context.arn = await getRole(rolename)
+    return context.arn
+  } catch (e) {
+    if (e.code !== 'NoSuchEntity') { throw e }
+    context.arn = await createRole(rolename)
+    return attachPolicy(rolename)
+  }
 }
 
 function createSubDirs ({ path }) {
@@ -82,9 +74,7 @@ function createFiles ({ path, arn, region }) {
   ]
 
   return Promise.map(files, tempifyFile)
-  .map(({ path, contents }) => {
-    return writeFile(path, contents)
-  })
+  .map(({ path, contents }) => writeFile(path, contents))
 }
 
 async function tempifyFile ({ path, contents }) {

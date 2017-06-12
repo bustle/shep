@@ -1,6 +1,6 @@
 import { getLogStreams, getLogEvents } from './aws/cloudwatch-logs'
 
-export default async function getLogs ({ logGroupName, functionVersion, stream, start = Date.now() }) {
+async function getLogs ({ logGroupName, functionVersion, stream, start = Date.now() }) {
   const logStreamNames = await getLogStreams({ logGroupName, functionVersion })
   const recievedEvents = await getLogEvents({ logGroupName, logStreamNames, start })
 
@@ -24,3 +24,5 @@ function tailCallGenerator ({ logGroupName, functionVersion, stream, lastTimesta
 function maxTimestamp (latest, event) {
   return Math.max(latest, event.timestamp)
 }
+
+export default getLogs

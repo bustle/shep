@@ -6,6 +6,7 @@ import { lambdaConfig } from './load'
 export default async function (fns, env) {
   return Promise.map(fns, async (func) => {
     const zip = await zipDir(`dist/${func}`)
-    return putFunction(env, lambdaConfig(func), zip)
+    const config = await lambdaConfig(func)
+    return putFunction(env, config, zip)
   })
 }
