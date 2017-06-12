@@ -4,7 +4,7 @@ import build from '../util/build-functions'
 import Promise from 'bluebird'
 import chalk from 'chalk'
 import AWS from 'aws-sdk'
-import context from 'aws-lambda-mock-context'
+import ctx from '../util/context'
 import cliui from 'cliui'
 
 require('dotenv').config()
@@ -49,8 +49,6 @@ function runFunction (opts) {
     const events = await load.events(name, opts.event)
     const [ fileName, handler ] = lambdaConfig.Handler.split('.')
 
-    const ctx = context()
-
     performBuild ? await build(name, env) : require('babel-register')
 
     const funcPath = `${performBuild ? 'dist' : 'functions'}/${name}/${fileName}.js`
@@ -64,10 +62,11 @@ function runFunction (opts) {
     return Promise.map(events, (eventFilename) => {
       const event = requireProject(`functions/${name}/events/${eventFilename}`)
       return new Promise((resolve) => {
+        const { context, callbackWrapper } = ctx(lambdaConfig)
         const output = { name: eventFilename, funcName: name }
         output.start = new Date()
         try {
-          func(event, ctx, (err, res) => {
+          func(event, context, callbackWrapper((err, res) => {
             output.end = new Date()
             if (err) {
               output.result = results.error
@@ -77,7 +76,7 @@ function runFunction (opts) {
               output.response = res
             }
             resolve(output)
-          })
+          }))
         } catch (e) {
           output.error = true
           output.end = new Date()
