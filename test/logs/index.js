@@ -30,7 +30,6 @@ td.when(getLogs(td.matchers.isA(Object))).thenResolve(getLogResponse)
 
 test('Continues loop', async (t) => {
   const shep = require('../../src/index')
-  // TODO make that helper that I said would be useful
   await t.throws(shep.logs({ stage, name: functionName, stream: true }))
   td.verify(callback())
 })

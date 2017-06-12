@@ -22,9 +22,9 @@ function isFuncInUri (funcName, uri) {
   return funcRegExp.test(uri)
 }
 
-function generateWarning (funcName) {
+function generateWarning ({ FunctionName }) {
   return {
     rule: 'unreferenced-functions',
-    message: `Function ${funcName} isn't referenced by api.json`
+    message: `Function ${FunctionName} isn't referenced by api.json`
   }
 }
