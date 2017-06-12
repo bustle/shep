@@ -4,8 +4,8 @@ import { putFunction } from './aws/lambda'
 import { lambdaConfig } from './load'
 
 export default async function (fns, env) {
-  return Promise.all(fns.map(async (func) => {
+  return Promise.map(fns, async (func) => {
     const zip = await zipDir(`dist/${func}`)
     return putFunction(env, lambdaConfig(func), zip)
-  }))
+  })
 }

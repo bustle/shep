@@ -6,7 +6,5 @@ const pattern = '*'
 
 export default async function (env, vars) {
   const fns = await funcs(pattern)
-  return Promise.map(fns, async (func) => {
-    return putEnvironment(env, lambdaConfig(func), vars)
-  })
+  return Promise.map(fns, async (func) => putEnvironment(env, lambdaConfig(func), vars))
 }

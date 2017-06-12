@@ -3,7 +3,7 @@ import { lambdaConfig, funcs } from './load'
 
 export default async function (env, name) {
   const fns = await funcs(name)
-  return Promise.all(fns.map(async (func) => {
+  return Promise.map(fns, async (func) => {
     return getEnvironment(env, lambdaConfig(func))
-  }))
+  })
 }

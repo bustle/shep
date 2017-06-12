@@ -9,13 +9,13 @@ import push from '../util/push-api'
 import AWS from 'aws-sdk'
 import listr from '../util/modules/listr'
 
-export default function (opts) {
+export default async function (opts) {
   const functions = opts.functions || '*'
   const env = opts.env || 'development'
   const region = opts.region
   const bucket = opts.bucket
   const performBuild = opts.build
-  const api = load.api()
+  const api = await load.api()
 
   let apiId, uploadFuncs
   let shouldUpload = true

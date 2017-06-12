@@ -13,15 +13,4 @@ export async function putBuild (hash, path, bucket, func) {
     if (e.code !== 'NoSuchKey') { throw new Error(e) }
     return s3.upload(putParams).promise().then(() => { return func })
   }
-
-  return s3.getObject(getParams).promise()
-  .then(() => {
-    return null
-  })
-  .catch({ code: 'NoSuchKey' }, () => {
-    return s3.upload(putParams).promise().then(() => { return func })
-  })
-  .catch((e) => {
-    throw new Error(e)
-  })
 }
