@@ -1,8 +1,8 @@
 import * as load from '../../util/load'
 import parseApi from '../../util/parse-api'
 
-export default function () {
-  const parsedApi = parseApi(load.api())
+export default async function () {
+  const parsedApi = parseApi(await load.api())
   const unaliasedEndpoints = parsedApi.filter(hasNoAlias)
 
   return unaliasedEndpoints.map(generateWarnings)

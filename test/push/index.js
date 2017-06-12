@@ -12,14 +12,11 @@ const api = {
 const apiGateway = td.replace('../../src/util/aws/api-gateway')
 const pkgConfig = td.replace('../../src/util/pkg-config')
 
-td.when(fs.readJSONSync('api.json')).thenReturn(api)
+td.when(fs.readJSON('api.json')).thenResolve(api)
 td.when(apiGateway.pushApi(td.matchers.isA(Object), undefined)).thenResolve(apiId)
+td.when(pkgConfig.update({ apiId, region })).thenResolve()
 
-test.before(() => {
+test('No errrors', (t) => {
   const shep = require('../../src')
-  return shep.push({ region, quiet: true })
-})
-
-test('Updates package.json', () => {
-  td.verify(pkgConfig.update({apiId, region}))
+  t.notThrows(shep.push({ region, quiet: true }))
 })

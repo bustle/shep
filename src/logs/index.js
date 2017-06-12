@@ -3,23 +3,22 @@ import AWS from '../util/aws'
 import { getLogGroup } from '../util/aws/cloudwatch-logs'
 import { getAliasVersion } from '../util/aws/lambda'
 import getLogs from '../util/get-logs'
-import { pkg } from '../util/load'
-import genName from '../util/generate-name'
+import { pkg, lambdaConfig } from '../util/load'
 
-export default function (opts) {
-  const functionName = genName(opts.name).fullName
+export default async function (opts) {
+  const { FunctionName } = await lambdaConfig(opts.name)
   const aliasName = opts.stage
   const stream = opts.stream
-  const region = opts.region || pkg().shep.region
+  const region = opts.region || (await pkg()).shep.region
 
   AWS.config.update({ region })
 
-  return Promise.join(getLogGroup({ functionName }), getAliasVersion({ functionName, aliasName }),
-    (logGroupName, functionVersion) => getLogs({ logGroupName, functionVersion, stream }))
-  .then(printEventsLoop)
+  const [logGroupName, functionVersion] = await Promise.all([getLogGroup({ FunctionName }), getAliasVersion({ functionName: FunctionName, aliasName })])
+  const logs = await getLogs({ logGroupName, functionVersion, stream })
+  return printEventsLoop(logs)
 }
 
-function printEventsLoop ({ events, nextLogCall }) {
+async function printEventsLoop ({ events, nextLogCall }) {
   const rate = 500
 
   if (events !== undefined && events.length !== 0) {
@@ -30,9 +29,9 @@ function printEventsLoop ({ events, nextLogCall }) {
     return Promise.resolve()
   }
 
-  return Promise.delay(rate)
-  .then(nextLogCall)
-  .then(printEventsLoop)
+  await Promise.delay(rate)
+  const logs = await nextLogCall()
+  return printEventsLoop(logs)
 }
 
 function formatEvent ({ timestamp, message }) {

@@ -23,10 +23,10 @@ const fnEnvs = {
 }
 
 const load = td.replace('../../src/util/load')
-td.when(load.pkg()).thenReturn(pkg)
+td.when(load.pkg()).thenResolve(pkg)
 td.when(load.funcs()).thenResolve(fns)
 fns.forEach((name) => {
-  td.when(load.lambdaConfig(name), { ignoreExtraArgs: true }).thenReturn(fnConfigs[name])
+  td.when(load.lambdaConfig(name), { ignoreExtraArgs: true }).thenResolve(fnConfigs[name])
 })
 
 const lambda = td.replace('../../src/util/aws/lambda')

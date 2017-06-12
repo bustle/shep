@@ -17,11 +17,6 @@ export async function isFunctionDeployed (FunctionName) {
   }
 }
 
-function throwResourceError (err) {
-  const funcName = err.message.split(':').slice(-2, -1)[0]
-  throw new Error(`No function found with name ${funcName}`)
-}
-
 export async function putFunction (env, config, ZipFile) {
   const lambda = new AWS.Lambda()
 
@@ -34,7 +29,7 @@ export async function putFunction (env, config, ZipFile) {
     await getFunction({ FunctionName })
   } catch (e) {
     if (e.code !== 'ResourceNotFoundException') { throw e }
-    const params = merge(config, { Publish, Code: { ZipFile } })
+    const params = merge({}, config, { Publish, Code: { ZipFile } })
     await lambda.createFunction(params).promise()
   }
 

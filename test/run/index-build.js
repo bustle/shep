@@ -9,9 +9,9 @@ const lambdaFunc = td.object([handler])
 td.when(lambdaFunc[handler](td.matchers.anything(), td.matchers.isA(Object))).thenCallback(null, 'bar')
 
 const load = td.replace('../../src/util/load')
-td.when(load.funcs(funcName)).thenReturn([funcName])
-td.when(load.lambdaConfig(funcName)).thenReturn(config)
-td.when(load.events(funcName, td.matchers.anything())).thenReturn(events)
+td.when(load.funcs(funcName)).thenResolve([funcName])
+td.when(load.lambdaConfig(funcName)).thenResolve(config)
+td.when(load.events(funcName, td.matchers.anything())).thenResolve(events)
 
 const build = td.replace('../../src/util/build-functions')
 td.when(build(funcName, td.matchers.anything())).thenResolve({})

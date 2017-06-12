@@ -4,7 +4,7 @@ import td from '../helpers/testdouble'
 
 const name = 'foo-func'
 
-td.when(fs.readJSONSync('package.json')).thenReturn({ name: 'bar' })
+td.when(fs.readJSON('package.json')).thenResolve({ name: 'bar', shep: {} })
 
 test.before(() => {
   const shep = require('../../src/index')

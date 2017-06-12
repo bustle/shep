@@ -16,10 +16,10 @@ export default function (opts) {
   const tasks = listr([
     {
       title: `Export API currenly on ${stage}`,
-      task: () => {
-        return exportStage(apiId, stage)
-        .tap((api) => { exportedApi = api })
-        .tap(() => update({ apiId, region }))
+      task: async () => {
+        const api = await exportStage(apiId, stage)
+        exportedApi = api
+        return update({ apiId, region })
       }
     },
     {

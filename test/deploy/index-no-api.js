@@ -13,7 +13,7 @@ const setPermissions = td.replace('../../src/util/set-permissions')
 const push = td.replace('../../src/util/push-api')
 
 const load = td.replace('../../src/util/load')
-td.when(load.api()).thenReturn()
+td.when(load.api()).thenResolve()
 
 const uploadBuilds = td.replace('../../src/util/upload-builds')
 td.when(uploadBuilds(functions, bucket)).thenResolve(uploadedFuncs)

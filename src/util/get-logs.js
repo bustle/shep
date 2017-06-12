@@ -1,19 +1,17 @@
 import { getLogStreams, getLogEvents } from './aws/cloudwatch-logs'
 
-export default function getLogs ({ logGroupName, functionVersion, stream, start = Date.now() }) {
-  let recievedEvents
+async function getLogs ({ logGroupName, functionVersion, stream, start = Date.now() }) {
+  const logStreamNames = await getLogStreams({ logGroupName, functionVersion })
+  const recievedEvents = await getLogEvents({ logGroupName, logStreamNames, start })
 
-  return getLogStreams({ logGroupName, functionVersion })
-  .then((logStreamNames) => getLogEvents({ logGroupName, logStreamNames, start }))
-  .tap((events) => { recievedEvents = events })
-  .reduce(maxTimestamp, start)
-  .then((timestamp) => timestamp === start ? timestamp : timestamp + 1) // If timestamp from new event, increase start time to avoid duplicate events
-  .then((lastTimestamp) => {
-    return Promise.resolve({
-      events: recievedEvents,
-      nextLogCall: tailCallGenerator({ logGroupName, functionVersion, stream, lastTimestamp })
-    })
-  })
+  const timestamp = recievedEvents.reduce(maxTimestamp, start)
+  // If timestamp from new event, increase start time to avoid duplicate events
+  const lastTimestamp = timestamp === start ? timestamp : timestamp + 1
+
+  return {
+    events: recievedEvents,
+    nextLogCall: tailCallGenerator({ logGroupName, functionVersion, stream, lastTimestamp })
+  }
 }
 
 function tailCallGenerator ({ logGroupName, functionVersion, stream, lastTimestamp }) {
@@ -26,3 +24,5 @@ function tailCallGenerator ({ logGroupName, functionVersion, stream, lastTimesta
 function maxTimestamp (latest, event) {
   return Math.max(latest, event.timestamp)
 }
+
+export default getLogs

@@ -36,18 +36,19 @@ test('Loads functions by pattern', async (t) => {
   t.deepEqual(funcs, [ 'foo' ])
 })
 
-test('Loads function events', (t) => {
-  t.deepEqual(load.events('foo').sort(), [ 'custom.json', 'default.json' ])
+test('Loads function events', async (t) => {
+  const events = await load.events('foo')
+  t.deepEqual(events.sort(), [ 'custom.json', 'default.json' ])
 })
 
-test('Loads lambda config', (t) => {
-  const config = load.lambdaConfig('foo')
+test('Loads lambda config', async (t) => {
+  const config = await load.lambdaConfig('foo')
   t.is(config.FunctionName, 'foo')
   t.is(config.Role, 'admin')
   t.is(config.Memory, 5)
 })
 
-test('Is ok with no api config', (t) => {
-  const config = load.api()
+test('Is ok with no api config', async (t) => {
+  const config = await load.api()
   t.is(config, null)
 })

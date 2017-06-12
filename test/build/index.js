@@ -1,12 +1,13 @@
 import test from 'ava'
-import { exec, didExec } from '../helpers/exec'
+import { exec } from '../helpers/exec'
 import td from '../helpers/testdouble'
 
-td.when(exec('webpack --bail'), { ignoreExtraArgs: true }).thenReturn(Promise.resolve())
+const load = td.replace('../../src/util/load')
 
-test.before(() => {
+test('Executed webpack', async (t) => {
   const shep = require('../../src')
-  return shep.build({ quiet: true })
-})
+  td.when(load.pkg()).thenResolve({})
+  td.when(exec('webpack --bail'), { ignoreExtraArgs: true }).thenResolve()
 
-test(didExec, 'webpack --bail')
+  t.notThrows(shep.build({ quiet: true }))
+})

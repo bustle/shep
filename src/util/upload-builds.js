@@ -5,9 +5,9 @@ import { funcs } from './load'
 
 export default async function (pattern, bucket) {
   const fns = await funcs(pattern)
-  return Promise.all(fns.map(async (func) => {
+  return Promise.map(fns, async (func) => {
     const path = `dist/${func}`
     const hash = await hashBuild(path)
     return putBuild(hash, path, bucket, func)
-  }))
+  })
 }

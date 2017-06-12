@@ -1,12 +1,11 @@
 /* eslint import/namespace: ['error', { allowComputed: true }] */
+import Promise from 'bluebird'
 import * as rules from './rules'
 
-export default function (opts) {
+export default async function (opts) {
   const log = logger(opts.verbose)
   const ruleNames = Object.keys(rules).filter((name) => name !== 'toString' && name !== 'default')
-  const warnings = ruleNames.map((name) => {
-    return rules[name](opts)
-  })
+  const warnings = await Promise.map(ruleNames, (name) => rules[name](opts))
   const flatWarnings = warnings.reduce((com, a) => com.concat(a), [])
 
   if (!opts.quiet) { flatWarnings.forEach(log) }

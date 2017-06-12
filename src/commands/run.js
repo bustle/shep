@@ -21,13 +21,14 @@ export function builder (yargs) {
   .example('shep run \'foo-*\'', 'Runs all functions matching pattern `foo-*`')
 }
 
-export function handler (opts) {
+export async function handler (opts) {
+  const fns = await load.funcs()
   const questions = [
     {
       name: 'pattern',
       message: 'Function',
       type: 'list',
-      choices: () => load.funcs()
+      choices: () => fns
     }
   ]
 
