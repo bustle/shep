@@ -3,19 +3,19 @@ import logs from '../logs'
 import * as load from '../util/load'
 import merge from 'lodash.merge'
 
-export const command = 'logs [stage] [name]'
+export const command = 'logs [name]'
 export const desc = 'Streams logs from the specified version of a function'
 export function builder (yargs) {
   return yargs
   .pkgConf('shep', process.cwd())
-  .describe('stage', 'Name of stage to use')
+  .describe('env', 'Specifies which environment to use. If not provided an interactive menu will display the options.')
   .describe('name', 'Name of function to use')
   .describe('region', 'Name of region to use, uses region in `package.json` if not given')
   .boolean('stream')
   .default('stream', true)
   .describe('stream', 'Stream logs')
   .example('shep logs', 'Launch an interactive CLI')
-  .example('shep logs production foo', 'Shows logs for the `foo` function in the production environment')
+  .example('shep logs --env production foo', 'Shows logs for the `foo` function in the production environment')
 }
 
 export async function handler (opts) {
@@ -25,8 +25,8 @@ export async function handler (opts) {
   if (envs && envs.length > 0) {
     questions = [
       {
-        name: 'stage',
-        message: 'Stage',
+        name: 'env',
+        message: 'Environment',
         type: 'list',
         choices: () => envs
       },
@@ -37,17 +37,8 @@ export async function handler (opts) {
         choices: () => load.funcs()
       }
     ]
-  } else {
-    if (!opts.env) { console.log('no API found, cannot load available aliases') }
-
-    questions = [
-      {
-        name: 'name',
-        message: 'Function',
-        type: 'list',
-        choices: () => load.funcs()
-      }
-    ]
+  } else if (!opts.env) {
+    throw new Error('Unable to load environments, please provide a specific one via the --env flag')
   }
 
   inquirer.prompt(questions.filter((q) => !opts[q.name]))

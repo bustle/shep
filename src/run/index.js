@@ -13,7 +13,7 @@ const ui = cliui({ width: 80 })
 
 const results = { success: 'SUCCESS', error: 'ERROR', exception: 'EXCEPTION' }
 
-const awsNodeVersion = ['4.3.2', '6.10.0']
+const awsNodeVersion = ['4.3.2', '6.10.2']
 
 export default async function (opts) {
   AWS.config.update({region: opts.region})

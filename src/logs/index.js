@@ -8,7 +8,7 @@ import genName from '../util/generate-name'
 
 export default function (opts) {
   const functionName = genName(opts.name).fullName
-  const aliasName = opts.stage
+  const aliasName = opts.env
   const stream = opts.stream
   const region = opts.region || pkg().shep.region
 

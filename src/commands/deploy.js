@@ -3,7 +3,7 @@ import deploy from '../deploy'
 import * as load from '../util/load'
 import merge from 'lodash.merge'
 
-export const command = 'deploy [env] [functions]'
+export const command = 'deploy [functions]'
 export const desc = 'Deploy both functions and APIs to AWS. Will create a new API if the ID is not specified'
 export function builder (yargs) {
   return yargs
@@ -13,11 +13,13 @@ export function builder (yargs) {
   .describe('quiet', 'Don\'t log anything')
   .default('quiet', false)
   .alias('q', 'quiet')
+  .describe('env', 'Environment you want to deploy to, if it doesn\'t exist it will be created')
+  .alias('e', 'env')
   .example('shep deploy', 'Launch an interactive CLI')
-  .example('shep deploy production', 'Deploy all functions with production env variables')
-  .example('shep deploy beta --no-build', 'Deploy all functions as currently built in the dist folder')
-  .example('shep deploy production create-user', 'Deploy only the create-user function')
-  .example('shep deploy beta \'*-user\'', 'Deploy only functions matching the pattern *-user')
+  .example('shep deploy --env production', 'Deploy all functions with production env variables')
+  .example('shep deploy --env beta --no-build', 'Deploy all functions as currently built in the dist folder')
+  .example('shep deploy --env production create-user', 'Deploy only the create-user function')
+  .example('shep deploy --env beta \'*-user\'', 'Deploy only functions matching the pattern *-user')
 }
 
 export async function handler (opts) {
@@ -37,8 +39,6 @@ export async function handler (opts) {
     .then((inputs) => merge({}, inputs, opts))
     .then(deploy)
   } else {
-    if (!opts.env) { console.log('no API found, cannot load available aliases') }
-
-    deploy(opts)
+    if (!opts.env) { console.log('No environments found, use the --env flag to create a new one') }
   }
 }

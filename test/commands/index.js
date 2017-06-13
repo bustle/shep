@@ -52,7 +52,7 @@ test([allFlags, noFlags], 'doctor', doctorParser, doctorArgs)
 td.replace('../../src/logs')
 const logsParser = yargs.command(require('../../src/commands/logs'))
 const logsArgs = {
-  stage: 'development',
+  env: 'development',
   name: 'myfunction',
   region: 'mordor',
   stream: 'true'
@@ -129,7 +129,7 @@ td.replace('../../src/config-remove')
 const removeParser = yargs.command(require('../../src/commands/config/remove'))
 
 test('config remove command', (t) => {
-  removeParser.parse('remove development MY_KEY OTHER_KEY', (err, argv, output) => {
+  removeParser.parse('remove --env development MY_KEY OTHER_KEY', (err, argv, output) => {
     err ? t.fail(err) : t.pass()
   })
 })
@@ -138,7 +138,7 @@ td.replace('../../src/config-set')
 const setParser = yargs.command(require('../../src/commands/config/set'))
 
 test('config set command', (t) => {
-  setParser.parse('set development FOO=bar', (err, argv, output) => {
+  setParser.parse('set --env development FOO=bar', (err, argv, output) => {
     err ? t.fail(err) : t.pass()
   })
 })
