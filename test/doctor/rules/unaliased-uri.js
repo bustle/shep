@@ -19,9 +19,9 @@ const api = {
 }
 
 const load = td.replace('../../../src/util/load')
-td.when(load.api()).thenReturn(api)
+td.when(load.api()).thenResolve(api)
 
-test('Reports unaliased endpoints', (t) => {
-  const warnings = require('../../../src/doctor/rules/unaliased-uri')()
+test('Reports unaliased endpoints', async (t) => {
+  const warnings = await require('../../../src/doctor/rules/unaliased-uri')()
   t.is(warnings.length, 1)
 })

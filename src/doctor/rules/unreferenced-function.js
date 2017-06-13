@@ -1,15 +1,15 @@
 import * as load from '../../util/load'
 import parseApi from '../../util/parse-api'
-import generateName from '../../util/generate-name'
+import Promise from 'bluebird'
 
-export default function () {
-  const api = load.api()
+export default async function () {
+  const api = await load.api()
   if (!api) { return [] }
 
-  const funcNames = load.funcs('*')
+  const funcConfigs = await Promise.map(load.funcs(), load.lambdaConfig)
   const parsedApi = parseApi(api)
-  const unreferencedFunctions = funcNames.filter((funcName) => {
-    return !parsedApi.some(({ integration }) => isFuncInUri(funcName, integration.uri))
+  const unreferencedFunctions = funcConfigs.filter(({ FunctionName }) => {
+    return !parsedApi.some(({ integration }) => isFuncInUri(FunctionName, integration.uri))
   })
 
   return unreferencedFunctions.map(generateWarning)
@@ -17,13 +17,13 @@ export default function () {
 
 function isFuncInUri (funcName, uri) {
   if (uri === undefined) { return false }
-  const funcRegExp = new RegExp(`:${generateName(funcName).fullName}:`)
+  const funcRegExp = new RegExp(`:${funcName}:`)
   return funcRegExp.test(uri)
 }
 
-function generateWarning (funcName) {
+function generateWarning ({ FunctionName }) {
   return {
     rule: 'unreferenced-functions',
-    message: `Function ${funcName} isn't referenced by api.json`
+    message: `Function ${FunctionName} isn't referenced by api.json`
   }
 }

@@ -1,8 +1,9 @@
 import { version } from '../../index'
 import * as load from '../../util/load'
 
-export default function () {
-  const pkgVersion = load.pkg().devDependencies.shep
+export default async function () {
+  const pkg = await load.pkg()
+  const pkgVersion = pkg.devDependencies.shep
   return pkgVersion === version ? [] : generateWarning(version, pkgVersion)
 }
 

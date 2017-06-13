@@ -1,7 +1,7 @@
 import * as load from '../../util/load'
 
-export default function () {
-  const api = load.api()
+export default async function () {
+  const api = await load.api()
   if (!api || api.info.description) { return [] }
 
   return [{

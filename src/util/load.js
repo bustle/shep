@@ -1,16 +1,15 @@
-import { readdirSync, readJSONSync } from './modules/fs'
+import { readdir, readJSON } from './modules/fs'
 import minimatch from 'minimatch'
 import AWS from './aws'
 import { listAliases, isFunctionDeployed } from './aws/lambda'
 import Promise from 'bluebird'
 
 export async function envs () {
-  const pkg = this.pkg()
-  if (!pkg || !pkg.shep) { return [] }
-
-  const fns = await this.funcs()
-  const fullFuncNames = fns.map(this.lambdaConfig).map(({ FunctionName }) => FunctionName)
+  const pkg = await this.pkg()
   AWS.config.update({ region: pkg.shep.region })
+
+  const fullFuncNames = await Promise.map(this.funcs(), this.lambdaConfig)
+  .map(({ FunctionName }) => FunctionName)
 
   const deployedFunctions = await Promise.filter(fullFuncNames, isFunctionDeployed)
   const allAliases = await Promise.map(deployedFunctions, (name) => listAliases(name).map(({ Name }) => Name))
@@ -29,9 +28,9 @@ export async function envs () {
   }, allAliases.pop())
 }
 
-export function events (func, eventName) {
+export async function events (func, eventName) {
   const eventDir = `functions/${func}/events`
-  let events = readdirSync(`functions/${func}/events`)
+  let events = await readdir(`functions/${func}/events`)
   if (eventName) {
     events = events.filter((event) => event === `${eventName}.json`)
     if (events.length === 0) {
@@ -43,7 +42,7 @@ export function events (func, eventName) {
 }
 
 export async function funcs (pattern = '*') {
-  const funcs = readdirSync('functions').filter(minimatch.filter(pattern))
+  const funcs = await readdir('functions').filter(minimatch.filter(pattern))
   if (funcs.length === 0) {
     throw new Error(`No functions found matching patterns: ${JSON.stringify(funcs)}`)
   } else {
@@ -51,25 +50,28 @@ export async function funcs (pattern = '*') {
   }
 }
 
-export function lambdaConfig (name) {
-  const functionConfig = readJSONSync(`functions/${name}/lambda.json`)
-  const projectConfig = readJSONSync(`lambda.json`)
+export async function lambdaConfig (name) {
+  const functionConfig = await readJSON(`functions/${name}/lambda.json`)
+  const projectConfig = await readJSON(`lambda.json`)
 
   return Object.assign(projectConfig, functionConfig)
 }
 
-export function pkg () {
-  return readJSONSync('package.json')
+export async function pkg () {
+  const pkg = await readJSON('package.json')
+  if (!pkg || !pkg.shep) { throw new Error('Missing shep section in package.json') }
+  return pkg
 }
 
-export function api () {
+export async function api () {
   try {
-    return readJSONSync('api.json')
+    const api = await readJSON('api.json')
+    return api
   } catch (e) {
     return null
   }
 }
 
 export function babelrc () {
-  return readJSONSync('.babelrc')
+  return readJSON('.babelrc')
 }

@@ -3,12 +3,12 @@ import * as load from '../util/load'
 import listr from '../util/modules/listr'
 import AWS from 'aws-sdk'
 
-export default function (opts) {
+export default async function (opts) {
   AWS.config.update({region: opts.region})
 
   const apiId = opts.apiId
   const region = opts.region
-  const api = load.api()
+  const api = await load.api()
 
   const tasks = listr([
     {

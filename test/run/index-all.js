@@ -9,9 +9,9 @@ const lambdaFunc = td.object([handler])
 td.when(lambdaFunc[handler](td.matchers.anything(), td.matchers.isA(Object))).thenCallback(null, 'bar')
 
 const load = td.replace('../../src/util/load')
-td.when(load.funcs('*')).thenReturn(funcNames)
-td.when(load.lambdaConfig(), { ignoreExtraArgs: true }).thenReturn(config)
-td.when(load.events(), { ignoreExtraArgs: true }).thenReturn(events)
+td.when(load.funcs('*')).thenResolve(funcNames)
+td.when(load.lambdaConfig(), { ignoreExtraArgs: true }).thenResolve(config)
+td.when(load.events(), { ignoreExtraArgs: true }).thenResolve(events)
 
 const requireProject = td.replace('../../src/util/require-project')
 td.when(requireProject(td.matchers.contains('events'))).thenReturn({})

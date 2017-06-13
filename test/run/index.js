@@ -9,14 +9,14 @@ const lambdaFunc = td.object([handler])
 td.when(lambdaFunc[handler](td.matchers.anything(), td.matchers.isA(Object))).thenCallback(null, 'bar')
 
 const load = td.replace('../../src/util/load')
-td.when(load.funcs(funcName)).thenReturn([funcName])
-td.when(load.lambdaConfig(funcName)).thenReturn(config)
-td.when(load.events(funcName, td.matchers.anything())).thenReturn(events)
+td.when(load.funcs(funcName)).thenResolve([funcName])
+td.when(load.lambdaConfig(funcName)).thenResolve(config)
+td.when(load.events(funcName, td.matchers.anything())).thenResolve(events)
 
 const requireProject = td.replace('../../src/util/require-project')
 td.when(requireProject(td.matchers.contains(`functions/${funcName}`))).thenReturn(lambdaFunc)
 
-test.before(async () => {
+test.before(() => {
   return require('../../src/run/index')({ pattern: funcName, build: false })
 })
 

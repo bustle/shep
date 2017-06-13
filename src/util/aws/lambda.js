@@ -17,11 +17,6 @@ export async function isFunctionDeployed (FunctionName) {
   }
 }
 
-function throwResourceError (err) {
-  const funcName = err.message.split(':').slice(-2, -1)[0]
-  throw new Error(`No function found with name ${funcName}`)
-}
-
 export async function putFunction (env, config, ZipFile) {
   const lambda = new AWS.Lambda()
 
@@ -34,7 +29,7 @@ export async function putFunction (env, config, ZipFile) {
     await getFunction({ FunctionName })
   } catch (e) {
     if (e.code !== 'ResourceNotFoundException') { throw e }
-    const params = merge(config, { Publish, Code: { ZipFile } })
+    const params = merge({}, config, { Publish, Code: { ZipFile } })
     await lambda.createFunction(params).promise()
   }
 
@@ -67,7 +62,7 @@ export async function putEnvironment (env, config, envVars) {
   return setAlias(func, env)
 }
 
-export function removeEnvVars (env, config, envVars) {
+export async function removeEnvVars (env, config, envVars) {
   const lambda = new AWS.Lambda()
 
   validateConfig(config)
@@ -77,38 +72,30 @@ export function removeEnvVars (env, config, envVars) {
     Qualifier: env
   }
 
-  return getFunction(params)
-  .then((awsFunction) => {
-    const envMap = deleteEnvVars(awsFunction, envVars)
-    const lambdaConfig = merge(config, { Environment: { Variables: envMap } })
-    return lambda.updateFunctionConfiguration(lambdaConfig).promise()
-  })
-  .then(({ FunctionName }) => {
-    return lambda.publishVersion({ FunctionName }).promise()
-  })
-  .then((func) => {
-    setAlias(func, env)
-  })
-  .catch({ code: 'ResourceNotFoundException' }, throwResourceError)
-  .catch((e) => {
-    throw new Error(e)
-  })
+  const awsFunction = await getFunction(params)
+  const envMap = deleteEnvVars(awsFunction, envVars)
+  const lambdaConfig = merge({}, config, { Environment: { Variables: envMap } })
+  const { FunctionName } = await lambda.updateFunctionConfiguration(lambdaConfig).promise()
+  const func = await lambda.publishVersion({ FunctionName }).promise()
+  return setAlias(func, env)
 }
 
-export function getEnvironment (env, { FunctionName }) {
+export async function getEnvironment (env, { FunctionName }) {
   const params = {
     FunctionName,
     Qualifier: env
   }
 
-  return getFunction(params)
-  .get('Configuration')
-  .get('Environment')
-  .get('Variables')
-  .catch({ code: 'ResourceNotFoundException' }, throwResourceError)
-  .catch((e) => {
+  try {
+    const envVars = await getFunction(params)
+    .get('Configuration')
+    .get('Environment')
+    .get('Variables')
+    return envVars
+  } catch (e) {
+    if (e.code !== 'ResourceNotFoundException') { throw e }
     throw new Error(`No environment variables exist for ${FunctionName}`)
-  })
+  }
 }
 
 export function getAliasVersion ({ functionName, aliasName }) {
@@ -123,16 +110,11 @@ export function getAliasVersion ({ functionName, aliasName }) {
   .get('FunctionVersion')
 }
 
-export function publishFunction ({ FunctionName }, env) {
+export async function publishFunction ({ FunctionName }, env) {
   const lambda = new AWS.Lambda()
 
-  return lambda.publishVersion({ FunctionName }).promise()
-  .then((func) => {
-    setAlias(func, env)
-  })
-  .catch((e) => {
-    throw new Error(e)
-  })
+  const func = await lambda.publishVersion({ FunctionName }).promise()
+  return setAlias(func, env)
 }
 
 export async function setAlias ({ Version, FunctionName }, Name) {
@@ -143,18 +125,18 @@ export async function setAlias ({ Version, FunctionName }, Name) {
     Name
   }
 
-  return lambda.getAlias(params).promise()
-  .then(() => {
+  try {
+    await lambda.getAlias(params).promise()
     params.FunctionVersion = Version
     return lambda.updateAlias(params).promise()
-  })
-  .catch({ code: 'ResourceNotFoundException' }, () => {
+  } catch (e) {
+    if (e.code !== 'ResourceNotFoundException') { throw e }
     params.FunctionVersion = Version
     return lambda.createAlias(params).promise()
-  })
+  }
 }
 
-export function setPermission ({ name, region, env, apiId, accountId }) {
+export async function setPermission ({ name, region, env, apiId, accountId }) {
   const lambda = new AWS.Lambda()
 
   let params = {
@@ -166,11 +148,13 @@ export function setPermission ({ name, region, env, apiId, accountId }) {
     SourceArn: `arn:aws:execute-api:${region}:${accountId}:${apiId}/*`
   }
 
-  return lambda.addPermission(params).promise()
-  .catch((err) => {
+  try {
+    const func = await lambda.addPermission(params).promise()
+    return func
+  } catch (e) {
     // Swallow errors if permission already exists
-    if (err.code !== 'ResourceConflictException' && err.code !== 'ResourceNotFoundException') { throw err }
-  })
+    if (e.code !== 'ResourceConflictException' && e.code !== 'ResourceNotFoundException') { throw e }
+  }
 }
 
 export function listAliases (functionName) {
@@ -180,7 +164,6 @@ export function listAliases (functionName) {
     FunctionName: functionName
   }
 
-  // should catch the issue of a func not existing
   return lambda.listAliases(params).promise().get('Aliases')
 }
 

@@ -7,7 +7,7 @@ import * as load from '../util/load'
 
 const integration = 'x-amazon-apigateway-integration'
 
-export default function (opts) {
+export default async function (opts) {
   let accountId = opts.accountId
   let path = opts.path
   let method = opts.method
@@ -16,10 +16,10 @@ export default function (opts) {
     throw new Error('Unable to determine your AWS Account ID. Please set it in the `shep` section of package.json')
   }
 
-  const api = load.api() || {}
+  const api = await load.api() || {}
 
   const name = `${path} ${method}`
-  const { shortName, fullName } = genName(name)
+  const { shortName, fullName } = await genName(name)
 
   const tasks = listr([
     {

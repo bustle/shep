@@ -5,6 +5,9 @@ import td from '../helpers/testdouble'
 let error = new Error()
 error.code = 'ENOENT'
 
+const load = td.replace('../../src/util/load')
+td.when(load.pkg()).thenResolve({ shep: {} })
+
 td.when(exec('webpack --bail'), { ignoreExtraArgs: true }).thenReject(error)
 td.replace(console, 'warn')
 

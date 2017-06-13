@@ -17,7 +17,7 @@ td.when(promoteAliases(functions, env)).thenResolve(uploadedFuncs)
 const setPermissions = td.replace('../../src/util/set-permissions')
 
 const load = td.replace('../../src/util/load')
-td.when(load.api()).thenReturn(api)
+td.when(load.api()).thenResolve(api)
 
 const push = td.replace('../../src/util/push-api')
 td.when(push(api), { ignoreExtraArgs: true }).thenResolve(apiId)

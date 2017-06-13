@@ -20,26 +20,25 @@ export function builder (yargs) {
 
 export async function handler (opts) {
   const envs = await load.envs()
-  let questions
+  const fns = await load.funcs()
+  const questions = []
 
   if (envs && envs.length > 0) {
-    questions = [
-      {
-        name: 'env',
-        message: 'Environment',
-        type: 'list',
-        choices: () => envs
-      },
-      {
-        name: 'name',
-        message: 'Function',
-        type: 'list',
-        choices: () => load.funcs()
-      }
-    ]
+    questions.push({
+      name: 'env',
+      message: 'Environment',
+      type: 'list',
+      choices: () => envs
+    })
   } else if (!opts.env) {
-    throw new Error('Unable to load environments, please provide a specific one via the --env flag')
+    throw new Error('No aliases found, please deploy your functions before trying to look at their logs')
   }
+  questions.push({
+    name: 'name',
+    message: 'Function',
+    type: 'list',
+    choices: () => fns
+  })
 
   inquirer.prompt(questions.filter((q) => !opts[q.name]))
   .then((inputs) => merge({}, inputs, opts))

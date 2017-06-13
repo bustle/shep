@@ -1,8 +1,8 @@
 import * as load from '../../util/load'
 import parseApi from '../../util/parse-api'
 
-export default function () {
-  const api = load.api()
+export default async function () {
+  const api = await load.api()
   if (!api) { return [] }
 
   const parsedApi = parseApi(api)

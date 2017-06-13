@@ -1,7 +1,9 @@
+import Promise from 'bluebird'
 import { funcs, lambdaConfig } from '../../util/load'
-export default function () {
-  const funcNames = funcs('*')
-  const configs = funcNames.map(lambdaConfig)
+
+export default async function () {
+  const funcNames = await funcs('*')
+  const configs = await Promise.map(funcNames, lambdaConfig)
   const warnConfigs = configs.filter(missingDescription)
   return warnConfigs.map(generateWarning)
 }

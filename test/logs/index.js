@@ -1,6 +1,5 @@
 import test from 'ava'
 import td from '../helpers/testdouble'
-import Promise from 'bluebird'
 
 const pkg = {
   name: 'foo',
@@ -17,23 +16,20 @@ const getLogResponse = {
 }
 
 const load = td.replace('../../src/util/load')
-td.when(load.pkg()).thenReturn(pkg)
+td.when(load.pkg()).thenResolve(pkg)
+td.when(load.lambdaConfig(functionName)).thenResolve({ FunctionName: functionName })
 
 const cloudwatchLogs = td.replace('../../src/util/aws/cloudwatch-logs')
+td.when(cloudwatchLogs.getLogGroup(td.matchers.contains({ FunctionName: functionName }))).thenResolve('/aws/log/group')
+
 const lambda = td.replace('../../src/util/aws/lambda')
+td.when(lambda.getAliasVersion(td.matchers.contains({ aliasName: stage }))).thenResolve('1')
 
 const getLogs = td.replace('../../src/util/get-logs')
-td.when(getLogs(), { ignoreExtraArgs: true }).thenReturn(Promise.resolve(getLogResponse))
+td.when(getLogs(td.matchers.isA(Object))).thenResolve(getLogResponse)
 
-test.before(() => {
+test('Continues loop', async (t) => {
   const shep = require('../../src/index')
-  shep.logs({ stage, name: functionName, stream: false })
-})
-
-test('Gets alias version', () => {
-  td.verify(lambda.getAliasVersion(td.matchers.anything()))
-})
-
-test('Gets log group', () => {
-  td.verify(cloudwatchLogs.getLogGroup(td.matchers.anything()))
+  await t.throws(shep.logs({ stage, name: functionName, stream: true }))
+  td.verify(callback())
 })

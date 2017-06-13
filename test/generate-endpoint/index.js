@@ -9,8 +9,8 @@ const path = '/foo'
 const method = 'get'
 const accountId = 'testid'
 
-td.when(fs.readJSONSync('package.json')).thenReturn({ name: 'bar' })
-td.when(load.api()).thenReturn({ paths: {} })
+td.when(fs.readJSON('package.json')).thenResolve({ name: 'bar', shep: {} })
+td.when(load.api()).thenResolve({ paths: {} })
 
 test.before(() => {
   const shep = require('../../src/index')
