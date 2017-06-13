@@ -3,16 +3,18 @@ import configList from '../../config-list'
 import * as load from '../../util/load'
 import merge from 'lodash.merge'
 
-export const command = 'list [env] [function]'
+export const command = 'list [function]'
 export const desc = 'List environment variables on AWS for an alias'
 export function builder (yargs) {
   return yargs
   .pkgConf('shep', process.cwd())
-  .example('shep config beta foo', 'List environment variables for function "foo" beta alias')
+  .describe('env', 'Specifies which environment. If not provided an interactive menu will display the options')
+  .example('shep config list --env beta foo', 'List environment variables for function "foo" beta alias')
 }
 
 export async function handler (opts) {
   const envs = await load.envs()
+  const fns = await load.funcs()
   let questions
 
   if (envs && envs.length > 0) {
@@ -27,7 +29,7 @@ export async function handler (opts) {
         name: 'function',
         message: 'Function',
         type: 'list',
-        choices: () => load.funcs()
+        choices: () => fns
       }
     ]
   } else {
@@ -37,7 +39,7 @@ export async function handler (opts) {
         name: 'function',
         message: 'Function',
         type: 'list',
-        choices: () => load.funcs()
+        choices: () => fns
       }
     ]
   }

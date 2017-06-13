@@ -17,8 +17,7 @@ export default function (opts) {
     {
       title: `Export API currenly on ${stage}`,
       task: async () => {
-        const api = await exportStage(apiId, stage)
-        exportedApi = api
+        exportedApi = await exportStage(apiId, stage)
         return update({ apiId, region })
       }
     },

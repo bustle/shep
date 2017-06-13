@@ -19,7 +19,7 @@ export default async function (opts) {
   const api = await load.api() || {}
 
   const name = `${path} ${method}`
-  const { shortName, fullName } = genName(name)
+  const { shortName, fullName } = await genName(name)
 
   const tasks = listr([
     {
