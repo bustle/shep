@@ -3,14 +3,15 @@ import configDump from '../../config-dump'
 import * as load from '../../util/load'
 import merge from 'lodash.merge'
 
-export const command = 'dump [env]'
+export const command = 'dump'
 export const desc = 'Prints all common environmental variables and differences'
 export function builder (yargs) {
   return yargs
   .pkgConf('shep', process.cwd())
   .boolean('json')
+  .describe('env', 'Specifies which environment to dump, if not provided an interactive menu will display the options')
   .describe('json', 'Formats output as JSON')
-  .example('shep config dump beta', 'Print to console all environment variables of environment `beta` in JSON format')
+  .example('shep config dump --env beta', 'Print to console all environment variables of environment `beta` in JSON format')
 }
 
 export async function handler (opts) {

@@ -1,23 +1,36 @@
-const shep = require('./lib/index')
 const { execSync } = require('child_process')
+const { readdirSync, statSync } = require('fs')
 
 console.log(`### \`shep\``)
 console.log('```')
 console.log(execSync(`./cli.js --help`).toString().replace(/cli\.js/, 'shep').trim())
 console.log('```')
 
-for (var cmd in shep) {
-  if (cmd !== 'version') {
-    let help = execSync(`./cli.js ${camelCaseToSpace(cmd)} --help`).toString().replace(/cli\.js/, 'shep').trim()
-    console.log(`#### \`shep ${camelCaseToSpace(cmd)}\``)
-    console.log('```')
-    console.log(help)
-    console.log('```')
-  }
+const commandDir = './src/commands'
+const mainCommands = readdirSync(commandDir)
+const subCommands = mainCommands
+      .filter(isDir)
+      .map(findSubCommands)
+      .reduce(flatten)
+const allCommands = mainCommands.concat(subCommands).map((c) => c.replace(/\.js/g, '')).sort()
+
+allCommands.forEach((command) => {
+  let help = execSync(`./cli.js ${command} --help`).toString().replace(/cli\.js/, 'shep').trim()
+  console.log(`#### \`shep ${command}\``)
+  console.log('```')
+  console.log(help)
+  console.log('```')
+})
+
+function isDir (path) {
+  return statSync(`${commandDir}/${path}`).isDirectory()
 }
 
-function camelCaseToSpace (str) {
-  return str.split('')
-    .map(x => /[A-Z]/.test(x) ? ` ${x.toLowerCase()}` : x)
-    .reduce((sum, cur) => sum + cur, '')
+function findSubCommands (path) {
+  return readdirSync(`${commandDir}/${path}`)
+  .map((c) => `${path} ${c}`)
+}
+
+function flatten (acc, arr) {
+  return acc.concat(arr)
 }

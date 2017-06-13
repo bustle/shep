@@ -19,7 +19,9 @@ export async function envs () {
           .concat(acc.filter((alias) => aliasSet.indexOf(alias) === -1))
 
     if (missingAliases.length !== 0) {
-      throw new Error('Mismatched aliases found, please run `shep config sync` to ensure all functions have the same environment')
+      const err = new Error('Mismatched aliases found, please run `shep config sync` to ensure all functions have the same environment')
+      err.name = 'EnvironmentMistmach'
+      throw err
     }
 
     return acc

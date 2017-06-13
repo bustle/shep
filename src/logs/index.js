@@ -7,7 +7,7 @@ import { pkg, lambdaConfig } from '../util/load'
 
 export default async function (opts) {
   const { FunctionName } = await lambdaConfig(opts.name)
-  const aliasName = opts.stage
+  const aliasName = opts.env
   const stream = opts.stream
   const region = opts.region || (await pkg()).shep.region
 
