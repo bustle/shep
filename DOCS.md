@@ -3,20 +3,236 @@
 Usage: shep <command> [options]
 
 Commands:
-  build [functions]    Builds functions and writes them to disk
-  config               Run `shep config --help` for additional information
-  deploy [functions]   Deploy both functions and APIs to AWS. Will create a new API if the ID is not specified
-  doctor               Checks your projects against best standards
-  generate             Run `shep generate --help` for additional information
-  logs [stage] [name]  Streams logs from the specified version of a function
-  new [path]           Create a new shep project
-  pull                 Pulls a swagger JSON representation of an existing API and writes it to a local file
-  push                 Create a new shep project
-  run [pattern]        Run a function in your local environemnt
+  build [functions]   Builds functions and writes them to disk
+  config              Run `shep config --help` for additional information
+  deploy [functions]  Deploy both functions and APIs to AWS. Will create a new API if the ID is not specified
+  doctor              Checks your projects against best standards
+  generate            Run `shep generate --help` for additional information
+  logs [name]         Streams logs from the specified version of a function
+  new [path]          Create a new shep project
+  pull                Pulls a swagger JSON representation of an existing API and writes it to a local file
+  push                Create a new shep project
+  run [pattern]       Run a function in your local environemnt
 
 Options:
   --version  Show version number                                                                               [boolean]
   --help     Show help                                                                                         [boolean]
+```
+#### `shep build`
+```
+shep build [functions]
+
+Options:
+  --version    Show version number                                                                             [boolean]
+  --help       Show help                                                                                       [boolean]
+  -q, --quiet  Don't log anything                                                                       [default: false]
+
+Examples:
+  shep build                   Launch an interactive CLI
+  shep build beta              Build all functions with beta environment variables
+  shep build beta create-user  Build only the create-user function
+  shep build beta '*-user'     Build functions matching the pattern *-user
+```
+#### `shep config`
+```
+shep config
+
+Commands:
+  dump              Prints all common environmental variables and differences
+  list [function]   List environment variables on AWS for an alias
+  remove <vars...>  Remove environment variables for alias on AWS
+  set <vars...>     Set environment variables for alias on AWS
+  sync              Syncs environments across all functions on a shep project
+
+Options:
+  --version  Show version number                                                                               [boolean]
+  --help     Show help                                                                                         [boolean]
+```
+#### `shep config`
+```
+shep config
+
+Commands:
+  dump              Prints all common environmental variables and differences
+  list [function]   List environment variables on AWS for an alias
+  remove <vars...>  Remove environment variables for alias on AWS
+  set <vars...>     Set environment variables for alias on AWS
+  sync              Syncs environments across all functions on a shep project
+
+Options:
+  --version  Show version number                                                                               [boolean]
+  --help     Show help                                                                                         [boolean]
+```
+#### `shep config dump`
+```
+shep config dump
+
+Options:
+  --version  Show version number                                                                               [boolean]
+  --help     Show help                                                                                         [boolean]
+  --env      Specifies which environment to dump, if not provided an interactive menu will display the options
+  --json     Formats output as JSON                                                                            [boolean]
+
+Examples:
+  shep config dump --env beta  Print to console all environment variables of environment `beta` in JSON format
+```
+#### `shep config list`
+```
+shep config list [function]
+
+Options:
+  --version  Show version number                                                                               [boolean]
+  --help     Show help                                                                                         [boolean]
+  --env      Specifies which environment. If not provided an interactive menu will display the options
+
+Examples:
+  shep config list --env beta foo  List environment variables for function "foo" beta alias
+```
+#### `shep config remove`
+```
+shep config remove <vars...>
+
+Options:
+  --version  Show version number                                                                               [boolean]
+  --help     Show help                                                                                         [boolean]
+  --env      Specifies which environment to remove variables from. If not provided an interactive menu will display the
+             options
+
+Examples:
+  shep config remove --env beta NEW_VARIABLE  Removes NEW_VARIABLE from all functions with beta alias
+```
+#### `shep config set`
+```
+shep config set <vars...>
+
+Options:
+  --version  Show version number                                                                               [boolean]
+  --help     Show help                                                                                         [boolean]
+
+Examples:
+  shep config set --env beta FOO=bar  Set environment variable FOO with value BAR for alias beta
+```
+#### `shep config sync`
+```
+shep config sync
+
+Options:
+  --version  Show version number                                                                               [boolean]
+  --help     Show help                                                                                         [boolean]
+  -e, --env  Environment to sync
+
+Examples:
+  shep config sync             Syncs all environments
+  shep config sync --env beta  Syncs `beta` environment
+```
+#### `shep deploy`
+```
+shep deploy [functions]
+
+Options:
+  --version    Show version number                                                                             [boolean]
+  --help       Show help                                                                                       [boolean]
+  --build      Build functions before deployment. Use --no-build to skip this step                       [default: true]
+  -q, --quiet  Don't log anything                                                                       [default: false]
+  -e, --env    Environment you want to deploy to, if it doesn't exist it will be created
+
+Examples:
+  shep deploy                               Launch an interactive CLI
+  shep deploy --env production              Deploy all functions with production env variables
+  shep deploy --env beta --no-build         Deploy all functions as currently built in the dist folder
+  shep deploy --env production create-user  Deploy only the create-user function
+  shep deploy --env beta '*-user'           Deploy only functions matching the pattern *-user
+```
+#### `shep doctor`
+```
+shep doctor
+
+Options:
+  --version    Show version number                                                                             [boolean]
+  --help       Show help                                                                                       [boolean]
+  --verbose    Logs additional information
+  -q, --quiet  Don't log anything                                                                       [default: false]
+
+Examples:
+  shep doctor  Runs the doctor on your project
+```
+#### `shep generate`
+```
+shep generate
+
+Commands:
+  endpoint [path]  Generate a new API endpoint
+  function [name]  Generate a new function
+  webpack          Generates a webpack.config.js with default template
+
+Options:
+  --version  Show version number                                                                               [boolean]
+  --help     Show help                                                                                         [boolean]
+```
+#### `shep generate`
+```
+shep generate
+
+Commands:
+  endpoint [path]  Generate a new API endpoint
+  function [name]  Generate a new function
+  webpack          Generates a webpack.config.js with default template
+
+Options:
+  --version  Show version number                                                                               [boolean]
+  --help     Show help                                                                                         [boolean]
+```
+#### `shep generate endpoint`
+```
+shep generate endpoint [path]
+
+Options:
+  --version    Show version number                                                                             [boolean]
+  --help       Show help                                                                                       [boolean]
+  --method     HTTP Method                                   [choices: "get", "post", "put", "delete", "options", "any"]
+  -q, --quiet  Don't log anything                                                                       [default: false]
+```
+#### `shep generate function`
+```
+shep generate function [name]
+
+Options:
+  --version    Show version number                                                                             [boolean]
+  --help       Show help                                                                                       [boolean]
+  --name       Function name
+  -q, --quiet  Don't log anything                                                                       [default: false]
+
+Examples:
+  shep generate function      Launch an interactive CLI
+  shep generate function foo  Genereate a new functon called "foo"
+```
+#### `shep generate webpack`
+```
+shep generate webpack
+
+Options:
+  --version     Show version number                                                                            [boolean]
+  --help        Show help                                                                                      [boolean]
+  --output, -o  Output file                                                               [default: "webpack.config.js"]
+
+Examples:
+  shep generate webpack -o foo.js  Writes default webpack configuration to foo.js
+```
+#### `shep logs`
+```
+shep logs [name]
+
+Options:
+  --version  Show version number                                                                               [boolean]
+  --help     Show help                                                                                         [boolean]
+  --env      Specifies which environment to use. If not provided an interactive menu will display the options.
+  --name     Name of function to use
+  --region   Name of region to use, uses region in `package.json` if not given
+  --stream   Stream logs                                                                       [boolean] [default: true]
+
+Examples:
+  shep logs                       Launch an interactive CLI
+  shep logs --env production foo  Shows logs for the `foo` function in the production environment
 ```
 #### `shep new`
 ```
@@ -91,160 +307,4 @@ Examples:
                                 way will overwrite vals in your .env file)
   shep run '*'                  Runs all functions for all events
   shep run 'foo-*'              Runs all functions matching pattern `foo-*`
-```
-#### `shep deploy`
-```
-shep deploy [functions]
-
-Options:
-  --version    Show version number                                                                             [boolean]
-  --help       Show help                                                                                       [boolean]
-  --build      Build functions before deployment. Use --no-build to skip this step                       [default: true]
-  -q, --quiet  Don't log anything                                                                       [default: false]
-  -e, --env    Environment you want to deploy to, if it doesn't exist it will be created
-
-Examples:
-  shep deploy                               Launch an interactive CLI
-  shep deploy --env production              Deploy all functions with production env variables
-  shep deploy --env beta --no-build         Deploy all functions as currently built in the dist folder
-  shep deploy --env production create-user  Deploy only the create-user function
-  shep deploy --env beta '*-user'           Deploy only functions matching the pattern *-user
-```
-#### `shep build`
-```
-shep build [functions]
-
-Options:
-  --version    Show version number                                                                             [boolean]
-  --help       Show help                                                                                       [boolean]
-  -q, --quiet  Don't log anything                                                                       [default: false]
-
-Examples:
-  shep build                   Launch an interactive CLI
-  shep build beta              Build all functions with beta environment variables
-  shep build beta create-user  Build only the create-user function
-  shep build beta '*-user'     Build functions matching the pattern *-user
-```
-#### `shep logs`
-```
-shep logs [stage] [name]
-
-Options:
-  --version  Show version number                                                                               [boolean]
-  --help     Show help                                                                                         [boolean]
-  --stage    Name of stage to use
-  --name     Name of function to use
-  --region   Name of region to use, uses region in `package.json` if not given
-  --stream   Stream logs                                                                       [boolean] [default: true]
-
-Examples:
-  shep logs                 Launch an interactive CLI
-  shep logs production foo  Shows logs for the `foo` function in the production environment
-```
-#### `shep doctor`
-```
-shep doctor
-
-Options:
-  --version    Show version number                                                                             [boolean]
-  --help       Show help                                                                                       [boolean]
-  --verbose    Logs additional information
-  -q, --quiet  Don't log anything                                                                       [default: false]
-
-Examples:
-  shep doctor  Runs the doctor on your project
-```
-#### `shep generate function`
-```
-shep generate function [name]
-
-Options:
-  --version    Show version number                                                                             [boolean]
-  --help       Show help                                                                                       [boolean]
-  --name       Function name
-  -q, --quiet  Don't log anything                                                                       [default: false]
-
-Examples:
-  shep generate function      Launch an interactive CLI
-  shep generate function foo  Genereate a new functon called "foo"
-```
-#### `shep generate endpoint`
-```
-shep generate endpoint [path]
-
-Options:
-  --version    Show version number                                                                             [boolean]
-  --help       Show help                                                                                       [boolean]
-  --method     HTTP Method                                   [choices: "get", "post", "put", "delete", "options", "any"]
-  -q, --quiet  Don't log anything                                                                       [default: false]
-```
-#### `shep generate webpack`
-```
-shep generate webpack
-
-Options:
-  --version     Show version number                                                                            [boolean]
-  --help        Show help                                                                                      [boolean]
-  --output, -o  Output file                                                               [default: "webpack.config.js"]
-
-Examples:
-  shep generate webpack -o foo.js  Writes default webpack configuration to foo.js
-```
-#### `shep config set`
-```
-shep config set <env> <vars...>
-
-Options:
-  --version  Show version number                                                                               [boolean]
-  --help     Show help                                                                                         [boolean]
-
-Examples:
-  shep config set beta FOO=bar  Set environment variable FOO with value BAR for alias beta
-```
-#### `shep config remove`
-```
-shep config remove <env> <vars...>
-
-Options:
-  --version  Show version number                                                                               [boolean]
-  --help     Show help                                                                                         [boolean]
-
-Examples:
-  shep config remove beta NEW_VARIABLE  Removes NEW_VARIABLE from all functions with beta alias
-```
-#### `shep config list`
-```
-shep config list [env] [function]
-
-Options:
-  --version  Show version number                                                                               [boolean]
-  --help     Show help                                                                                         [boolean]
-
-Examples:
-  shep config beta foo  List environment variables for function "foo" beta alias
-```
-#### `shep config dump`
-```
-shep config dump [env]
-
-Options:
-  --version  Show version number                                                                               [boolean]
-  --help     Show help                                                                                         [boolean]
-  --json     Formats output as JSON                                                                            [boolean]
-
-Examples:
-  shep config dump beta  Print to console all environment variables of environment `beta` in JSON format
-```
-#### `shep config sync`
-```
-shep config sync
-
-Options:
-  --version  Show version number                                                                               [boolean]
-  --help     Show help                                                                                         [boolean]
-  -e, --env  Environment to sync
-
-Examples:
-  shep config sync             Syncs all environments
-  shep config sync --env beta  Syncs `beta` environment
 ```
