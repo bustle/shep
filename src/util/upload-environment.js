@@ -6,5 +6,5 @@ const pattern = '*'
 
 export default async function (env, vars) {
   const configs = await Promise.map(funcs(pattern), lambdaConfig)
-  return Promise.map(configs, (config) => putEnvironment(env, config, vars), { concurrency: 3 })
+  return Promise.map(configs, (config) => putEnvironment(env, config, vars), { concurrency: 2 })
 }

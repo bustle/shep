@@ -5,6 +5,6 @@ import { lambdaConfig, funcs } from './load'
 const pattern = '*'
 
 export default async function (env, vars) {
-  const fns = await funcs(pattern)
-  return Promise.map(fns, async (func) => removeEnvVars(env, await lambdaConfig(func), vars))
+  const configs = await Promise.map(funcs(pattern), lambdaConfig)
+  return Promise.map(configs, (config) => removeEnvVars(env, config, vars))
 }

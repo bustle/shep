@@ -6,8 +6,7 @@ export default async function () {
   const api = await load.api()
   if (!api) { return [] }
 
-  const funcNames = await load.funcs()
-  const funcConfigs = await Promise.map(funcNames, load.lambdaConfig)
+  const funcConfigs = await Promise.map(load.funcs(), load.lambdaConfig)
   const parsedApi = parseApi(api)
   const unreferencedFunctions = funcConfigs.filter(({ FunctionName }) => {
     return !parsedApi.some(({ integration }) => isFuncInUri(FunctionName, integration.uri))

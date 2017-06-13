@@ -74,7 +74,7 @@ export async function removeEnvVars (env, config, envVars) {
 
   const awsFunction = await getFunction(params)
   const envMap = deleteEnvVars(awsFunction, envVars)
-  const lambdaConfig = merge(config, { Environment: { Variables: envMap } })
+  const lambdaConfig = merge({}, config, { Environment: { Variables: envMap } })
   const { FunctionName } = await lambda.updateFunctionConfiguration(lambdaConfig).promise()
   const func = await lambda.publishVersion({ FunctionName }).promise()
   return setAlias(func, env)
@@ -87,11 +87,11 @@ export async function getEnvironment (env, { FunctionName }) {
   }
 
   try {
-    const func = await getFunction(params)
+    const envVars = await getFunction(params)
     .get('Configuration')
     .get('Environment')
     .get('Variables')
-    return func
+    return envVars
   } catch (e) {
     if (e.code !== 'ResourceNotFoundException') { throw e }
     throw new Error(`No environment variables exist for ${FunctionName}`)

@@ -6,10 +6,10 @@ import Promise from 'bluebird'
 
 export async function envs () {
   const pkg = await this.pkg()
-
-  const fns = await this.funcs()
-  const fullFuncNames = await Promise.map(fns, this.lambdaConfig).map(({ FunctionName }) => FunctionName)
   AWS.config.update({ region: pkg.shep.region })
+
+  const fullFuncNames = await Promise.map(this.funcs(), this.lambdaConfig)
+  .map(({ FunctionName }) => FunctionName)
 
   const deployedFunctions = await Promise.filter(fullFuncNames, isFunctionDeployed)
   const allAliases = await Promise.map(deployedFunctions, (name) => listAliases(name).map(({ Name }) => Name))
@@ -72,6 +72,6 @@ export async function api () {
   }
 }
 
-export async function babelrc () {
+export function babelrc () {
   return readJSON('.babelrc')
 }
