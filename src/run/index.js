@@ -24,7 +24,7 @@ export default async function (opts) {
     console.log(`Warning: Lambda currently runs node v${awsNodeVersion} but you are using v${processVersion}`)
   }
 
-  const loggingFunction = logFunction(opts.v)
+  const loggingFunction = logFunction(opts.t)
   const funcRunner = runFunction(opts)
   const names = await load.funcs(opts.pattern)
 
@@ -89,7 +89,7 @@ function runFunction (opts) {
   }
 }
 
-function logFunction (verbose) {
+function logFunction (shouldTruncate) {
   return (functionOutput) => {
     ui.div(
       {
@@ -97,11 +97,11 @@ function logFunction (verbose) {
         padding: [1, 0, 0, 0]
       }
     )
-    functionOutput.map((eventOut) => formatOutput(eventOut, verbose))
+    functionOutput.map((eventOut) => formatOutput(eventOut, shouldTruncate))
   }
 }
 
-function formatOutput (output, verbose) {
+function formatOutput (output, truncate) {
   ui.div(
     {
       text: output.name,
@@ -116,7 +116,7 @@ function formatOutput (output, verbose) {
       width: 10
     },
     {
-      text: (verbose ? splitAt(formatResponse(output), ',', 30) : formatResponse(output).slice(0, 30))
+      text: (truncate ? formatResponse(output).slice(0, 30) : splitAt(formatResponse(output), ',', 30))
     }
     )
 }
