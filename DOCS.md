@@ -38,8 +38,7 @@ Examples:
 shep config
 
 Commands:
-  dump              Prints all common environmental variables and differences
-  list [function]   List environment variables on AWS for an alias
+  list              List environment variables on AWS for an alias
   remove <vars...>  Remove environment variables for alias on AWS
   set <vars...>     Set environment variables for alias on AWS
   sync              Syncs environments across all functions on a shep project
@@ -53,8 +52,7 @@ Options:
 shep config
 
 Commands:
-  dump              Prints all common environmental variables and differences
-  list [function]   List environment variables on AWS for an alias
+  list              List environment variables on AWS for an alias
   remove <vars...>  Remove environment variables for alias on AWS
   set <vars...>     Set environment variables for alias on AWS
   sync              Syncs environments across all functions on a shep project
@@ -63,30 +61,18 @@ Options:
   --version  Show version number                                                                               [boolean]
   --help     Show help                                                                                         [boolean]
 ```
-#### `shep config dump`
-```
-shep config dump
-
-Options:
-  --version  Show version number                                                                               [boolean]
-  --help     Show help                                                                                         [boolean]
-  --env      Specifies which environment to dump, if not provided an interactive menu will display the options
-  --json     Formats output as JSON                                                                            [boolean]
-
-Examples:
-  shep config dump --env beta  Print to console all environment variables of environment `beta` in JSON format
-```
 #### `shep config list`
 ```
-shep config list [function]
+shep config list
 
 Options:
   --version  Show version number                                                                               [boolean]
   --help     Show help                                                                                         [boolean]
   --env      Specifies which environment. If not provided an interactive menu will display the options
+  --json     Formats output as JSON                                                                            [boolean]
 
 Examples:
-  shep config list --env beta foo  List environment variables for function "foo" beta alias
+  shep config list --env beta  Print to console all environment variables of environment `beta` in JSON format
 ```
 #### `shep config remove`
 ```

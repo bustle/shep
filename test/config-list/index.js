@@ -1,6 +1,5 @@
 import test from 'ava'
 import td from '../helpers/testdouble'
-import Promise from 'bluebird'
 
 const pkg = {
   name: 'foo',
@@ -8,21 +7,23 @@ const pkg = {
     region: 'us-east-1'
   }
 }
-const getEnvironmentResponse = [{
-  KEY: 'VALUE'
-}]
+
 const environment = 'development'
 const functionName = 'bar'
 const load = td.replace('../../src/util/load')
-td.when(load.lambdaConfig()).thenReturn(pkg)
+td.when(load.funcs()).thenResolve([functionName])
+td.when(load.lambdaConfig(functionName), { ignoreExtraArgs: true }).thenReturn({ FunctionName: functionName })
+td.when(load.pkg()).thenReturn(pkg)
 
-const getEnvironment = td.replace('../../src/util/get-environment')
-td.when(getEnvironment(environment, functionName)).thenReturn(Promise.resolve(getEnvironmentResponse))
+const lambda = td.replace('../../src/util/aws/lambda')
+td.when(lambda.isFunctionDeployed(td.matchers.isA(String)), { ignoreExtraArgs: true }).thenResolve(true)
 
-test.before(async () => {
-  return require('../../src/config-list/index')({ env: environment, function: functionName })
-})
+const getFunctionEnvs = td.replace('../../src/util/get-function-envs')
+td.when(getFunctionEnvs(td.matchers.isA(String), td.matchers.isA(Object))).thenResolve({})
 
-test('Gets environment', () => {
-  td.verify(getEnvironment(environment, functionName))
+const envCheck = td.replace('../../src/util/environment-check')
+
+test('Gets environment', async (t) => {
+  await t.throws(require('../../src/config-list')({ env: environment, json: true }))
+  td.verify(envCheck.environmentCheck({}))
 })

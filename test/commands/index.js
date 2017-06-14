@@ -120,7 +120,7 @@ td.replace('../../src/config-list')
 const listParser = yargs.command(require('../../src/commands/config/list'))
 const listArgs = {
   env: 'development',
-  function: 'myfunction'
+  json: true
 }
 
 test([allFlags, noFlags], 'list', listParser, listArgs)
