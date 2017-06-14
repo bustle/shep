@@ -37,7 +37,6 @@
     "shep": "cli.js"
   },
   "dependencies": {
-    "aws-lambda-mock-context": "^3.0.1",
     "aws-sdk": "^2.4.13",
     "babel-register": "^6.22.0",
     "bluebird": "^3.4.7",
