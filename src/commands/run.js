@@ -9,7 +9,7 @@ export function builder (yargs) {
   return yargs
   .pkgConf('shep', process.cwd())
   .describe('event', 'Event to use')
-  .describe('v', 'Responses from functions aren\'t truncated')
+  .describe('t', 'Truncate responses')
   .describe('build', 'Build functions before running. If omitted functions are transpiled by babel on the fly')
   .default('build', false)
   .example('shep run', 'Launch an interactive CLI')
