@@ -1,23 +1,32 @@
-import getEnvironment from '../util/get-environment'
-import AWS from 'aws-sdk'
+import * as load from '../util/load'
+import Promise from 'bluebird'
+import { isFunctionDeployed } from '../util/aws/lambda'
+import getFunctionEnvs from '../util/get-function-envs'
+import { environmentCheck, values } from '../util/environment-check'
 
 export default async function (opts) {
-  const name = opts.function
-  const env = opts.env || 'development'
+  const fnConfigs = await Promise.filter(load.funcs().map(load.lambdaConfig), ({ FunctionName }) => isFunctionDeployed(FunctionName))
+  const envs = await getFunctionEnvs(opts.env, fnConfigs)
+  const { common, differences, conflicts } = environmentCheck(envs)
 
-  AWS.config.update({region: opts.region})
-
-  console.log(`Listing environment variables for ${name}...`, '\n')
-
-  const vars = await getEnvironment(env, name)
-
-  if (vars && vars.length > 0) {
-    const envObj = vars[0]
-    Object.keys(envObj).forEach((key) => {
-      console.log(key, '=', envObj[key])
-    })
-    console.log('')
+  if (opts.json) {
+    if (Object.keys(conflicts).length !== 0 || Object.keys(differences).length !== 0) { throw new Error('Environments are out of sync, run `shep config sync` to fix') }
+    console.log(JSON.stringify(common, undefined, 2))
   } else {
-    console.log(`No environment vars on AWS for ${name}`)
+    console.log('Common Variables:')
+    console.log(values(common).map(({ key, value }) => `${key}=${value}`).join('\n'))
+
+    if (Object.keys(differences).length !== 0) {
+      console.error('Variables that are present on some functions:')
+      console.error(values(differences).map(({ key, value }) => `${key}=${value.value} on the following functions: ${value.functions.join(', ')}`).join('\n'))
+    }
+
+    if (Object.keys(conflicts).length !== 0) {
+      console.error('Variables that have conflicting values across different functions')
+      console.error(values(conflicts).map(({ key, value }) => {
+        const funcValues = values(value).map((obj) => `\t${key}=${obj.value} on ${obj.key}`)
+        return `Variable: ${key}\n${funcValues.join('\n')}`
+      }).join('\n'))
+    }
   }
 }
