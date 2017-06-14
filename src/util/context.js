@@ -33,14 +33,6 @@ export default function (config) {
     invokedFunctionArn: `arn:aws:lambda:${region}:${account}:function:${functionName}:${functionVersion}`
   }
 
-  const MB = 1 << 20
-  const warningTimer = setInterval(() => {
-    const memUsed = process.memoryUsage().heapTotal / MB
-    if (memUsed > ctx.memoryLimitInMB) {
-      console.warn(`Lambda function is using ${memUsed} and is only allocated ${ctx.memoryLimitInMB}`)
-    }
-  }, 100)
-
   const callbackWrapper = (cbFn) => {
     let callbackCalled = false
 
@@ -51,7 +43,6 @@ export default function (config) {
     return (...args) => {
       callbackCalled = true
       clearTimeout(timer)
-      clearInterval(warningTimer)
       cbFn(...args)
     }
   }
