@@ -1,13 +1,17 @@
 import AWS from './'
+import loadRegion from '../aws/region-loader'
 import merge from 'lodash.merge'
 
-export function getFunction (params) {
+export async function getFunction (params) {
+  await loadRegion()
   const lambda = new AWS.Lambda()
 
   return lambda.getFunction(params).promise()
 }
 
 export async function isFunctionDeployed (FunctionName) {
+  await loadRegion()
+
   try {
     await getFunction({ FunctionName })
     return true
@@ -18,6 +22,7 @@ export async function isFunctionDeployed (FunctionName) {
 }
 
 export async function putFunction (env, config, ZipFile) {
+  await loadRegion()
   const lambda = new AWS.Lambda()
 
   validateConfig(config)
@@ -38,6 +43,7 @@ export async function putFunction (env, config, ZipFile) {
 }
 
 export async function putEnvironment (env, config, envVars) {
+  await loadRegion()
   const lambda = new AWS.Lambda()
 
   validateConfig(config)
@@ -63,6 +69,7 @@ export async function putEnvironment (env, config, envVars) {
 }
 
 export async function removeEnvVars (env, config, envVars) {
+  await loadRegion()
   const lambda = new AWS.Lambda()
 
   validateConfig(config)
@@ -81,6 +88,7 @@ export async function removeEnvVars (env, config, envVars) {
 }
 
 export async function getEnvironment (env, { FunctionName }) {
+  await loadRegion()
   const params = {
     FunctionName,
     Qualifier: env
@@ -98,7 +106,8 @@ export async function getEnvironment (env, { FunctionName }) {
   }
 }
 
-export function getAliasVersion ({ functionName, aliasName }) {
+export async function getAliasVersion ({ functionName, aliasName }) {
+  await loadRegion()
   const lambda = new AWS.Lambda()
 
   const params = {
@@ -111,6 +120,7 @@ export function getAliasVersion ({ functionName, aliasName }) {
 }
 
 export async function publishFunction ({ FunctionName }, env) {
+  await loadRegion()
   const lambda = new AWS.Lambda()
 
   const func = await lambda.publishVersion({ FunctionName }).promise()
@@ -118,6 +128,7 @@ export async function publishFunction ({ FunctionName }, env) {
 }
 
 export async function setAlias ({ Version, FunctionName }, Name) {
+  await loadRegion()
   const lambda = new AWS.Lambda()
 
   let params = {
@@ -137,6 +148,7 @@ export async function setAlias ({ Version, FunctionName }, Name) {
 }
 
 export async function setPermission ({ name, region, env, apiId, accountId }) {
+  await loadRegion()
   const lambda = new AWS.Lambda()
 
   let params = {
@@ -157,7 +169,8 @@ export async function setPermission ({ name, region, env, apiId, accountId }) {
   }
 }
 
-export function listAliases (functionName) {
+export async function listAliases (functionName) {
+  await loadRegion()
   const lambda = new AWS.Lambda()
 
   const params = {

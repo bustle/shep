@@ -1,6 +1,8 @@
 import AWS from './'
+import loadRegion from './region-loader'
 
 export async function getLogGroup ({ FunctionName }) {
+  await loadRegion()
   const cwLogs = new AWS.CloudWatchLogs()
   const expetedName = `/aws/lambda/${FunctionName}`
 
@@ -18,6 +20,7 @@ export async function getLogGroup ({ FunctionName }) {
 }
 
 export async function getLogStreams ({ logGroupName, functionVersion }) {
+  await loadRegion()
   const cwLogs = new AWS.CloudWatchLogs()
   const versionRegExp = new RegExp(`\\[${functionVersion}\\]`)
 
@@ -32,7 +35,8 @@ export async function getLogStreams ({ logGroupName, functionVersion }) {
   return logStreams.map(({ logStreamName }) => logStreamName).filter(versionRegExp.test)
 }
 
-export function getLogEvents ({ logGroupName, logStreamNames, start, end }) {
+export async function getLogEvents ({ logGroupName, logStreamNames, start, end }) {
+  await loadRegion()
   const cwLogs = new AWS.CloudWatchLogs()
 
   const params = {

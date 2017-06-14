@@ -1,13 +1,9 @@
 import { readdir, readJSON } from './modules/fs'
 import minimatch from 'minimatch'
-import AWS from './aws'
 import { listAliases, isFunctionDeployed } from './aws/lambda'
 import Promise from 'bluebird'
 
 export async function envs () {
-  const pkg = await this.pkg()
-  AWS.config.update({ region: pkg.shep.region })
-
   const fullFuncNames = await Promise.map(this.funcs(), this.lambdaConfig)
   .map(({ FunctionName }) => FunctionName)
 

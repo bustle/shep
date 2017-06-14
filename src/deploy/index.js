@@ -6,7 +6,6 @@ import promoteAliases from '../util/promote-aliases'
 import setPermissions from '../util/set-permissions'
 import * as load from '../util/load'
 import push from '../util/push-api'
-import AWS from 'aws-sdk'
 import listr from '../util/modules/listr'
 
 export default async function (opts) {
@@ -21,8 +20,6 @@ export default async function (opts) {
   let shouldUpload = true
 
   if (opts.apiId) { apiId = opts.apiId }
-
-  AWS.config.update({ region })
 
   const tasks = listr([
     {

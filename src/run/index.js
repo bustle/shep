@@ -3,7 +3,6 @@ import * as load from '../util/load'
 import build from '../util/build-functions'
 import Promise from 'bluebird'
 import chalk from 'chalk'
-import AWS from 'aws-sdk'
 import ctx from '../util/context'
 import cliui from 'cliui'
 
@@ -16,8 +15,6 @@ const results = { success: 'SUCCESS', error: 'ERROR', exception: 'EXCEPTION' }
 const awsNodeVersion = ['4.3.2', '6.10.2']
 
 export default async function (opts) {
-  AWS.config.update({region: opts.region})
-
   const processVersion = process.versions.node
 
   if (awsNodeVersion.indexOf(processVersion) === -1) {

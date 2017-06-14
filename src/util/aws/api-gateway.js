@@ -1,9 +1,11 @@
 import AWS from './'
+import loadRegion from './region-loader'
 import Promise from 'bluebird'
 
 export const DEPLOY_ATTEMPT_MAX = 2
 
-export function exportStage (restApiId, stageName) {
+export async function exportStage (restApiId, stageName) {
+  await loadRegion()
   const apiGateway = new AWS.APIGateway()
   const params = {
     restApiId,
@@ -20,6 +22,7 @@ export function exportStage (restApiId, stageName) {
 }
 
 export async function deploy (id, env, attempts = 1) {
+  await loadRegion()
   const apiGateway = new AWS.APIGateway()
 
   try {
@@ -32,7 +35,8 @@ export async function deploy (id, env, attempts = 1) {
   }
 }
 
-export function pushApi (api, id) {
+export async function pushApi (api, id) {
+  await loadRegion()
   const apiGateway = new AWS.APIGateway()
 
   let params = {
@@ -49,7 +53,8 @@ export function pushApi (api, id) {
   }
 }
 
-export function aliases (id) {
+export async function aliases (id) {
+  await loadRegion()
   const apiGateway = new AWS.APIGateway()
 
   let params = {
