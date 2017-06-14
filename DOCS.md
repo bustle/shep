@@ -281,7 +281,7 @@ Options:
   --version  Show version number                                                                               [boolean]
   --help     Show help                                                                                         [boolean]
   --event    Event to use
-  -v         Responses from functions aren't truncated
+  -t         Truncate responses
   --build    Build functions before running. If omitted functions are transpiled by babel on the fly    [default: false]
 
 Examples:
