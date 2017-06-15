@@ -12,6 +12,7 @@ export default async function (opts) {
   if (opts.json) {
     if (Object.keys(conflicts).length !== 0 || Object.keys(differences).length !== 0) { throw new Error('Environments are out of sync, run `shep config sync` to fix') }
     console.log(JSON.stringify(common, undefined, 2))
+    return common
   } else {
     console.log('Common Variables:')
     console.log(values(common).map(({ key, value }) => `${key}=${value}`).join('\n'))
@@ -28,5 +29,6 @@ export default async function (opts) {
         return `Variable: ${key}\n${funcValues.join('\n')}`
       }).join('\n'))
     }
+    return { common, differences, conflicts }
   }
 }

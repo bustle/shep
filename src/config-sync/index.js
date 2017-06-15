@@ -1,15 +1,11 @@
 import Promise from 'bluebird'
 import * as load from '../util/load'
 import { environmentCheck, values } from '../util/environment-check'
-import AWS from '../util/aws'
 import { isFunctionDeployed, listAliases } from '../util/aws/lambda'
 import getFunctionEnvs from '../util/get-function-envs'
 import uploadEnvironment from '../util/upload-environment'
 
 export default async function (specifiedAlias) {
-  const pkg = await load.pkg()
-  AWS.config.update({ region: pkg.shep.region })
-
   const funcConfigs = await Promise.map(load.funcs(), load.lambdaConfig)
   const deployedFuncs = await Promise.filter(funcConfigs, ({ FunctionName }) => isFunctionDeployed(FunctionName))
   const allFuncAliases = await Promise.map(deployedFuncs, ({ FunctionName }) => listAliases(FunctionName))

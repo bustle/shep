@@ -10,7 +10,6 @@ export function builder (yargs) {
   .pkgConf('shep', process.cwd())
   .describe('env', 'Specifies which environment to use. If not provided an interactive menu will display the options.')
   .describe('name', 'Name of function to use')
-  .describe('region', 'Name of region to use, uses region in `package.json` if not given')
   .boolean('stream')
   .default('stream', true)
   .describe('stream', 'Stream logs')
