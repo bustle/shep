@@ -213,7 +213,6 @@ Options:
   --help     Show help                                                                                         [boolean]
   --env      Specifies which environment to use. If not provided an interactive menu will display the options.
   --name     Name of function to use
-  --region   Name of region to use, uses region in `package.json` if not given
   --stream   Stream logs                                                                       [boolean] [default: true]
 
 Examples:
