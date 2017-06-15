@@ -7,11 +7,7 @@ import * as load from '../util/load'
 
 const integration = 'x-amazon-apigateway-integration'
 
-export default async function (opts) {
-  let accountId = opts.accountId
-  let path = opts.path
-  let method = opts.method
-
+export default async function ({ accountId, path, method, quiet = true }) {
   if (!accountId) {
     throw new Error('Unable to determine your AWS Account ID. Please set it in the `shep` section of package.json')
   }
@@ -38,7 +34,7 @@ export default async function (opts) {
       title: 'Write api.json',
       task: () => writeJSON('api.json', api, { spaces: 2 })
     }
-  ], opts.quiet)
+  ], quiet)
 
   return tasks.run()
 }

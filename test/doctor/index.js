@@ -12,7 +12,7 @@ test('Returns flat array of warnings', async (t) => {
   td.when(rules.foo(), { ignoreExtraArgs: true }).thenReturn([fooWarn])
   td.when(rules.bar(), { ignoreExtraArgs: true }).thenReturn([barWarn])
 
-  const warnings = await require('../../src/doctor')({ quiet: true })
+  const { warnings } = await require('../../src/doctor')({ quiet: true })
   t.truthy(Array.isArray(warnings))
   t.not(warnings.indexOf(fooWarn), -1)
   t.not(warnings.indexOf(barWarn), -1)

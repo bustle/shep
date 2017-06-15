@@ -44,9 +44,10 @@ const uploadEnvironment = td.replace('../../src/util/upload-environment')
 td.when(uploadEnvironment(), { ignoreExtraArgs: true }).thenResolve()
 
 test('Should create all aliases for all functions', async (t) => {
-  await require('../../src/config-sync')()
+  const sync = require('../../src/config-sync')
   const aliases = ['beta', 'development', 'production']
-  aliases.forEach((alias) => {
+  aliases.forEach(async (alias) => {
+    await sync({ env: alias })
     td.verify(uploadEnvironment(alias, td.matchers.contains({ varOne: 1 })))
   })
 })

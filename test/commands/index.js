@@ -22,7 +22,7 @@ const newArgs = {
 
 test([allFlags, noFlags], 'new', newParser, newArgs)
 
-const build = td.replace('../../src/build')
+td.replace('../../src/build')
 const buildParser = yargs.command(require('../../src/commands/build'))
 
 const buildArgs = {
@@ -42,6 +42,7 @@ const deployArgs = {
 test([allFlags, noFlags], 'deploy', deployParser, deployArgs)
 
 const doctor = td.replace('../../src/doctor')
+td.when(doctor(), { ignoreExtraArgs: true }).thenResolve({ warnings: [], errors: [] })
 const doctorParser = yargs.command(require('../../src/commands/doctor'))
 const doctorArgs = {
   verbose: 'true'
@@ -71,7 +72,7 @@ const pullArgs = {
 
 test([allFlags], 'pull', pullParser, pullArgs)
 
-const push = td.replace('../../src/push')
+td.replace('../../src/push')
 const pushParser = yargs.command(require('../../src/commands/push'))
 const pushArgs = {
   'api-id': 12345,
@@ -108,22 +109,13 @@ const functionArgs = {
 
 test([allFlags, noFlags], 'function', functionParser, functionArgs)
 
-const webpack = td.replace('../../src/generate-webpack')
+td.replace('../../src/generate-webpack')
 const webpackParser = yargs.command(require('../../src/commands/generate/webpack'))
 const webpackArgs = {
   output: 'dumb.js'
 }
 
 test([allFlags, noFlags], 'webpack', webpackParser, webpackArgs)
-
-td.replace('../../src/config-list')
-const listParser = yargs.command(require('../../src/commands/config/list'))
-const listArgs = {
-  env: 'development',
-  json: true
-}
-
-test([allFlags, noFlags], 'list', listParser, listArgs)
 
 td.replace('../../src/config-remove')
 const removeParser = yargs.command(require('../../src/commands/config/remove'))
@@ -141,22 +133,4 @@ test('config set command', (t) => {
   setParser.parse('set --env development FOO=bar', (err, argv, output) => {
     err ? t.fail(err) : t.pass()
   })
-})
-
-test('verification of function calls', (t) => {
-  // If the verify call is commented out there were issues with the test double
-
-  // td.verify(newMock())
-  td.verify(build(td.matchers.contains(buildArgs)))
-  // td.verify(deploy(td.matchers.contains(deployArgs)))
-  td.verify(doctor(td.matchers.contains(doctorArgs)))
-  // td.verify(pull(td.matchers.contains(pullArgs)))
-  td.verify(push(td.matchers.contains(pushArgs)))
-  // td.verify(run(td.matchers.contains(runArgs)))
-  // td.verify(endpoint(td.matchers.contains(endpointArgs)))
-  // td.verify(functionMock(td.matchers.contains(functionArgs)))
-  td.verify(webpack(td.matchers.contains(webpackArgs)))
-  // td.verify(list(td.matchers.contains(listArgs)))
-  // td.verify(remove(), { ignoreExtraArgs: true })
-  // td.verify(set(), { ignoreExtraArgs: true })
 })

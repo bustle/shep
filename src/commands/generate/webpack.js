@@ -5,6 +5,9 @@ export const desc = 'Generates a webpack.config.js with default template'
 export function builder (yargs) {
   return yargs
   .pkgConf('shep', process.cwd())
+  .boolean('quiet')
+  .alias('quiet', 'q')
+  .describe('quiet', 'Don\'t log anything')
   .describe('output', 'Output file')
   .alias('output', 'o')
   .default('output', 'webpack.config.js')

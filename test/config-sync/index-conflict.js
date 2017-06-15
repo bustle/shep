@@ -40,6 +40,7 @@ fns.forEach((fnName) => {
   td.when(lambda.getEnvironment(td.matchers.argThat(notValidAlias), { FunctionName: fnName })).thenReject(new Error('Env does not exist'))
 })
 
-test('Should throw err', (t) => {
-  t.throws(require('../../src/config-sync')())
+test('Should throw err', async (t) => {
+  const err = await t.throws(require('../../src/config-sync')({ env: 'beta' }))
+  t.not(err.message.indexOf('conflicting'), -1)
 })

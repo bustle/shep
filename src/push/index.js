@@ -2,9 +2,7 @@ import push from '../util/push-api'
 import * as load from '../util/load'
 import listr from '../util/modules/listr'
 
-export default async function (opts) {
-  const apiId = opts.apiId
-  const region = opts.region
+export default async function ({ apiId, region, quiet = true }) {
   const api = await load.api()
 
   const tasks = listr([
@@ -12,7 +10,7 @@ export default async function (opts) {
       title: `Upload api.json to AWS`,
       task: () => push(api, apiId, region)
     }
-  ], opts.quiet)
+  ], quiet)
 
   return tasks.run()
 }
