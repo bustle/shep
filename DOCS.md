@@ -66,10 +66,11 @@ Options:
 shep config list
 
 Options:
-  --version  Show version number                                                                               [boolean]
-  --help     Show help                                                                                         [boolean]
-  --env      Specifies which environment. If not provided an interactive menu will display the options
-  --json     Formats output as JSON                                                                            [boolean]
+  --version    Show version number                                                                             [boolean]
+  --help       Show help                                                                                       [boolean]
+  --quiet, -q  Don't log anything                                                                              [boolean]
+  --env        Specifies which environment. If not provided an interactive menu will display the options
+  --json       Formats output as JSON                                                                          [boolean]
 
 Examples:
   shep config list --env beta  Print to console all environment variables of environment `beta` in JSON format
@@ -79,10 +80,11 @@ Examples:
 shep config remove <vars...>
 
 Options:
-  --version  Show version number                                                                               [boolean]
-  --help     Show help                                                                                         [boolean]
-  --env      Specifies which environment to remove variables from. If not provided an interactive menu will display the
-             options
+  --version    Show version number                                                                             [boolean]
+  --help       Show help                                                                                       [boolean]
+  --quiet, -q  Don't log anything                                                                              [boolean]
+  --env        Specifies which environment to remove variables from. If not provided an interactive menu will display
+               the options
 
 Examples:
   shep config remove --env beta NEW_VARIABLE  Removes NEW_VARIABLE from all functions with beta alias
@@ -92,8 +94,9 @@ Examples:
 shep config set <vars...>
 
 Options:
-  --version  Show version number                                                                               [boolean]
-  --help     Show help                                                                                         [boolean]
+  --version    Show version number                                                                             [boolean]
+  --help       Show help                                                                                       [boolean]
+  --quiet, -q  Don't log anything                                                                              [boolean]
 
 Examples:
   shep config set --env beta FOO=bar  Set environment variable FOO with value BAR for alias beta
@@ -103,9 +106,10 @@ Examples:
 shep config sync
 
 Options:
-  --version  Show version number                                                                               [boolean]
-  --help     Show help                                                                                         [boolean]
-  -e, --env  Environment to sync
+  --version    Show version number                                                                             [boolean]
+  --help       Show help                                                                                       [boolean]
+  --quiet, -q  Don't log anything                                                                              [boolean]
+  -e, --env    Environment to sync
 
 Examples:
   shep config sync             Syncs all environments
@@ -199,6 +203,7 @@ shep generate webpack
 Options:
   --version     Show version number                                                                            [boolean]
   --help        Show help                                                                                      [boolean]
+  --quiet, -q   Don't log anything                                                                             [boolean]
   --output, -o  Output file                                                               [default: "webpack.config.js"]
 
 Examples:

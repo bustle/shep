@@ -7,11 +7,7 @@ import listr from '../util/modules/listr'
 
 let conflictingFiles = false
 
-export default async function run (opts) {
-  const path = opts.path
-  const rolename = opts.rolename
-  const region = opts.region
-
+export default async function run ({ path, rolename, region, quiet = true }) {
   let tasks = [
     {
       title: `Setup IAM Role`,
@@ -37,8 +33,9 @@ export default async function run (opts) {
 
   if (!rolename) tasks = tasks.splice(1)
 
-  await listr(tasks, opts.quiet).run({ path, rolename, region })
+  await listr(tasks, quiet).run({ path, rolename, region })
   if (conflictingFiles) { console.log('Conflicting files were found in provided path. New files were written with .shep-tmp appended to the filename') }
+  return path
 }
 
 async function setupIam (context) {

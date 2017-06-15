@@ -1,3 +1,4 @@
+import listr from '../util/modules/listr'
 import build from '../build'
 
 export const command = 'build [functions]'
@@ -13,4 +14,13 @@ export function builder (yargs) {
   .example('shep build beta \'*-user\'', 'Build functions matching the pattern *-user')
 }
 
-export const handler = build
+export function handler (opts) {
+  const tasks = listr([
+    {
+      title: `Build Functions`,
+      task: () => build(opts)
+    }
+  ], opts.quiet)
+
+  return tasks.run()
+}

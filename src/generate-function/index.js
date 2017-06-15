@@ -4,8 +4,8 @@ import * as templates from './templates'
 import listr from '../util/modules/listr'
 import Promise from 'bluebird'
 
-export default async function (opts) {
-  const { shortName, fullName } = await genName(opts.name)
+export default async function ({ name, quiet = true }) {
+  const { shortName, fullName } = await genName(name)
 
   const tasks = listr([
     {
@@ -20,7 +20,7 @@ export default async function (opts) {
       title: 'Create files',
       task: () => createFiles(shortName)
     }
-  ], opts.quiet)
+  ], quiet)
 
   return tasks.run()
 

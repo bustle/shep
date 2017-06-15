@@ -4,12 +4,8 @@ import { update } from '../util/pkg-config'
 import AWS from 'aws-sdk'
 import listr from '../util/modules/listr'
 
-export default function (opts) {
-  const apiId = opts.apiId
-  const stage = opts.stage
-  const region = opts.region
-
-  AWS.config.update({region: opts.region})
+export default function ({ apiId, stage, region, quiet = true }) {
+  AWS.config.update({ region })
 
   let exportedApi
 
@@ -25,7 +21,7 @@ export default function (opts) {
       title: 'Write to api.json',
       task: () => writeFile('api.json', exportedApi, { spaces: 2 })
     }
-  ], opts.quiet)
+  ], quiet)
 
   return tasks.run()
 }

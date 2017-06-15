@@ -15,6 +15,7 @@ export default async function (opts) {
   const bucket = opts.bucket
   const performBuild = opts.build
   const api = await load.api()
+  const quiet = opts.quiet === undefined ? true : opts.quiet
 
   let apiId, uploadFuncs
   let shouldUpload = true
@@ -60,7 +61,7 @@ export default async function (opts) {
         }
       }
     }
-  ], opts.quiet)
+  ], quiet)
 
   if (api) {
     tasks.add([
@@ -94,5 +95,6 @@ export default async function (opts) {
   }
 
   await tasks.run()
-  if (apiId) { console.log(`API URL: https://${apiId}.execute-api.${region}.amazonaws.com/${env}`) }
+  if (apiId && !quiet) { console.log(`API URL: https://${apiId}.execute-api.${region}.amazonaws.com/${env}`) }
+  return `https://${apiId}.execute-api.${region}.amazonaws.com/${env}`
 }

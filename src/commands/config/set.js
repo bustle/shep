@@ -1,4 +1,5 @@
 import inquirer from 'inquirer'
+import listr from '../../util/modules/listr'
 import configSet from '../../config-set'
 import * as load from '../../util/load'
 import merge from 'lodash.merge'
@@ -8,6 +9,9 @@ export const desc = 'Set environment variables for alias on AWS'
 export function builder (yargs) {
   return yargs
   .pkgConf('shep', process.cwd())
+  .boolean('quiet')
+  .alias('quiet', 'q')
+  .describe('quiet', 'Don\'t log anything')
   .example('shep config set --env beta FOO=bar', 'Set environment variable FOO with value BAR for alias beta')
 }
 
@@ -18,10 +22,9 @@ export async function handler (opts) {
     envVars[key] = value
   })
   opts.vars = envVars
+  const inputs = {}
 
-  if (opts.env) {
-    configSet(opts)
-  } else {
+  if (!opts.env) {
     const envs = await load.envs()
     const questions = [
       {
@@ -32,8 +35,13 @@ export async function handler (opts) {
       }
     ]
 
-    inquirer.prompt(questions)
-      .then((inputs) => merge({}, inputs, opts))
-      .then(configSet)
+    merge(inputs, await inquirer.prompt(questions))
   }
+
+  return listr([
+    {
+      title: 'Set environment variables on functions in AWS',
+      task: () => configSet(merge({}, inputs, opts))
+    }
+  ], opts.quiet).run()
 }

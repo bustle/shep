@@ -9,12 +9,12 @@ export default function (alias, configs) {
     try {
       env = await getEnvironment(alias, { FunctionName: fullName })
     } catch (e) {
-      env = {}
+      env = null
     }
     return { fullName, env }
   })
   .reduce((acc, { fullName, env }) => {
-    acc[fullName] = env
+    if (env !== null) { acc[fullName] = env }
     return acc
   }, {})
 }
