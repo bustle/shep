@@ -3,16 +3,16 @@
 Usage: shep <command> [options]
 
 Commands:
-  build [functions]   Builds functions and writes them to disk
-  config              Run `shep config --help` for additional information
-  deploy [functions]  Deploy both functions and APIs to AWS. Will create a new API if the ID is not specified
-  doctor              Checks your projects against best standards
-  generate            Run `shep generate --help` for additional information
-  logs [name]         Streams logs from the specified version of a function
-  new [path]          Create a new shep project
-  pull                Pulls a swagger JSON representation of an existing API and writes it to a local file
-  push                Create a new shep project
-  run [pattern]       Run a function in your local environemnt
+  build          Builds functions and writes them to disk
+  config         Run `shep config --help` for additional information
+  deploy         Deploy both functions and APIs to AWS. Will create a new API if the ID is not specified
+  doctor         Checks your projects against best standards
+  generate       Run `shep generate --help` for additional information
+  logs [name]    Streams logs from the specified version of a function
+  new [path]     Create a new shep project
+  pull           Pulls a swagger JSON representation of an existing API and writes it to a local file
+  push           Create a new shep project
+  run [pattern]  Run a function in your local environemnt
 
 Options:
   --version  Show version number                                                                               [boolean]
@@ -20,7 +20,7 @@ Options:
 ```
 #### `shep build`
 ```
-shep build [functions]
+shep build
 
 Options:
   --version    Show version number                                                                             [boolean]
@@ -28,10 +28,9 @@ Options:
   -q, --quiet  Don't log anything                                                                       [default: false]
 
 Examples:
-  shep build                   Launch an interactive CLI
-  shep build beta              Build all functions with beta environment variables
-  shep build beta create-user  Build only the create-user function
-  shep build beta '*-user'     Build functions matching the pattern *-user
+  shep build                          Builds functions
+  shep build --functions create-user  Build only the create-user function
+  shep build --functions '*-user'     Build functions matching the pattern *-user
 ```
 #### `shep config`
 ```
@@ -117,21 +116,22 @@ Examples:
 ```
 #### `shep deploy`
 ```
-shep deploy [functions]
+shep deploy
 
 Options:
   --version    Show version number                                                                             [boolean]
   --help       Show help                                                                                       [boolean]
   --build      Build functions before deployment. Use --no-build to skip this step                       [default: true]
+  --functions  Functions you wish to build and deploy
   -q, --quiet  Don't log anything                                                                       [default: false]
   -e, --env    Environment you want to deploy to, if it doesn't exist it will be created
 
 Examples:
-  shep deploy                               Launch an interactive CLI
-  shep deploy --env production              Deploy all functions with production env variables
-  shep deploy --env beta --no-build         Deploy all functions as currently built in the dist folder
-  shep deploy --env production create-user  Deploy only the create-user function
-  shep deploy --env beta '*-user'           Deploy only functions matching the pattern *-user
+  shep deploy                                           Launch an interactive CLI
+  shep deploy --env production                          Deploy all functions with production env variables
+  shep deploy --env beta --no-build                     Deploy all functions as currently built in the dist folder
+  shep deploy --env production --functions create-user  Deploy only the create-user function
+  shep deploy --env beta --functions '*-user'           Deploy only functions matching the pattern *-user
 ```
 #### `shep doctor`
 ```
