@@ -41,5 +41,6 @@ export async function handler (opts) {
     }
   ], opts.quiet)
 
-  return tasks.run()
+  await tasks.run()
+  console.log(`Removed ${opts.vars.join(', ')} from ${inputs.env}`)
 }
