@@ -41,16 +41,16 @@ export async function handler (opts) {
       console.log(JSON.stringify(common, undefined, 2))
     } else {
       const output = values(common).map(({ key, value }) => `${key}=${value}`)
-      const errors = []
+      let errors = []
 
       if (Object.keys(differences).length !== 0) {
         errors.push('Variables that are present on some functions:')
-        errors.concat(values(differences).map(({ key, value }) => `${key}=${value.value} on the following functions: ${value.functions.join(', ')}`))
+        errors = errors.concat(values(differences).map(({ key, value }) => `${key}=${value.value} on the following functions: ${value.functions.join(', ')}`))
       }
 
       if (Object.keys(conflicts).length !== 0) {
         errors.push('Variables that have conflicting values across different functions')
-        errors.concat(values(conflicts).map(({ key, value }) => {
+        errors = errors.concat(values(conflicts).map(({ key, value }) => {
           const funcValues = values(value).map((obj) => `\t${key}=${obj.value} on ${obj.key}`)
           return `Variable: ${key}\n${funcValues.join('\n')}`
         }))
