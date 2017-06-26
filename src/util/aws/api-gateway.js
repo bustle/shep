@@ -26,7 +26,8 @@ export async function deploy (id, env, attempts = 1) {
   const apiGateway = new AWS.APIGateway()
 
   try {
-    return apiGateway.createDeployment({restApiId: id, stageName: env, variables: { functionAlias: env }}).promise()
+    const deployment = await apiGateway.createDeployment({restApiId: id, stageName: env, variables: { functionAlias: env }}).promise()
+    return deployment
   } catch (e) {
     if (e.code !== 'TooManyRequestsException') { throw e }
     if (!e.retryable && attempts > DEPLOY_ATTEMPT_MAX) { throw new Error('Amazon limit hit') }
