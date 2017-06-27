@@ -37,7 +37,7 @@ export default function (config) {
     let callbackCalled = false
 
     const timer = setTimeout(() => {
-      if (!callbackCalled && ctx.getRemainingTimeInMillis() === 0) { throw new Error(`Lambda function ${functionName} timed out`) }
+      if (!callbackCalled) { throw new Error(`Lambda function ${functionName} timed out`) }
     }, config.Timeout * 1000)
 
     return (...args) => {
