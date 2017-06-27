@@ -7,8 +7,10 @@ console.log(execSync(`./cli.js --help`).toString().replace(/cli\.js/, 'shep').tr
 console.log('```')
 
 const commandDir = './src/commands'
-const mainCommands = readdirSync(commandDir)
-const subCommands = mainCommands
+const allFiles = readdirSync(commandDir)
+const mainCommands = allFiles
+      .filter(isFile)
+const subCommands = allFiles
       .filter(isDir)
       .map(findSubCommands)
       .reduce(flatten)
@@ -24,6 +26,10 @@ allCommands.forEach((command) => {
 
 function isDir (path) {
   return statSync(`${commandDir}/${path}`).isDirectory()
+}
+
+function isFile (path) {
+  return statSync(`${commandDir}/${path}`).isFile()
 }
 
 function findSubCommands (path) {

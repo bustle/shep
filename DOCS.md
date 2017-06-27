@@ -46,20 +46,6 @@ Options:
   --version  Show version number                                                                               [boolean]
   --help     Show help                                                                                         [boolean]
 ```
-#### `shep config`
-```
-shep config
-
-Commands:
-  list              List environment variables on AWS for an alias
-  remove <vars...>  Remove environment variables for alias on AWS
-  set <vars...>     Set environment variables for alias on AWS
-  sync              Syncs environments across all functions on a shep project
-
-Options:
-  --version  Show version number                                                                               [boolean]
-  --help     Show help                                                                                         [boolean]
-```
 #### `shep config list`
 ```
 shep config list
@@ -145,19 +131,6 @@ Options:
 
 Examples:
   shep doctor  Runs the doctor on your project
-```
-#### `shep generate`
-```
-shep generate
-
-Commands:
-  endpoint [path]  Generate a new API endpoint
-  function [name]  Generate a new function
-  webpack          Generates a webpack.config.js with default template
-
-Options:
-  --version  Show version number                                                                               [boolean]
-  --help     Show help                                                                                         [boolean]
 ```
 #### `shep generate`
 ```
