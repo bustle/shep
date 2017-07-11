@@ -21,7 +21,7 @@ export async function isFunctionDeployed (FunctionName) {
   }
 }
 
-export async function putFunction (env, config, ZipFile) {
+export async function putFunction (env, config, { ZipFile, S3Bucket, S3Key }) {
   await loadRegion()
   const lambda = new AWS.Lambda()
 
@@ -39,7 +39,7 @@ export async function putFunction (env, config, ZipFile) {
   }
 
   await putEnvironment(env, config)
-  return lambda.updateFunctionCode({ ZipFile, FunctionName, Publish }).promise()
+  return lambda.updateFunctionCode({ ZipFile, FunctionName, Publish, S3Bucket, S3Key }).promise()
 }
 
 export async function putEnvironment (env, config, envVars) {

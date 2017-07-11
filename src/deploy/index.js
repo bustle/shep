@@ -12,7 +12,6 @@ export default async function ({ apiId, functions = '*', env = 'development', re
   const api = await load.api()
 
   let uploadFuncs, aliases
-  let shouldUpload = true
 
   try {
     if (build) {
@@ -25,23 +24,14 @@ export default async function ({ apiId, functions = '*', env = 'development', re
     if (bucket) {
       logger({ type: 'start', body: `Upload Builds to S3` })
       const funcs = await uploadBuilds(functions, bucket)
-      // delete null keys from fns without s3 builds, then set other fns to be uploaded
-
-      Object.keys(funcs).forEach((key) => (funcs[key] == null) && delete funcs[key])
-
-      if (Object.keys(funcs).length === 0) { shouldUpload = false }
       uploadFuncs = funcs
     } else {
       logger({ type: 'skip', body: 'Skipping uploading builds, no S3 bucket provided' })
-      uploadFuncs = await load.funcs(functions)
+      uploadFuncs = await Promise.map(load.funcs(functions), (name) => { return { name } })
     }
 
-    if (shouldUpload) {
-      logger({ type: 'start', body: 'Upload Functions to AWS' })
-      await upload(uploadFuncs, env)
-    } else {
-      logger({ type: 'skip', body: 'Skipping upload, function unchanged since last deploy' })
-    }
+    logger({ type: 'start', body: 'Upload Functions to AWS' })
+    await upload(uploadFuncs, env)
 
     if (api) {
       logger({ type: 'start', body: 'Upload API.json' })

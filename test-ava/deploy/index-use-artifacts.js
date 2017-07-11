@@ -3,8 +3,8 @@ import td from '../helpers/testdouble'
 
 const functions = 'foo-*'
 const env = 'beta'
-const uploadedFuncs = [null, null]
 const bucket = 's3_bucket'
+const uploadedFuncs = [{ name: 'foo-1', key: '1', bucket }, { name: 'foo-2', key: '2', bucket }]
 const api = { paths: {} }
 const apiId = 'test-id'
 
@@ -27,6 +27,9 @@ td.when(push(api), { ignoreExtraArgs: true }).thenResolve(apiId)
 
 const uploadBuilds = td.replace('../../src/util/upload-builds')
 td.when(uploadBuilds(functions, bucket)).thenResolve(uploadedFuncs)
+
+const uploadFunctions = td.replace('../../src/util/upload-functions')
+td.when(uploadFunctions(), { ignoreExtraArgs: true }).thenResolve()
 
 test.before(() => {
   const shep = require('../../src/index')
