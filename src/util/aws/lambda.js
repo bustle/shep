@@ -1,6 +1,8 @@
 import AWS from './'
+import { Buffer } from 'buffer'
 import loadRegion from './region-loader'
 import merge from 'lodash.merge'
+import { pkg } from '../load'
 
 export async function getFunction (params) {
   await loadRegion()
@@ -9,11 +11,11 @@ export async function getFunction (params) {
   return lambda.getFunction(params).promise()
 }
 
-export async function isFunctionDeployed (FunctionName) {
+export async function isFunctionDeployed (FunctionName, Qualifier) {
   await loadRegion()
 
   try {
-    await getFunction({ FunctionName })
+    await getFunction({ FunctionName, Qualifier })
     return true
   } catch (e) {
     if (e.code !== 'ResourceNotFoundException') { throw e }
@@ -21,51 +23,41 @@ export async function isFunctionDeployed (FunctionName) {
   }
 }
 
-export async function putFunction (env, config, { ZipFile, S3Bucket, S3Key }) {
-  await loadRegion()
+export async function createFunction (env, config, { ZipFile, S3Object, S3Key }, envVars) {
   const lambda = new AWS.Lambda()
+  const { FunctionName } = config
 
-  validateConfig(config)
-
-  const FunctionName = config.FunctionName
-  const Publish = true
-
-  try {
-    await getFunction({ FunctionName })
-  } catch (e) {
-    if (e.code !== 'ResourceNotFoundException') { throw e }
-    const params = merge({}, config, { Publish, Code: { ZipFile } })
-    await lambda.createFunction(params).promise()
+  if (await isFunctionDeployed(FunctionName, env)) {
+    throw new Error('function is already deployed use updateFunction instead')
   }
 
-  await putEnvironment(env, config)
-  return lambda.updateFunctionCode({ ZipFile, FunctionName, Publish, S3Bucket, S3Key }).promise()
-}
-
-export async function putEnvironment (env, config, envVars) {
-  await loadRegion()
-  const lambda = new AWS.Lambda()
-
-  validateConfig(config)
-
-  const params = {
-    FunctionName: config.FunctionName,
-    Qualifier: env
-  }
-
-  let awsFunction
-  try {
-    awsFunction = await getFunction(params)
-  } catch (e) {
-    if (e.code !== 'ResourceNotFoundException') { throw e }
-    awsFunction = await getFunction({ FunctionName: params.FunctionName })
-  }
-
-  const envMap = mergeExistingEnv(awsFunction, envVars)
-  const lambdaConfig = merge(config, { Environment: { Variables: envMap } })
-  const { FunctionName } = await lambda.updateFunctionConfiguration(lambdaConfig).promise()
+  await lambda.createFunction(merge({}, config, { ZipFile, S3Key, S3Object, Environment: { Variables: envVars } })).promise()
   const func = await lambda.publishVersion({ FunctionName }).promise()
   return setAlias(func, env)
+}
+
+export async function updateFunction (env, config, { S3Bucket, S3Key }, envVars) {
+  const lambda = new AWS.Lambda()
+  const { name, shep } = await pkg()
+  const { bucket } = shep
+  const { FunctionName } = config
+
+  if (!(await isFunctionDeployed(FunctionName, env))) {
+    throw new Error('such a function does not exist')
+  }
+
+  const func = await getFunction({ FunctionName, Qualifier: env })
+
+  // forgive me father for I have sinned
+  const hexSha = Buffer.from(func.Configuration.CodeSha256, 'base64').toString('hex')
+  const key = `${FunctionName.replace(name + '-', '')}-${hexSha}.zip`
+  console.log(key)
+  // end sinning
+
+  const envMap = mergeExistingEnv(func, envVars)
+  await lambda.updateFunctionConfiguration(merge({}, config, { Environment: { Variables: envMap } })).promise()
+  const newFunc = await lambda.updateFunctionCode({ FunctionName, Publish: true, S3Key: S3Key || key, S3Bucket: S3Bucket || bucket }).promise()
+  return setAlias(newFunc, env)
 }
 
 export async function removeEnvVars (env, config, envVars) {
@@ -82,9 +74,12 @@ export async function removeEnvVars (env, config, envVars) {
   const awsFunction = await getFunction(params)
   const envMap = deleteEnvVars(awsFunction, envVars)
   const lambdaConfig = merge({}, config, { Environment: { Variables: envMap } })
+  // need to switch to updateFunction
+  /*
   const { FunctionName } = await lambda.updateFunctionConfiguration(lambdaConfig).promise()
   const func = await lambda.publishVersion({ FunctionName }).promise()
   return setAlias(func, env)
+  */
 }
 
 export async function getEnvironment (env, { FunctionName }) {
@@ -188,7 +183,7 @@ function validateConfig (config) {
 
 function mergeExistingEnv (awsFunction, envVars = {}) {
   if (awsFunction.Configuration.Environment) {
-    return merge(awsFunction.Configuration.Environment.Variables, envVars)
+    return merge({}, awsFunction.Configuration.Environment.Variables, envVars)
   } else {
     return envVars
   }

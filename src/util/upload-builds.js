@@ -8,12 +8,14 @@ export default async function (pattern, bucket) {
   const fns = await funcs(pattern)
   return Promise.map(fns, async (func) => {
     const path = await distPath(func)
-    const hash = await hashBuild(path)
+    const zip = await zipDir(path)
+    const hash = hashBuild(zip)
     const key = `${func}-${hash}.zip`
+
     if (!await buildExists(key, bucket)) {
-      const zip = await zipDir(path)
       await putBuild(key, bucket, zip)
     }
-    return { name: func, key, bucket }
+
+    return { name: func, key, bucket, zip }
   })
 }
