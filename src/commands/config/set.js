@@ -43,7 +43,7 @@ export async function handler (opts) {
   try {
     const versions = await configSet(merge({}, inputs, opts))
     logger({ type: 'done' })
-    versions.forEach(({ name, FunctionVersion }) => logger(`Updated ${name} to version ${FunctionVersion}`))
+    //versions.forEach(({ name, FunctionVersion }) => logger(`Updated ${name} to version ${FunctionVersion}`))
   } catch (e) {
     logger({ type: 'fail' })
     throw e

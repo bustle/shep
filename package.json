@@ -45,6 +45,7 @@
     "execa": "^0.6.0",
     "fs-extra-promise": "^1.0.1",
     "glob": "^7.1.1",
+    "got": "^7.1.0",
     "inquirer": "^3.0.2",
     "lodash.kebabcase": "^4.1.1",
     "lodash.merge": "^4.6.0",

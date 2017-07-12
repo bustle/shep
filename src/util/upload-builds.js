@@ -1,13 +1,15 @@
 import Promise from 'bluebird'
 import hashBuild from './hash-build'
-import { funcs, distPath } from './load'
+import { funcs, distPath, lambdaConfig } from './load'
 import zipDir from './zip-dir'
 import { putBuild, buildExists } from './aws/s3'
 
+// remind me to fix this or make it more clean or something
 export default async function (pattern, bucket) {
   const fns = await funcs(pattern)
   return Promise.map(fns, async (func) => {
     const path = await distPath(func)
+    const { FunctionName } = await lambdaConfig(func)
     const zip = await zipDir(path)
     const hash = hashBuild(zip)
     const key = `${func}-${hash}.zip`
