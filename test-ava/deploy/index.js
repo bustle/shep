@@ -12,8 +12,6 @@ const build = td.replace('../../src/util/build-functions')
 td.when(build(), { ignoreExtraArgs: true }).thenResolve()
 const apiGateway = td.replace('../../src/util/aws/api-gateway')
 td.when(apiGateway.deploy(), { ignoreExtraArgs: true }).thenResolve()
-const lambda = td.replace('../../src/util/aws/lambda')
-td.when(lambda.publishFunction(), { ignoreExtraArgs: true }).thenResolve({})
 const setPermissions = td.replace('../../src/util/set-permissions')
 td.when(setPermissions(), { ignoreExtraArgs: true }).thenResolve()
 

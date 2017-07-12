@@ -8,7 +8,7 @@ export async function envs () {
   const fullFuncNames = await Promise.map(this.funcs(), this.lambdaConfig)
   .map(({ FunctionName }) => FunctionName)
 
-  const deployedFunctions = await Promise.filter(fullFuncNames, isFunctionDeployed)
+  const deployedFunctions = await Promise.filter(fullFuncNames, (x) => isFunctionDeployed(x))
   const allAliases = await Promise.map(deployedFunctions, (name) => listAliases(name).map(({ Name }) => Name))
 
   const aliases = allAliases.reduce((acc, aliasSet) => {

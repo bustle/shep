@@ -1,11 +1,10 @@
-import Promise from 'bluebird'
 import AWS from './'
-import { Buffer } from 'buffer'
 import loadRegion from './region-loader'
 import merge from 'lodash.merge'
-import { pkg } from '../load'
 import got from 'got'
+import { AWSEnvironmentVariableNotFound } from '../errors'
 
+/*
 const Function = {
   FunctionName: 'string',
   // should be ADT but hey this works
@@ -17,37 +16,74 @@ const Function = {
       key: 'string'
     }
   },
-  Alias: 'string',
+  Identifier: {
+   Alias: undefined || 'string',
+   Version: undefined || 'string'
+  }
   Config: {}
 }
+*/
 
 export async function getFunction ({ FunctionName, Qualifier }) {
   await loadRegion()
   const lambda = new AWS.Lambda()
 
   const func = await lambda.getFunction({ FunctionName, Qualifier }).promise()
+  const isVersion = /[0-9]+/.test(Qualifier)
   return {
     FunctionName,
-    Alias: Qualifier,
+    Identifier: {
+      Version: func.Configuration.Version,
+      Alias: isVersion ? undefined : Qualifier
+    },
     Code: { CodeSha256: func.Configuration.CodeSha256 },
     Config: configStripper(func.Configuration)
   }
 }
 
-// TODO
-export async function createFunction ({ }) {
+export async function createFunction ({ FunctionName, Alias, Code, Config }) {
+  validateConfig(Config)
+  await loadRegion()
+  const lambda = new AWS.Lambda()
+
+  const createFunctionParams = { FunctionName, Publish: true, Code: {}, Config }
+  const createAliasParams = { FunctionName, Name: Alias }
+
+  if (Code.s3) {
+    createFunctionParams.Code.S3Bucket = Code.s3.bucket
+    createFunctionParams.Code.S3Key = Code.s3.key
+  } else if (Code.Zip) {
+    createFunctionParams.Code.ZipFile = Code.Zip
+  } else {
+    throw new Error('need to upload code')
+  }
+
+  const newFunc = await lambda.createFunction(createFunctionParams).promise()
+
+  createAliasParams.FunctionVersion = newFunc.Version
+  await lambda.createAlias(createAliasParams).promise()
+
+  return {
+    FunctionName,
+    Identifier: {
+      Alias,
+      Version: newFunc.Version
+    },
+    Config: configStripper(newFunc),
+    Code: { CodeSha256: newFunc.CodeSha256 }
+  }
 }
 
 // might want to check that the following are equal on these two objects:
 // FunctionName, Alias, rest are mutable
 export async function updateFunction (oldFunction, wantedFunction) {
+  validateConfig(wantedFunction.Config)
   await loadRegion()
   const lambda = new AWS.Lambda()
   const { FunctionName, Alias } = oldFunction
-  // if no zip or s3 then must grab
   const updateCodeParams = { FunctionName }
   const updateConfigParams = { FunctionName }
-  const publishVersionParams = { FunctionName, Description: Alias }
+  const publishVersionParams = { FunctionName, Description: `Based off of ${Alias}` }
   const updateAliasParams = { FunctionName }
 
   if (wantedFunction.Code.Zip) {
@@ -56,16 +92,15 @@ export async function updateFunction (oldFunction, wantedFunction) {
     updateCodeParams.S3Bucket = wantedFunction.Code.s3.bucket
     updateCodeParams.S3Key = wantedFunction.Code.s3.key
   } else {
-    const func = await lambda.getFunction({ FunctionName: oldFunction.FunctionName, Qualifier: oldFunction.Alias }).promise()
+    const { Code, Configuration } = await lambda.getFunction({ FunctionName: oldFunction.FunctionName, Qualifier: oldFunction.Alias }).promise()
 
-    publishVersionParams.CodeSha256 = func.Configuration.CodeSha256
-    updateCodeParams.ZipFile = (await got(func.Code.Location, { encoding: null })).body
+    publishVersionParams.CodeSha256 = Configuration.CodeSha256
+    updateCodeParams.ZipFile = (await got(Code.Location, { encoding: null })).body
   }
   const uploadedFunc = await lambda.updateFunctionCode(updateCodeParams).promise()
   publishVersionParams.CodeSha256 = publishVersionParams.CodeSha256 || uploadedFunc.CodeSha256
 
-  // should actually only contain config options we want changed
-  merge(updateConfigParams, configStripper(oldFunction.Config), configStripper(wantedFunction.Config))
+  merge(updateConfigParams, configStripper(wantedFunction.Config))
   await lambda.updateFunctionConfiguration((updateConfigParams)).promise()
   const { Version, CodeSha256 } = await lambda.publishVersion(publishVersionParams).promise()
 
@@ -75,12 +110,16 @@ export async function updateFunction (oldFunction, wantedFunction) {
 
   return {
     FunctionName,
-    Alias,
+    Identifier: {
+      Alias,
+      Version
+    },
     Code: { CodeSha256 },
     Config: configStripper(config)
   }
 }
 
+// should beef this up
 function configStripper (config) {
   return {
     DeadLetterConfig: config.DeadLetterConfig,
@@ -95,14 +134,6 @@ function configStripper (config) {
   }
 }
 
-/*
-export async function getFunction (params) {
-  await loadRegion()
-  const lambda = new AWS.Lambda()
-
-  return lambda.getFunction(params).promise()
-}
-
 export async function isFunctionDeployed (FunctionName, Qualifier) {
   await loadRegion()
 
@@ -115,44 +146,6 @@ export async function isFunctionDeployed (FunctionName, Qualifier) {
   }
 }
 
-// hot fresh take actually create all aliases at the time
-// means must give an array of aliases want created
-export async function createFunction (env, config, { S3Object, S3Key }, envVars) {
-  await loadRegion()
-  validateConfig(config)
-
-  const lambda = new AWS.Lambda()
-  const { FunctionName } = config
-
-  await lambda.createFunction(merge({}, config, { S3Key, S3Object, Environment: { Variables: envVars } })).promise()
-  const func = await lambda.publishVersion({ FunctionName }).promise()
-  return setAlias(func, env)
-}
-
-// new idea -> base (func name, qualifier), total config (lambdaConfig, env vars n such), code config (key bucket)
-export async function updateFunction (3Bucket, S3Key }, envVars) {
-  if (!(S3Bucket && S3Key )) { throw new Error('need bucket n key')}
-  await loadRegion()
-  validateConfig(config)
-
-  const lambda = new AWS.Lambda()
-  const { name, shep } = await pkg()
-  const { FunctionName } = config
-
-  const func = await getFunction({ FunctionName, Qualifier: env })
-
-  // forgive me father for I have sinned
-  const hexSha = Buffer.from(func.Configuration.CodeSha256, 'base64').toString('hex')
-  const key = `${FunctionName.replace(name + '-', '')}-${hexSha}.zip`
-  // end sinning
-
-  const codeConfig = merge({ Publish: true, FunctionName, S3Bucket, S3Key })
-  const envMap = mergeExistingEnv(func, envVars)
-  await lambda.updateFunctionConfiguration(merge({}, config, { Environment: { Variables: envMap } })).promise()
-  const newFunc = await lambda.updateFunctionCode(codeConfig).promise()
-  return setAlias(newFunc, env)
-}
-
 export async function getEnvironment (env, { FunctionName }) {
   await loadRegion()
   const params = {
@@ -162,7 +155,7 @@ export async function getEnvironment (env, { FunctionName }) {
 
   try {
     const envVars = await getFunction(params)
-    .get('Configuration')
+    .get('Config')
     .get('Environment')
     .get('Variables')
     return envVars
@@ -185,35 +178,6 @@ export async function getAliasVersion ({ functionName, aliasName }) {
   .get('FunctionVersion')
 }
 
-export async function publishFunction ({ FunctionName }, env) {
-  await loadRegion()
-  const lambda = new AWS.Lambda()
-
-  const func = await lambda.publishVersion({ FunctionName }).promise()
-  return setAlias(func, env)
-}
-
-export async function setAlias ({ Version, FunctionName }, Name) {
-  await loadRegion()
-  const lambda = new AWS.Lambda()
-
-  let params = {
-    FunctionName,
-    Name
-  }
-
-  try {
-    await lambda.getAlias(params).promise()
-    params.FunctionVersion = Version
-    return lambda.updateAlias(params).promise()
-  } catch (e) {
-    if (e.code !== 'ResourceNotFoundException') { throw e }
-    params.FunctionVersion = Version
-    return lambda.createAlias(params).promise()
-  }
-}
-
-*/
 export async function setPermission ({ name, region, env, apiId, accountId }) {
   await loadRegion()
   const lambda = new AWS.Lambda()
@@ -235,7 +199,6 @@ export async function setPermission ({ name, region, env, apiId, accountId }) {
     if (e.code !== 'ResourceConflictException' && e.code !== 'ResourceNotFoundException') { throw e }
   }
 }
-/*
 
 export async function listAliases (functionName) {
   await loadRegion()
@@ -254,34 +217,6 @@ function validateConfig (config) {
   }
 }
 
-function mergeExistingEnv (awsFunction, envVars = {}) {
-  if (awsFunction.Configuration.Environment) {
-    return merge({}, awsFunction.Configuration.Environment.Variables, envVars)
-  } else {
-    return envVars
-  }
-}
-
-function deleteEnvVars (awsFunction, envVars) {
-  envVars.forEach((envVar) => {
-    try {
-      delete awsFunction.Configuration.Environment.Variables[envVar]
-    } catch (e) {
-      throw new AWSEnvironmentVariableNotFound(awsFunction.FunctionName, envVar)
-    }
-  })
-  return awsFunction.Configuration.Environment.Variables
-}
-
-export class AWSEnvironmentVariableNotFound extends Error {
-  constructor (functionName, envVar) {
-    const msg = `Variable${envVar ? ' ' + envVar : 's'} not found for ${functionName}`
-    super(msg)
-    this.message = msg
-    this.name = 'AWSEnvironmentVariableNotFound'
-  }
-}
-
 export class AWSInvalidLambdaConfiguration extends Error {
   constructor () {
     const msg = 'You need to specify a valid Role for your lambda functions. See the shep README for details.'
@@ -290,4 +225,3 @@ export class AWSInvalidLambdaConfiguration extends Error {
     this.name = 'AWSInvalidLambdaConfiguration'
   }
 }
-*/

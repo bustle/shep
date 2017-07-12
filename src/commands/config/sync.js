@@ -35,7 +35,7 @@ export async function handler (opts) {
       logger({ type: 'start', body: `Syncing ${alias} environment across all functions` })
       const versions = await sync({ env: alias })
       logger({ type: 'done' })
-      versions.forEach(({ name, FunctionVersion }) => logger(`Updated ${name} to version ${FunctionVersion} for ${alias}`))
+      versions.forEach(({ FunctionName, Identifier }) => logger(`Updated ${FunctionName} to version ${Identifier.Version} for ${Identifier.Alias}`))
     } catch (e) {
       logger({ type: 'fail' })
       throw e

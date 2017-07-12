@@ -3,7 +3,6 @@ import buildFuncs from '../util/build-functions'
 import upload from '../util/upload-functions'
 import uploadBuilds from '../util/upload-builds'
 import { deploy } from '../util/aws/api-gateway'
-import { publishFunction } from '../util/aws/lambda'
 import setPermissions from '../util/set-permissions'
 import * as load from '../util/load'
 import push from '../util/push-api'
@@ -40,15 +39,6 @@ export default async function ({ apiId, functions = '*', env = 'development', re
       logger({ type: 'skip', body: 'No API' })
     }
 
-    /*
-    logger({ type: 'start', body: 'Promote Function Aliases' })
-    aliases = await Promise.map(load.funcs(functions), async (fn) => {
-      const config = await load.lambdaConfig(fn)
-      const { FunctionVersion } = await publishFunction(config, env)
-      return { Name: fn, FunctionVersion }
-    })
-    */
-
     if (api) {
       logger({ type: 'start', body: 'Setup Lambda Permissions' })
       await setPermissions(api, apiId, env)
@@ -66,7 +56,7 @@ export default async function ({ apiId, functions = '*', env = 'development', re
 
   logger({ type: 'done' })
 
-  //aliases.map(({ Name, FunctionVersion }) => `Deployed version ${FunctionVersion} for ${Name}`).forEach((n) => logger(n))
+  aliases.map(({ FunctionName, Identifier }) => `Deployed version ${Identifier.Version} for ${FunctionName}`).forEach((n) => logger(n))
   if (apiId) { logger(`API URL: https://${apiId}.execute-api.${region}.amazonaws.com/${env}`) }
   return `https://${apiId}.execute-api.${region}.amazonaws.com/${env}`
 }
