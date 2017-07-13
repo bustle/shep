@@ -1,6 +1,7 @@
 import AWS from './'
 import loadRegion from './region-loader'
 import merge from 'lodash.merge'
+import isEqual from 'lodash.isequal'
 import got from 'got'
 import { AWSEnvironmentVariableNotFound } from '../errors'
 
@@ -73,6 +74,7 @@ export async function createFunction ({ FunctionName, Alias, Code, Config }) {
     Code: { CodeSha256: newFunc.CodeSha256 }
   }
 }
+const debug = require('debug')('shep:lambda')
 
 export async function updateFunction (oldFunction, wantedFunction) {
   await loadRegion()
@@ -93,16 +95,24 @@ export async function updateFunction (oldFunction, wantedFunction) {
     const { Code } = await lambda.getFunction({ FunctionName: oldFunction.FunctionName, Qualifier: Alias }).promise()
     updateCodeParams.ZipFile = (await got(Code.Location, { encoding: null })).body
   }
+  debug('updateFunctionCode:', updateCodeParams)
   const uploadedFunc = await lambda.updateFunctionCode(updateCodeParams).promise()
   publishVersionParams.CodeSha256 = uploadedFunc.CodeSha256
 
   merge(updateConfigParams, configStripper(wantedFunction.Config))
+  debug('updateConfig.Environment:', updateConfigParams.Environment.Variables)
   const configState = await lambda.updateFunctionConfiguration((updateConfigParams)).promise()
   if (configState.CodeSha256 !== publishVersionParams.CodeSha256) { throw new Error('different shas') }
+  debug('publishVersion:', publishVersionParams)
   const updatedFunc = await lambda.publishVersion(publishVersionParams).promise()
+  if (!isConfigEqual(configState, updatedFunc)) {
+    throw new Error('configs are not equal')
+  }
 
   updateAliasParams.FunctionVersion = updatedFunc.Version
   updateAliasParams.Name = Alias
+  debug(updateAliasParams)
+  debug('updateAlias:', updateAliasParams)
   await lambda.updateAlias(updateAliasParams).promise()
 
   return {
@@ -116,14 +126,22 @@ export async function updateFunction (oldFunction, wantedFunction) {
   }
 }
 
-/*
-function necessaryFileds (oF, nF, acc = {}) {
-  Object.keys(nF).forEach((key) => {
-    // check if nf[key] is obj
-    if (nF[key]){}
-  })
+function isConfigEqual (a, b) {
+  const c = merge({}, a)
+  delete c['Version']
+  delete c['LastModified']
+  delete c['FunctionArn']
+  delete c['VpcConfig']
+  const d = merge({}, b)
+  delete d['Version']
+  delete d['LastModified']
+  delete d['FunctionArn']
+  delete d['VpcConfig']
+  debug('c', c)
+  debug('d', d)
+
+  return isEqual(c, d)
 }
-*/
 
 // should beef this up
 // for VpcConfig can only pass SecurityGroupIds and SubnetIds
