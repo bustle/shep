@@ -1,4 +1,5 @@
 import Promise from 'bluebird'
+import merge from 'lodash.merge'
 import { updateFunction, getFunction, isFunctionDeployed, createFunction } from './aws/lambda'
 import { lambdaConfig, distPath } from './load'
 import zipDir from './zip-dir'
@@ -17,6 +18,7 @@ export default async function (fns, env) {
 
     if (await isFunctionDeployed(config.FunctionName)) {
       const oldFunc = await getFunction({ FunctionName: config.FunctionName, Qualifier: env })
+      wantedFunc.Config.Environment = merge({}, oldFunc.Config.Environment, wantedFunc.Config.Environment)
       return updateFunction(oldFunc, wantedFunc)
     } else {
       wantedFunc.FunctionName = config.FunctionName
