@@ -30,7 +30,7 @@ export default async function ({ apiId, functions = '*', env = 'development', re
     }
 
     logger({ type: 'start', body: 'Upload Functions to AWS' })
-    await upload(uploadFuncs, env)
+    aliases = await upload(uploadFuncs, env)
 
     if (api) {
       logger({ type: 'start', body: 'Upload API.json' })

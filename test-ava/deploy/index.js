@@ -2,7 +2,13 @@ import test from 'ava'
 import td from '../helpers/testdouble'
 
 const functions = '*'
-const uploadedFuncs = ['foo', 'bar']
+const uploadedFuncs = [{
+  FunctionName: 'foo',
+  Identifier: { Version: 1 }
+}, {
+  FunctionName: 'bar',
+  Identifier: { Version: 1 }
+}]
 const env = 'beta'
 const bucket = 's3_bucket'
 const api = { paths: {} }
@@ -40,10 +46,6 @@ test('Builds functions', () => {
 
 test('Deploys API', () => {
   td.verify(apiGateway.deploy(apiId, env))
-})
-
-test('Promote function aliases', () => {
-  td.verify(lambda.publishFunction(td.matchers.isA(Object), env), { times: uploadedFuncs.length })
 })
 
 test('Setup function permissions', () => {

@@ -76,8 +76,10 @@ export async function createFunction ({ FunctionName, Alias, Code, Config }) {
 
 // might want to check that the following are equal on these two objects:
 // FunctionName, Alias, rest are mutable
+// should have function calculate change: takes wanted function and checks it to see if there are differences?
 export async function updateFunction (oldFunction, wantedFunction) {
-  validateConfig(wantedFunction.Config)
+  // should config should already exist
+  //validateConfig(wantedFunction.Config)
   await loadRegion()
   const lambda = new AWS.Lambda()
   const { FunctionName, Alias } = oldFunction
@@ -102,35 +104,43 @@ export async function updateFunction (oldFunction, wantedFunction) {
 
   merge(updateConfigParams, configStripper(wantedFunction.Config))
   await lambda.updateFunctionConfiguration((updateConfigParams)).promise()
-  const { Version, CodeSha256 } = await lambda.publishVersion(publishVersionParams).promise()
+  const updatedFunc = await lambda.publishVersion(publishVersionParams).promise()
 
-  updateAliasParams.FunctionVersion = Version
+  updateAliasParams.FunctionVersion = updatedFunc.Version
   updateAliasParams.Name = Alias
-  const config = await lambda.updateAlias(updateAliasParams).promise()
+  await lambda.updateAlias(updateAliasParams).promise()
 
   return {
-    FunctionName,
+    FunctionName: updatedFunc.FunctionName,
     Identifier: {
       Alias,
-      Version
+      Version: updatedFunc.Version
     },
-    Code: { CodeSha256 },
-    Config: configStripper(config)
+    Code: { CodeSha256: updatedFunc.CodeSha256 },
+    Config: configStripper(updatedFunc)
   }
 }
 
+function necessaryFileds (oF, nF, acc = {}) {
+  Object.keys(nF).forEach((key) => {
+    // check if nf[key] is obj
+    if (nF[key]){}
+  })
+}
+
 // should beef this up
-function configStripper (config) {
+// for VpcConfig can only pass SecurityGroupIds and SubnetIds
+function configStripper (c) {
   return {
-    DeadLetterConfig: config.DeadLetterConfig,
-    Description: config.Description,
-    Environment: config.Environment,
-    Handler: config.Handler,
-    MemorySize: config.MemorySize,
-    Role: config.Role,
-    Runtime: config.Runtime,
-    Timeout: config.Timeout,
-    TracingConfig: config.TracingConfig
+    DeadLetterConfig: c.DeadLetterConfig,
+    Description: c.Description,
+    Environment: c.Environment,
+    Handler: c.Handler,
+    MemorySize: c.MemorySize,
+    Role: c.Role,
+    Runtime: c.Runtime,
+    Timeout: c.Timeout,
+    TracingConfig: c.TracingConfig
   }
 }
 
