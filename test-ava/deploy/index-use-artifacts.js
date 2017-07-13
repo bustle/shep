@@ -4,7 +4,14 @@ import td from '../helpers/testdouble'
 const functions = 'foo-*'
 const env = 'beta'
 const bucket = 's3_bucket'
-const uploadedFuncs = [{ name: 'foo-1', key: '1', bucket }, { name: 'foo-2', key: '2', bucket }]
+const uploadedBuilds = [{ name: 'foo-1', key: '1', bucket }, { name: 'foo-2', key: '2', bucket }]
+const uploadedFuncs = [{
+  FunctionName: 'foo',
+  Identifier: { Version: 1 }
+}, {
+  FunctionName: 'bar',
+  Identifier: { Version: 1 }
+}]
 const api = { paths: {} }
 const apiId = 'test-id'
 
@@ -12,8 +19,6 @@ const build = td.replace('../../src/util/build-functions')
 td.when(build(), { ignoreExtraArgs: true }).thenResolve()
 const apiGateway = td.replace('../../src/util/aws/api-gateway')
 td.when(apiGateway.deploy(), { ignoreExtraArgs: true }).thenResolve()
-const lambda = td.replace('../../src/util/aws/lambda')
-td.when(lambda.publishFunction(), { ignoreExtraArgs: true }).thenResolve({})
 
 const setPermissions = td.replace('../../src/util/set-permissions')
 td.when(setPermissions(), { ignoreExtraArgs: true }).thenResolve()
@@ -26,10 +31,10 @@ const push = td.replace('../../src/util/push-api')
 td.when(push(api), { ignoreExtraArgs: true }).thenResolve(apiId)
 
 const uploadBuilds = td.replace('../../src/util/upload-builds')
-td.when(uploadBuilds(functions, bucket)).thenResolve(uploadedFuncs)
+td.when(uploadBuilds(functions, bucket)).thenResolve(uploadedBuilds)
 
 const uploadFunctions = td.replace('../../src/util/upload-functions')
-td.when(uploadFunctions(), { ignoreExtraArgs: true }).thenResolve()
+td.when(uploadFunctions(), { ignoreExtraArgs: true }).thenResolve(uploadedFuncs)
 
 test.before(() => {
   const shep = require('../../src/index')

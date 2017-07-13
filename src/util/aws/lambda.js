@@ -46,7 +46,7 @@ export async function createFunction ({ FunctionName, Alias, Code, Config }) {
   await loadRegion()
   const lambda = new AWS.Lambda()
 
-  const createFunctionParams = { FunctionName, Publish: true, Code: {}, Config }
+  const createFunctionParams = { ...Config, Publish: true, Code: {} }
   const createAliasParams = { FunctionName, Name: Alias }
 
   if (Code.s3) {
@@ -74,18 +74,14 @@ export async function createFunction ({ FunctionName, Alias, Code, Config }) {
   }
 }
 
-// might want to check that the following are equal on these two objects:
-// FunctionName, Alias, rest are mutable
-// should have function calculate change: takes wanted function and checks it to see if there are differences?
 export async function updateFunction (oldFunction, wantedFunction) {
-  // should config should already exist
-  //validateConfig(wantedFunction.Config)
   await loadRegion()
   const lambda = new AWS.Lambda()
-  const { FunctionName, Alias } = oldFunction
+  const { FunctionName } = oldFunction
+  const Alias = oldFunction.Identifier.Alias
   const updateCodeParams = { FunctionName }
   const updateConfigParams = { FunctionName }
-  const publishVersionParams = { FunctionName, Description: `Based off of ${Alias}` }
+  const publishVersionParams = { FunctionName }
   const updateAliasParams = { FunctionName }
 
   if (wantedFunction.Code.Zip) {
@@ -94,16 +90,15 @@ export async function updateFunction (oldFunction, wantedFunction) {
     updateCodeParams.S3Bucket = wantedFunction.Code.s3.bucket
     updateCodeParams.S3Key = wantedFunction.Code.s3.key
   } else {
-    const { Code, Configuration } = await lambda.getFunction({ FunctionName: oldFunction.FunctionName, Qualifier: oldFunction.Alias }).promise()
-
-    publishVersionParams.CodeSha256 = Configuration.CodeSha256
+    const { Code } = await lambda.getFunction({ FunctionName: oldFunction.FunctionName, Qualifier: Alias }).promise()
     updateCodeParams.ZipFile = (await got(Code.Location, { encoding: null })).body
   }
   const uploadedFunc = await lambda.updateFunctionCode(updateCodeParams).promise()
-  publishVersionParams.CodeSha256 = publishVersionParams.CodeSha256 || uploadedFunc.CodeSha256
+  publishVersionParams.CodeSha256 = uploadedFunc.CodeSha256
 
   merge(updateConfigParams, configStripper(wantedFunction.Config))
-  await lambda.updateFunctionConfiguration((updateConfigParams)).promise()
+  const configState = await lambda.updateFunctionConfiguration((updateConfigParams)).promise()
+  if (configState.CodeSha256 !== publishVersionParams.CodeSha256) { throw new Error('different shas') }
   const updatedFunc = await lambda.publishVersion(publishVersionParams).promise()
 
   updateAliasParams.FunctionVersion = updatedFunc.Version
@@ -121,12 +116,14 @@ export async function updateFunction (oldFunction, wantedFunction) {
   }
 }
 
+/*
 function necessaryFileds (oF, nF, acc = {}) {
   Object.keys(nF).forEach((key) => {
     // check if nf[key] is obj
     if (nF[key]){}
   })
 }
+*/
 
 // should beef this up
 // for VpcConfig can only pass SecurityGroupIds and SubnetIds

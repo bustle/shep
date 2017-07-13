@@ -11,8 +11,8 @@ export default async function (env, vars) {
   return Promise.map(configs, async ({name, config}) => {
     const oldFunc = await getFunction({ FunctionName: config.FunctionName, Qualifier: env })
 
-    const wantedFunc = merge({}, oldFunc)
-    wantedFunc.Config.Environment.Variables = merge({}, wantedFunc.Config.Environment.Variables, vars)
+    const wantedFunc = { Code: {}, Config: { Environment: {} } }
+    wantedFunc.Config.Environment.Variables = merge({}, oldFunc.Config.Environment.Variables, vars)
 
     return updateFunction(oldFunc, wantedFunc)
   }, { concurrency: 1 })
