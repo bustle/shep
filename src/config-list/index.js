@@ -7,6 +7,7 @@ import { environmentCheck } from '../util/environment-check'
 
 export default async function ({ env, quiet = true, json }) {
   const fnConfigs = await Promise.filter(load.funcs().map(load.lambdaConfig), ({ FunctionName }) => isFunctionDeployed(FunctionName))
+  console.log(env)
   const envs = await getFunctionEnvs(env, fnConfigs)
   const { common, differences, conflicts } = environmentCheck(envs)
 

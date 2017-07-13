@@ -2,7 +2,13 @@ import test from 'ava'
 import td from '../helpers/testdouble'
 
 const functions = '*'
-const uploadedFuncs = ['foo', 'bar']
+const uploadedFuncs = [{
+  FunctionName: 'foo',
+  Identifier: { Version: 1 }
+}, {
+  FunctionName: 'bar',
+  Identifier: { Version: 1 }
+}]
 const env = 'beta'
 const bucket = 's3_bucket'
 const api = { paths: {} }
@@ -12,8 +18,6 @@ const build = td.replace('../../src/util/build-functions')
 td.when(build(), { ignoreExtraArgs: true }).thenResolve()
 const apiGateway = td.replace('../../src/util/aws/api-gateway')
 td.when(apiGateway.deploy(), { ignoreExtraArgs: true }).thenResolve()
-const lambda = td.replace('../../src/util/aws/lambda')
-td.when(lambda.publishFunction(), { ignoreExtraArgs: true }).thenResolve({})
 const setPermissions = td.replace('../../src/util/set-permissions')
 td.when(setPermissions(), { ignoreExtraArgs: true }).thenResolve()
 
@@ -42,10 +46,6 @@ test('Builds functions', () => {
 
 test('Deploys API', () => {
   td.verify(apiGateway.deploy(apiId, env))
-})
-
-test('Promote function aliases', () => {
-  td.verify(lambda.publishFunction(td.matchers.isA(Object), env), { times: uploadedFuncs.length })
 })
 
 test('Setup function permissions', () => {

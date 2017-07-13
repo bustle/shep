@@ -23,3 +23,12 @@ export class EnvironmentsOutOfSync extends Error {
     this.name = 'EnvironmentsOutOfSync'
   }
 }
+
+export class AWSEnvironmentVariableNotFound extends Error {
+  constructor (functionName, envVar) {
+    const msg = `Variable${envVar ? ' ' + envVar : 's'} not found for ${functionName}`
+    super(msg)
+    this.message = msg
+    this.name = 'AWSEnvironmentVariableNotFound'
+  }
+}

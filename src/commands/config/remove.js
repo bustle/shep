@@ -38,8 +38,8 @@ export async function handler (opts) {
   try {
     const versions = await configRemove(merge({}, inputs, opts))
     logger({ type: 'done' })
-    logger(`Removed ${opts.vars.join(', ')} from ${inputs.env}`)
-    versions.forEach(({ name, FunctionVersion }) => logger(`Updated ${name} to version ${FunctionVersion}`))
+    logger(`Removed ${opts.vars.join(', ')} from ${inputs.env || opts.env}`)
+    versions.forEach(({ FunctionName, Identifier }) => logger(`Updated ${FunctionName} to version ${Identifier.Version}`))
   } catch (e) {
     logger({ type: 'fail' })
     throw e

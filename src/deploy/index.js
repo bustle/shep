@@ -3,7 +3,6 @@ import buildFuncs from '../util/build-functions'
 import upload from '../util/upload-functions'
 import uploadBuilds from '../util/upload-builds'
 import { deploy } from '../util/aws/api-gateway'
-import { publishFunction } from '../util/aws/lambda'
 import setPermissions from '../util/set-permissions'
 import * as load from '../util/load'
 import push from '../util/push-api'
@@ -12,7 +11,6 @@ export default async function ({ apiId, functions = '*', env = 'development', re
   const api = await load.api()
 
   let uploadFuncs, aliases
-  let shouldUpload = true
 
   try {
     if (build) {
@@ -25,23 +23,14 @@ export default async function ({ apiId, functions = '*', env = 'development', re
     if (bucket) {
       logger({ type: 'start', body: `Upload Builds to S3` })
       const funcs = await uploadBuilds(functions, bucket)
-      // delete null keys from fns without s3 builds, then set other fns to be uploaded
-
-      Object.keys(funcs).forEach((key) => (funcs[key] == null) && delete funcs[key])
-
-      if (Object.keys(funcs).length === 0) { shouldUpload = false }
       uploadFuncs = funcs
     } else {
       logger({ type: 'skip', body: 'Skipping uploading builds, no S3 bucket provided' })
-      uploadFuncs = await load.funcs(functions)
+      uploadFuncs = await Promise.map(load.funcs(functions), (name) => { return { name } })
     }
 
-    if (shouldUpload) {
-      logger({ type: 'start', body: 'Upload Functions to AWS' })
-      await upload(uploadFuncs, env)
-    } else {
-      logger({ type: 'skip', body: 'Skipping upload, function unchanged since last deploy' })
-    }
+    logger({ type: 'start', body: 'Upload Functions to AWS' })
+    aliases = await upload(uploadFuncs, env)
 
     if (api) {
       logger({ type: 'start', body: 'Upload API.json' })
@@ -49,13 +38,6 @@ export default async function ({ apiId, functions = '*', env = 'development', re
     } else {
       logger({ type: 'skip', body: 'No API' })
     }
-
-    logger({ type: 'start', body: 'Promote Function Aliases' })
-    aliases = await Promise.map(load.funcs(functions), async (fn) => {
-      const config = await load.lambdaConfig(fn)
-      const { FunctionVersion } = await publishFunction(config, env)
-      return { Name: fn, FunctionVersion }
-    })
 
     if (api) {
       logger({ type: 'start', body: 'Setup Lambda Permissions' })
@@ -74,7 +56,7 @@ export default async function ({ apiId, functions = '*', env = 'development', re
 
   logger({ type: 'done' })
 
-  aliases.map(({ Name, FunctionVersion }) => `Deployed version ${FunctionVersion} for ${Name}`).forEach((n) => logger(n))
+  aliases.map(({ FunctionName, Identifier }) => `Deployed version ${Identifier.Version} for ${FunctionName}`).forEach((n) => logger(n))
   if (apiId) { logger(`API URL: https://${apiId}.execute-api.${region}.amazonaws.com/${env}`) }
   return `https://${apiId}.execute-api.${region}.amazonaws.com/${env}`
 }
