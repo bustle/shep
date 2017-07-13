@@ -5,6 +5,8 @@ import isEqual from 'lodash.isequal'
 import got from 'got'
 import { AWSEnvironmentVariableNotFound } from '../errors'
 
+const debug = require('debug')('shep:lambda')
+
 /*
 const Function = {
   FunctionName: 'string',
@@ -26,6 +28,7 @@ const Function = {
 */
 
 export async function getFunction ({ FunctionName, Qualifier }) {
+  debug('getFunction', arguments[0])
   await loadRegion()
   const lambda = new AWS.Lambda()
 
@@ -43,6 +46,7 @@ export async function getFunction ({ FunctionName, Qualifier }) {
 }
 
 export async function createFunction ({ FunctionName, Alias, Code, Config }) {
+  debug('createFunction', arguments[0])
   validateConfig(Config)
   await loadRegion()
   const lambda = new AWS.Lambda()
@@ -51,9 +55,11 @@ export async function createFunction ({ FunctionName, Alias, Code, Config }) {
   const createAliasParams = { FunctionName, Name: Alias }
 
   if (Code.s3) {
+    debug('createFunction: using s3 bucket for code')
     createFunctionParams.Code.S3Bucket = Code.s3.bucket
     createFunctionParams.Code.S3Key = Code.s3.key
   } else if (Code.Zip) {
+    debug('createFunction: using local zip file for code')
     createFunctionParams.Code.ZipFile = Code.Zip
   } else {
     throw new Error('need to upload code')
@@ -74,9 +80,9 @@ export async function createFunction ({ FunctionName, Alias, Code, Config }) {
     Code: { CodeSha256: newFunc.CodeSha256 }
   }
 }
-const debug = require('debug')('shep:lambda')
 
 export async function updateFunction (oldFunction, wantedFunction) {
+  debug('updateFunction', oldFunction, wantedFunction)
   await loadRegion()
   const lambda = new AWS.Lambda()
   const { FunctionName } = oldFunction
@@ -87,34 +93,37 @@ export async function updateFunction (oldFunction, wantedFunction) {
   const updateAliasParams = { FunctionName }
 
   if (wantedFunction.Code.Zip) {
+    debug('updateFunction: using zip file for code')
     updateCodeParams.ZipFile = wantedFunction.Code.Zip
   } else if (wantedFunction.Code.s3) {
+    debug('updateFunction: using s3 bucket for code')
     updateCodeParams.S3Bucket = wantedFunction.Code.s3.bucket
     updateCodeParams.S3Key = wantedFunction.Code.s3.key
   } else {
     const { Code } = await lambda.getFunction({ FunctionName: oldFunction.FunctionName, Qualifier: Alias }).promise()
+    debug('updateFunction: downloading', Code.Location)
     updateCodeParams.ZipFile = (await got(Code.Location, { encoding: null })).body
   }
-  debug('updateFunctionCode:', updateCodeParams)
+  debug('updateFunction: updateFunctionCode()', updateCodeParams)
   const uploadedFunc = await lambda.updateFunctionCode(updateCodeParams).promise()
   publishVersionParams.CodeSha256 = uploadedFunc.CodeSha256
 
   merge(updateConfigParams, configStripper(wantedFunction.Config))
-  debug('updateConfig.Environment:', updateConfigParams.Environment.Variables)
+  debug('updateFunction: updateConfig.Environment()', updateConfigParams.Environment.Variables)
   const configState = await lambda.updateFunctionConfiguration((updateConfigParams)).promise()
   if (configState.CodeSha256 !== publishVersionParams.CodeSha256) { throw new Error('different shas') }
   debug('publishVersion:', publishVersionParams)
   const updatedFunc = await lambda.publishVersion(publishVersionParams).promise()
   if (!isConfigEqual(configState, updatedFunc)) {
-    throw new Error('configs are not equal')
+    throw new Error('Failing to update alias as function configs are not as expected')
   }
 
   updateAliasParams.FunctionVersion = updatedFunc.Version
   updateAliasParams.Name = Alias
-  debug(updateAliasParams)
   debug('updateAlias:', updateAliasParams)
   await lambda.updateAlias(updateAliasParams).promise()
 
+  debug('updateFunction success!', updateAliasParams)
   return {
     FunctionName: updatedFunc.FunctionName,
     Identifier: {
