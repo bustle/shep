@@ -2,3 +2,4 @@
 --compilers js:babel-register
 --require chai/register-assert
 --require test/initializers
+--timeout=10000
