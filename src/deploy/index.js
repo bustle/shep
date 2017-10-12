@@ -7,7 +7,7 @@ import setPermissions from '../util/set-permissions'
 import * as load from '../util/load'
 import push from '../util/push-api'
 
-export default async function ({ apiId, functions = '*', env = 'development', region, bucket, build = true, logger = () => {} }) {
+export default async function ({ apiId, api: deployApi = true, functions = '*', env = 'development', region, bucket, build = true, logger = () => {} }) {
   const api = await load.api()
 
   let uploadFuncs, aliases
@@ -32,7 +32,7 @@ export default async function ({ apiId, functions = '*', env = 'development', re
     logger({ type: 'start', body: 'Upload Functions to AWS' })
     aliases = await upload(uploadFuncs, env)
 
-    if (api) {
+    if (deployApi && api) {
       logger({ type: 'start', body: 'Upload API.json' })
       apiId = await push(api, apiId, region)
     } else {
@@ -42,11 +42,11 @@ export default async function ({ apiId, functions = '*', env = 'development', re
     if (api) {
       logger({ type: 'start', body: 'Setup Lambda Permissions' })
       await setPermissions(api, apiId, env)
-
-      logger({ type: 'start', body: 'Deploy API' })
-      await deploy(apiId, env)
+      if (deployApi) {
+        logger({ type: 'start', body: 'Deploy API' })
+        await deploy(apiId, env)
+      }
     } else {
-      logger({ type: 'skip', body: 'No API' })
       logger({ type: 'skip', body: 'No API' })
     }
   } catch (e) {

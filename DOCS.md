@@ -5,7 +5,7 @@ Usage: shep <command> [options]
 Commands:
   build          Builds functions and writes them to disk
   config         Run `shep config --help` for additional information
-  deploy         Deploy both functions and APIs to AWS. Will create a new API if the ID is not specified
+  deploy         Deploy functions and APIs to AWS. Will create a new API if the ID is not specified
   doctor         Checks your projects against best standards
   generate       Run `shep generate --help` for additional information
   logs [name]    Streams logs from the specified version of a function
