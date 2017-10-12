@@ -108,6 +108,7 @@ Options:
   --version    Show version number                                                                             [boolean]
   --help       Show help                                                                                       [boolean]
   --build      Build functions before deployment. Use --no-build to skip this step                       [default: true]
+  --api        Deploy API along with functions. Use --no-api to skip this step                           [default: true]
   --functions  Functions you wish to build and deploy
   -q, --quiet  Don't log anything                                                                       [default: false]
   -e, --env    Environment you want to deploy to, if it doesn't exist it will be created
@@ -116,6 +117,7 @@ Examples:
   shep deploy                                           Launch an interactive CLI
   shep deploy --env production                          Deploy all functions with production env variables
   shep deploy --env beta --no-build                     Deploy all functions as currently built in the dist folder
+  shep deploy --env beta --no-api                       Deploy all functions but not the API
   shep deploy --env production --functions create-user  Deploy only the create-user function
   shep deploy --env beta --functions '*-user'           Deploy only functions matching the pattern *-user
 ```
