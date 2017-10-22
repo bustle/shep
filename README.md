@@ -5,7 +5,7 @@
 <a href="https://github.com/bustlelabs/shep">
 <img src="https://typeset-beta.imgix.net/2017/2/21/471fd5d2-edd8-4e65-bce4-e93e79015bbb.png?w=400" />
 </a>
-<div>A framework for building JavaScript APIs with AWS API Gateway and Lambda</div>
+<div>A framework for building JavaScript Applications with AWS API Gateway and Lambda</div>
 </div>
 
 
