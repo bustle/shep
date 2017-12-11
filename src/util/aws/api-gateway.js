@@ -11,7 +11,7 @@ export async function exportStage (restApiId, stageName) {
     restApiId,
     stageName,
     exportType: 'swagger',
-    accepts: 'json',
+    accepts: 'application/json',
     parameters: {
       extensions: 'integrations,authorizers'
     }
