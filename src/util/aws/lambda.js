@@ -87,7 +87,8 @@ export async function updateFunction (oldFunction, wantedFunction) {
   await loadRegion()
   const lambda = new AWS.Lambda()
   const { FunctionName } = oldFunction
-  const Alias = wantedFunction.Identifier.Alias || oldFunction.Identifier.Alias
+  const wantedFunctionAlias = wantedFunction && wantedFunction.Identifier && wantedFunction.Identifier.Alias
+  const Alias = wantedFunctionAlias || oldFunction.Identifier.Alias
   const updateCodeParams = { FunctionName }
   const updateConfigParams = { FunctionName }
   const publishVersionParams = { FunctionName }
