@@ -1,6 +1,6 @@
 {
   "name": "shep",
-  "version": "5.1.3",
+  "version": "5.1.4-0",
   "description": "A framework for building JavaScript APIs with AWS API Gateway and Lambda",
   "main": "lib/index.js",
   "scripts": {
